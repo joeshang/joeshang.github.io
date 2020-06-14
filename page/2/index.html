@@ -166,6 +166,95 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/12/19/2014-12-19-calayer-mask/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2014/12/19/2014-12-19-calayer-mask/" class="post-title-link" itemprop="url">关于使用 CALayer 中 mask 的一些技巧</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-12-19 21:21:39" itemprop="dateCreated datePublished" datetime="2014-12-19T21:21:39+08:00">2014-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-04-05 22:23:42" itemprop="dateModified" datetime="2018-04-05T22:23:42+08:00">2018-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>CALayer 拥有 <code>mask</code> 属性，Apple 的官方解释如下：</p>
+<blockquote>
+<p>An optional layer whose alpha channel is used to mask the layer’s content. The layer’s alpha channel determines how much of the layer’s content and background shows through. Fully or partially opaque pixels allow the underlying content to show through but fully transparent pixels block that content.</p>
+</blockquote>
+<p><code>mask</code> 同样也是一个 CALayer。假设将 CALayer 本身称为 ContentLayer，将<code>mask</code> 称为 MaskLayer，蒙版（Masking）的工作原理是通过 MaskLayer 的 alpha 值定义 ContentLayer 的显示区域：对于 ContentLayer 上每一个 Point，计算公式为 <code>ResultLayer = ContentLayer * MaskLayer_Alpha</code>。所以当 alpha 为 1 时 Content 显示，alpha 为 0 时 Content 不显示，其他处于 0 与 1 之间的值导致 Content 半透明。</p>
+<p>需要注意的是：</p>
+<ol>
+<li>MaskLayer 的 color 不重要，主要使用 opacity（CALayer 中的 alpha），但是注意 <code>[UIColor clearColor]</code> 其实就是 alpha 为 0 的 color。</li>
+<li>ContentLayer 超出 MaskLayer 以外的部分不会被显示出来。</li>
+<li>MaskLayer 必须是个“单身汉”，不能有 sublayers，否则蒙版（Masking）的结果就是未知（Undefined）。</li>
+</ol>
+<p>由于 <code>mask</code> 是一个 CALayer，可以通过组合产生很多非常棒的效果。例如可以将 MaskLayer 指定为 CAGradientLayer 类型实现 Gradient 效果，可以给 MaskLayer 添加动画，下面两个例子就是这种用法的经典实例：</p>
+<ul>
+<li><a href="http://liyong03.github.io/blog/2014/06/01/facebook-shimmer/" target="_blank" rel="noopener">Facebook Shimmer 实现原理</a></li>
+<li><a href="http://ke.gitcafe.com/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/" target="_blank" rel="noopener">基于 Core Animation 的 KTV 歌词视图的平滑实现</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/12/19/2014-12-19-understand-anchorpoint-position-frame/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -948,14 +1037,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
