@@ -242,6 +242,103 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/31/arts-2020-week-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/31/arts-2020-week-1/" class="post-title-link" itemprop="url">ARTS 2020 Week 1：05.26-05.31</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-31 17:06:31" itemprop="dateCreated datePublished" datetime="2020-05-31T17:06:31+08:00">2020-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-14 17:08:37" itemprop="dateModified" datetime="2020-06-14T17:08:37+08:00">2020-06-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ARTS/" itemprop="url" rel="index"><span itemprop="name">ARTS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><p><a href="https://leetcode.com/problems/invert-binary-tree/" target="_blank" rel="noopener">Invert Binary Tree - LeetCode</a></p>
+<p>决定从递归思想 + 树开始练习，周末家里有突发情况，所以选了一道简单+“有名”的翻转二叉树。树的结构由于自带子节点，所以很适合递归思想，对于这道题，翻转二叉树就是递归交换子树，递归起来可以有两种思路：</p>
+<ol>
+<li><p>每次交换的是左右子树，至于左右子树的结果，调用 invertTree 获取</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">TreeNode* <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = invertTree(root-&gt;left);</span><br><span class="line">        root-&gt;left = invertTree(root-&gt;right); </span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        <span class="keyword">return</span> root; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>每次交换左右子节点，然后再递归调用左右子节点</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = root-&gt;left;</span><br><span class="line">        root-&gt;left = root-&gt;right;</span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        invertTree(root-&gt;left);</span><br><span class="line">        invertTree(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a href="https://www.essentialdeveloper.com/articles/why-ios-developers-feel-stuck-in-their-careers-and-what-to-do" target="_blank" rel="noopener">Why iOS Developers Feel Stuck In Their Careers &amp; What To Do — Essential Developer</a></p>
+<p>对于目前阶段的我而言，一直处于焦虑之中，一方面随着工作年限变多，无论是自己还是“业界”，对于自己的要求变得更高，另一方面，iOS 或者客户端相对服务器端而言，离业务有点远，核心竞争力并不突出。看到这篇文章，没想到”浓眉大眼“ Work Life Balance 的国外 iOS 同行也会 Feel Stuck。。。</p>
+<p>文章的核心观点和我的看法是：</p>
+<ul>
+<li>不要过于急功近利，设置不切实际的目标。学习的过程是曲折向上的，需要花时间持续投入，不要期望有立竿见影的效果，先坚持一段时间再说（例如 ARTS 活动）。</li>
+<li>Feeling Stuck 的原因有时候和工作环境有关，有些事可以缓解，例如同优秀的人合作（remarkable people），例如团队中有 mentor 可以指导如何高效的写和维护高质量的代码等等。关于环境这块我是这样想的，虽然环境会影响人，但个人是可以潜移默化影响环境的，要做“催化剂”</li>
+<li>将工作中遇到的挑战与技术成长结合起来。工作不仅仅是编程或者技术本身，即使是一个简单的需求，那如何在 Commit 拆分上更清楚，如果是重复劳动，能否有一些自动化的工具来提高效率？在遇到例如网络超时问题时，能否更深入的排查，使用 Charles + WireShark 工具，重新翻看 TCP/IP 等书籍查漏补缺？另外，软技能一样重要，沟通能力、领导力等，也可以提高。</li>
+</ul>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ol>
+<li>当 UILabel 的 adjustsFontSizeToFitWidth 为 YES 时，UILabel 会根据内容多少来调整字体大小，但是此时 baseline 不变，会导致文字在 Y 轴不居中。解决办法是：将 baselineAdjustment 设置为 UIBaselineAdjustmentAlignCenters。</li>
+<li>UIScrollView 的 directionalLockEnabled 能够锁死每次滑动只影响一个方向，但是当滑动是对角线的情况，就失效了，需要在 beganDragging 时记录初始 offset，并将 direction 初始化为 .none，在 DidScroll 时判断 direction 类型，并根据 vertical 或 horizontal 来设置 contentOffset，最后在 DidEndDecelerating 和 DidEndDragging（willDecelerate 为 false）时重置为 .none</li>
+<li>Swift 会对其符号进行修饰（Name Mangling），具体原理见：<a href="https://mikeash.com/pyblog/friday-qa-2014-08-15-swift-name-mangling.html" target="_blank" rel="noopener">mikeash.com: Friday Q&amp;A 2014-08-15: Swift Name Mangling</a>。在 Bugly 上，如果崩溃在 Swift 方法中，被修饰过的命名就很难读了。Xcode 提供了对 Swift 符号进行 demangling 的工具，在命令行输入 <code>xcrun swift-demangle</code>之后，将对应的 Swift 符号拷入，点回车，就能看到解析后的结果了</li>
+</ol>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="http://joeshang.github.io/2020/06/14/cname-explain/" target="_blank" rel="noopener">CNAME 有什么用？</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/04/ios-copying/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1073,105 +1170,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/12/19/2014-12-19-understand-anchorpoint-position-frame/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="尚传人">
-      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="传人的技术博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/12/19/2014-12-19-understand-anchorpoint-position-frame/" class="post-title-link" itemprop="url">理解 anchorPoint，position，frame 的关系</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-12-19 21:20:06" itemprop="dateCreated datePublished" datetime="2014-12-19T21:20:06+08:00">2014-12-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2018-04-05 22:23:22" itemprop="dateModified" datetime="2018-04-05T22:23:22+08:00">2018-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>对于 UIView 的 <code>frame</code>，<code>bounds</code>，<code>center</code> 都比较熟悉：</p>
-<ul>
-<li><code>bounds</code>指定 UIView 自身坐标系。</li>
-<li><code>center</code>指定 UIView 在 superview 中的位置坐标。</li>
-<li><code>frame</code>由互不影响（正交）的 <code>bounds</code> 跟 <code>center</code> 生成。</li>
-</ul>
-<p>但是我一直有这样的疑问：为什么要使用 UIView 中心位置的 <code>center</code> 来指定坐标，为什么不用其他位置？</p>
-<p>后来学习了 CALayer，发现 UIView 的主要任务其实是响应事件（这就是为什么从 UIResponser 继承的原因），而将显示委托给 CALayer 处理。一个成功的 UIView 背后总有一个默默贡献的 CALayer，CALayer 作为 GPU/OpenGL 纹理的一种高层封装，处理显示的方方面面，UIView 则将 CALayer 一些功能再次封装，提供简洁好用的接口。像 UIView 中的 <code>frame</code>，<code>bounds</code> 就是直接使用 CALayer 中的 <code>frame</code>，<code>bounds</code>。</p>
-<p>但是对于 <code>center</code>，CALayer 对应项是 <code>position</code>，为什么不同名了呢？因为 <code>position</code> 更灵活，谁规定“指定 UIView 在 superview 中的位置坐标”一定要在 UIView 的中心位置呢？！而 <code>position</code> 默认在中心位置的目的我觉得是为了方便 Rotation，因为一般 Rotation 都是绕着中心旋转，UIView 为了简化使用，满足大部分情况即可，所以就将默认在中心的 <code>position</code> 封装成了 <code>center</code>。</p>
-<p>由于 CALayer 的 <code>position</code> 并没有限制一定要在 <code>bounds</code> 的中心位置，所以就需要一个属性来描述 <code>position</code> 在 <code>bounds</code> 中的位置，这样才能推算出 <code>frame</code> 的 origin 点位置。于是 <code>anchorPoint</code> 出现了，<strong>CALayer 用 <code>anchorPoint</code> 指定 <code>position</code> 在 <code>bounds</code> 中的位置</strong>，有如下特点：</p>
-<ul>
-<li>为了可以任意指定位置，因此 <code>anchorPoint</code> 就不使用绝对值，而是比例值。</li>
-<li>由于 Rotation 总是围绕 <code>position</code> 旋转，因此指定 <code>position</code> 在 Layer 中位置的 <code>anchorPoint</code> 就被命名为<strong>锚点</strong>（像船的锚一样固定位置）。</li>
-</ul>
-<p>总之，<code>frame</code> 是由 <code>position</code>，<code>bounds</code>，<code>anchorPoint</code> 共同生成（其实还有 <code>transform</code>，这就需要了解 Current Transform Matrix 的概念，为了减少复杂性，这里就不涉及了），公式如下：</p>
-<ul>
-<li>frame.origin.x = position.x - bounds.size.width * anchorPoint.x</li>
-<li>frame.origin.y = position.y - bounds.size.height * anchorPoint.y</li>
-</ul>
-<p>这就解释了：</p>
-<ol>
-<li>为什么 anchorPoint 改变会导致 frame 改变，而 position 却没变？</li>
-<li>为什么 anchorPoint 要使用比例而不是具体值？</li>
-</ol>
-<p>豁然开朗。</p>
-<p>PS. 多思考，保持好奇心，多从设计者角度想想为什么这样设计，即使是简单的概念，也会有收获。Stay Hungry，Stay Foolish。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1243,14 +1241,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
