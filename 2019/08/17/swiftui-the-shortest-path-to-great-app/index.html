@@ -27,15 +27,15 @@
 <meta property="og:site_name" content="传人的技术博客">
 <meta property="og:description" content="SwiftUI 可以说是 WWDC 2019 中最让人激动的技术了，什么是 SwiftUI 呢？官方说法为：SwiftUI is a modern way to declare user interfaces for any Apple platform. Create beautiful, dynamic apps faster than ever before。 总之，这套新的 UI 框架用">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://yoursite.com/2019/08/17/swiftui-the-shortest-path-to-great-app/images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png">
-<meta property="og:image" content="http://yoursite.com/2019/08/17/swiftui-the-shortest-path-to-great-app/images/blog/v2-8567c3cd5dc30d90b7e3bd9268d01444_1200x500.jpg">
-<meta property="og:image" content="http://yoursite.com/2019/08/17/swiftui-the-shortest-path-to-great-app/images/blog/68AD25E9-0498-4248-98C8-06AC10638CD6.png">
-<meta property="og:image" content="http://yoursite.com/2019/08/17/swiftui-the-shortest-path-to-great-app/images/blog/7A8637F8-6B5A-44ED-A904-B2F793DF9096.png">
+<meta property="og:image" content="http://yoursite.com/images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png">
+<meta property="og:image" content="http://yoursite.com/images/blog/v2-8567c3cd5dc30d90b7e3bd9268d01444_1200x500.jpg">
+<meta property="og:image" content="http://yoursite.com/images/blog/68AD25E9-0498-4248-98C8-06AC10638CD6.png">
+<meta property="og:image" content="http://yoursite.com/images/blog/7A8637F8-6B5A-44ED-A904-B2F793DF9096.png">
 <meta property="article:published_time" content="2019-08-17T13:26:52.000Z">
-<meta property="article:modified_time" content="2020-06-14T13:28:30.812Z">
+<meta property="article:modified_time" content="2020-06-14T14:34:24.802Z">
 <meta property="article:author" content="尚传人">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/2019/08/17/swiftui-the-shortest-path-to-great-app/images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png">
+<meta name="twitter:image" content="http://yoursite.com/images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png">
 
 <link rel="canonical" href="http://yoursite.com/2019/08/17/swiftui-the-shortest-path-to-great-app/">
 
@@ -204,7 +204,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-14 21:28:30" itemprop="dateModified" datetime="2020-06-14T21:28:30+08:00">2020-06-14</time>
+                <time title="修改时间：2020-06-14 22:34:24" itemprop="dateModified" datetime="2020-06-14T22:34:24+08:00">2020-06-14</time>
               </span>
 
           
@@ -224,7 +224,7 @@
 <p>The Shortest Path to a Great App  </p>
 </blockquote>
 <p>那下面我们就用 SwiftUI 实现一个 iOS 中最常见的列表页，看看到底 Modern、Faster 在哪里？</p>
-<h2 id="First-Glance"><a href="#First-Glance" class="headerlink" title="First Glance"></a>First Glance</h2><p><img src="images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png" alt=""></p>
+<h2 id="First-Glance"><a href="#First-Glance" class="headerlink" title="First Glance"></a>First Glance</h2><p><img src="/images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png" alt=""></p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">LandMarkView</span> : <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> landmarks: [<span class="type">LandMark</span>]</span><br><span class="line">    <span class="keyword">var</span> body: some <span class="type">View</span> &#123;</span><br><span class="line">        <span class="type">List</span>(landmarks) &#123; landmark <span class="keyword">in</span></span><br><span class="line">           <span class="type">HStack</span> &#123;</span><br><span class="line">              <span class="type">Image</span>(landmark.thumbnail)</span><br><span class="line">              <span class="type">Text</span>(landmark.name)</span><br><span class="line">              <span class="type">Spacer</span>()</span><br><span class="line"></span><br><span class="line">              <span class="keyword">if</span> landmark.isFavorite &#123;</span><br><span class="line">                 <span class="type">Image</span>(systemName: <span class="string">"star.fill"</span>)</span><br><span class="line">                    .foregroundColor(.yellow)</span><br><span class="line">              &#125;</span><br><span class="line">           &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>同使用 UIKit 写一个列表页进行对比：</p>
 <ul>
@@ -233,7 +233,7 @@
 <li>当数据 landmarks 有变化时，不需要再调用 reloadData，包括 landmarks 个数有变化或 landmark.isFavorite 值变化，SwiftUI 都会自动更新界面</li>
 </ul>
 <p>可以看到，SwiftUI 极大地简化了构建 UI 的过程（Faster），这种耳目一新的构建方式是 Declarative 声明式编程（Modern），而之前 UIKit 的方式是 Imperative 命令式编程，两者有什么区别呢？</p>
-<h2 id="Imperative-vs-Declarative"><a href="#Imperative-vs-Declarative" class="headerlink" title="Imperative vs Declarative"></a>Imperative vs Declarative</h2><p><img src="images/blog/v2-8567c3cd5dc30d90b7e3bd9268d01444_1200x500.jpg" alt=""></p>
+<h2 id="Imperative-vs-Declarative"><a href="#Imperative-vs-Declarative" class="headerlink" title="Imperative vs Declarative"></a>Imperative vs Declarative</h2><p><img src="/images/blog/v2-8567c3cd5dc30d90b7e3bd9268d01444_1200x500.jpg" alt=""></p>
 <ul>
 <li>Imperative：命令式，明确而详细的告诉机器做一些事情，从而达到你想要的结果，专注于 How。这种方式更贴近机器思维，CPU 就是一条条执行 PC 指向的机器码。</li>
 <li>Declarative：声明式，描述你想要什么，交由机器来来完成你想要的，专注于 What。这种方式更贴近人类思维，最开始都是先确定自己想要什么，才会一步步实现。</li>
@@ -247,7 +247,7 @@
 <p>在 SwiftUI 之前，我们其实或多或少接触过 Declarative，最典型的就是 SQL，SQL 语句就是一种 DSL，例如对于 <code>SELECT * from product WHERE id = 996</code> 这条语句，只是描述了我们想从 product 表中找到 id 为 996 的商品（What），至于怎么找（How），交给数据库来处理，数据库会高效、健壮的取到数据并返回给我们。</p>
 <p>另外，AutoLayout 也可以看成一种简单的 Declarative。</p>
 <p>Imperative 和 Declarative 两者各有优缺点，从目前的趋势来看，React/Flutter/SwiftUI 通过 Declarative 来构建 UI，看起来 Declarative 是未来 UI 编程的趋势。为什么大家都不约而同的选择 Declarative 呢？今年 WWDC 中 Apple 工程师给出了答案：</p>
-<p><img src="images/blog/68AD25E9-0498-4248-98C8-06AC10638CD6.png" alt=""><br><img src="images/blog/7A8637F8-6B5A-44ED-A904-B2F793DF9096.png" alt=""></p>
+<p><img src="/images/blog/68AD25E9-0498-4248-98C8-06AC10638CD6.png" alt=""><br><img src="/images/blog/7A8637F8-6B5A-44ED-A904-B2F793DF9096.png" alt=""></p>
 <p>对于一个 App 而言，其代码分为两部分 Basic Features 和 Exciting/Custom Features，让 App 出彩、给用户带来很棒体验的是 Exciting/Custom Features，SwiftUI 的目的就是为了减少开发者在 Basic Features 部分的负担，让开发者更专注于 Exciting/Custom Features。</p>
 <h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><blockquote>
 <p>A view defines a piece of UI  </p>
