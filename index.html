@@ -191,7 +191,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-06-14 22:15:04 / 修改时间：22:37:39" itemprop="dateCreated datePublished" datetime="2020-06-14T22:15:04+08:00">2020-06-14</time>
+              <time title="创建时间：2020-06-14 22:15:04 / 修改时间：22:54:59" itemprop="dateCreated datePublished" datetime="2020-06-14T22:15:04+08:00">2020-06-14</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -262,7 +262,7 @@
 <p><img src="/images/blog/4373c66306b22120a4dd0493bcbbb543.png" alt=""></p>
 <p>至于被 Kill 的原因，是因为其调用了 beginBackgroundTaskWithExpirationHandler，而此方法要求在 expiration 到期前调用 endBackgroundTask，需要成对调用，否则系统会杀掉 App，具体见：<br><a href="https://developer.apple.com/documentation/uikit/uiapplication/1623031-beginbackgroundtaskwithexpiratio" target="_blank" rel="noopener">https://developer.apple.com/documentation/uikit/uiapplication/1623031-beginbackgroundtaskwithexpiratio</a></p>
 <p>高级，是时候学一波逆向和 Hopper 了</p>
-<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="http://joeshang.github.io/2020/06/14/refactor-multiplexer-and-indirectional-layer/" target="_blank" rel="noopener">重构技巧：数据选择器与中间层</a></p>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="https://joeshang.github.io/2020/06/14/refactor-multiplexer-and-indirectional-layer/" target="_blank" rel="noopener">重构技巧：数据选择器与中间层</a></p>
 
       
     </div>
@@ -418,7 +418,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-14 17:08:37" itemprop="dateModified" datetime="2020-06-14T17:08:37+08:00">2020-06-14</time>
+                <time title="修改时间：2020-06-14 22:55:06" itemprop="dateModified" datetime="2020-06-14T22:55:06+08:00">2020-06-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -464,7 +464,7 @@
 <li>UIScrollView 的 directionalLockEnabled 能够锁死每次滑动只影响一个方向，但是当滑动是对角线的情况，就失效了，需要在 beganDragging 时记录初始 offset，并将 direction 初始化为 .none，在 DidScroll 时判断 direction 类型，并根据 vertical 或 horizontal 来设置 contentOffset，最后在 DidEndDecelerating 和 DidEndDragging（willDecelerate 为 false）时重置为 .none</li>
 <li>Swift 会对其符号进行修饰（Name Mangling），具体原理见：<a href="https://mikeash.com/pyblog/friday-qa-2014-08-15-swift-name-mangling.html" target="_blank" rel="noopener">mikeash.com: Friday Q&amp;A 2014-08-15: Swift Name Mangling</a>。在 Bugly 上，如果崩溃在 Swift 方法中，被修饰过的命名就很难读了。Xcode 提供了对 Swift 符号进行 demangling 的工具，在命令行输入 <code>xcrun swift-demangle</code>之后，将对应的 Swift 符号拷入，点回车，就能看到解析后的结果了</li>
 </ol>
-<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="http://joeshang.github.io/2020/06/14/cname-explain/" target="_blank" rel="noopener">CNAME 有什么用？</a></p>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a href="https://joeshang.github.io/2020/06/14/cname-explain/" target="_blank" rel="noopener">CNAME 有什么用？</a></p>
 
       
     </div>
@@ -515,7 +515,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-14 21:19:51" itemprop="dateModified" datetime="2020-06-14T21:19:51+08:00">2020-06-14</time>
+                <time title="修改时间：2020-06-14 22:34:19" itemprop="dateModified" datetime="2020-06-14T22:34:19+08:00">2020-06-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -730,7 +730,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-14 22:32:23" itemprop="dateModified" datetime="2020-06-14T22:32:23+08:00">2020-06-14</time>
+                <time title="修改时间：2020-06-14 22:34:17" itemprop="dateModified" datetime="2020-06-14T22:34:17+08:00">2020-06-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
