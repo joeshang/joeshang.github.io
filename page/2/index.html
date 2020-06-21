@@ -166,6 +166,116 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/10/2015-01-10-understand-contentsscale/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/01/10/2015-01-10-understand-contentsscale/" class="post-title-link" itemprop="url">理解 contentsScale</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-01-10 01:33:10" itemprop="dateCreated datePublished" datetime="2015-01-10T01:33:10+08:00">2015-01-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-04-05 22:22:14" itemprop="dateModified" datetime="2018-04-05T22:22:14+08:00">2018-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近在看《iOS CoreAnimation: Advanced  Techiques》时，不太理解 CALayer 的 <code>contentsScale</code> 属性，在后面的 CATextLayer 中再次遇到，于是花功夫 Google 了一下各类文档，下面说说自己对 <code>contentsScale</code> 的理解，可能涉及的方面有些多：</p>
+<h2 id="Point与Pixel"><a href="#Point与Pixel" class="headerlink" title="Point与Pixel"></a>Point与Pixel</h2><p>iOS 中的绘图系统使用的尺寸单位为 Point，而屏幕显示的单位为 Pixel，为什么要这样做呢？其实就是为了<strong>隔离变化</strong>：对于绘图而言，并不关心如何在屏幕上显示，这些属于硬件细节，也不应该关心，因此框架使用了万金油方法——抽象，绘图使用与硬件无关的 Point，系统根据当前屏幕的情况自动将 Point 转成 Pixel，所以不论以后硬件屏幕如何变化，使用 Point 的绘图系统以不变应万变，这就是抽象的好处！</p>
+<p>对于非 Retina 与 Retina 的屏幕，Point 与 Pixel 的转化关系如下：</p>
+<ul>
+<li>非 Retina：1 Point = 1 x 1 Pixel</li>
+<li>Retina：1 Point = 2 x 2 Pixel</li>
+</ul>
+<p>系统通过一个变量来表示这种映射关系，这就是 UIScreen 中的 <code>scale</code> 属性的作用。需要注意的是，Retina 屏幕 1 个 Point 对应 4 个 Pixel，但 <code>scale</code> 为 2，为什么不是4呢？因为在屏幕的二维空间中，一切可显示的物体都有 X 轴跟 Y 轴性质，Retina 屏幕的映射是 X 跟 Y 两个方向同时放大两倍实现的，所以 <code>scale</code> 为 2（这也是为什么上面写成 2 x 2 而不是直接为 4 的原因）。</p>
+<h2 id="CALayer-与-Render"><a href="#CALayer-与-Render" class="headerlink" title="CALayer 与 Render"></a>CALayer 与 Render</h2><p>在 iOS 中，如果想要显示什么，可能第一时间想到的就是 UIView 及其子类，但是 UIView 本身其实并不负责显示，从 UIView 从 UIResponder 继承可以看出，UIView 的主要任务是响应触摸事件（在责任链中），那 UIView 是如何实现显示的呢？通过<strong>组合</strong>，将责任委托给成员变量：每个 UIView 都有一个 Backing Layer，UIView 将显示的任务就交给 CALayer 这个小弟啦，自己作为一个 Wrapper，将 CALayer 一些比较复杂的操作封装成简单已用的接口，供外部使用。下图就是二者的关系图（直接用笔记中的手绘，见谅）：</p>
+<p><img src="/images/blog/calayer-uiview-structure.jpg" alt=""></p>
+<p>因此对纹理封装的 CALayer 才是显示的核心，CALayer 的 <code>contents</code> 才指定了真正的要显示的内容，理解了这一点，下面就开始介绍正主<code>contentsScale</code>（现在才开始真是醉了），按照惯例，先看下官方文档，我截取了一段：</p>
+<blockquote>
+<p>This value defines the mapping between the logical coordinate space of the layer (measured in points) and the physical coordinate space (measured in pixels). Higher scale factors indicate that each point in the layer is represented by more than one pixel at render time.<br>Core Animation uses the value you specify as a cue to determine how to render your content.</p>
+</blockquote>
+<p>官方文档有两个关键点：</p>
+<ol>
+<li><code>contentsScale</code> 决定了 CALayer 的内容如何从 Point 映射到 Pixel。</li>
+<li><code>contentsScale</code> 决定了 CALayer 的内容如何被渲染。</li>
+</ol>
+<p>为了理解这两个关键点，就要介绍下 CALayer 内容的来源了。CALayer 内容的来源有两种：</p>
+<h3 id="1-通过-Core-Graphics-自定义绘图到-CALayer-的-Backing-Store-中"><a href="#1-通过-Core-Graphics-自定义绘图到-CALayer-的-Backing-Store-中" class="headerlink" title="1. 通过 Core Graphics 自定义绘图到 CALayer 的 Backing Store 中"></a>1. 通过 Core Graphics 自定义绘图到 CALayer 的 Backing Store 中</h3><p>CALayer 会根据 <code>contentsScale</code> 创建 Backing Store，并且根据 <code>contentScale</code> 设置 Context 的 CTM（Concurrent Transform Matrix）。例如，Layer 的尺寸为 10 Point x 10 Point，当<code>contentsScale</code> 为 2.0 时，最后生成的 Backing Store 大小为 20 Pixel x 20 Pixel，并且在将创建的 Graphics Context 传入 <code>drawLayer:InContext:</code> 前，会调用 <code>CGContextScaleCTM(context, 2, 2)</code> 进行放大，这样会使生成的内容自动满足屏幕的要求。</p>
+<h3 id="2-将CGImage类型的图片设置为CALayer的contents"><a href="#2-将CGImage类型的图片设置为CALayer的contents" class="headerlink" title="2. 将CGImage类型的图片设置为CALayer的contents"></a>2. 将CGImage类型的图片设置为CALayer的contents</h3><p>图片的尺寸是像素相关的，iOS 在加载图片时，通过图片的名称进行处理。例如对于 @2x 的图片，在加载为 UIImage 时，会将 <code>scale</code> 设置为 2，<code>size</code> 为像素大小除以 <code>scale</code>，这样就保证了 UIImage 在 Retina 屏幕上能够正常显示。但需要注意的是：将 UIImage 转换成 CGImage 时会丢失 <code>scale</code> 属性，使用 CGImageGetWidth/Height 时得到的是像素尺寸。</p>
+<p>与 Core Graphics 生成内容不同的是，图片作为纹理已经被上传至 GPU，CALayer 不需要分配 Backing Store，<code>contentsScale</code> 会在渲染时起作用：对于 Retina 的屏幕，如果 <code>contentsScale</code> 为 2.0，与屏幕的 <code>scale</code> 匹配，则渲染系统不对内容进行处理，如果 <code>contentsScale</code> 为 1.0，说明 Layer 的内容并不匹配屏幕 <code>scale</code>，渲染系统会对 Layer 的内容进行两倍的 Scale 操作。由于图片本身内容没那么多，于是渲染系统会填充像素，导致模糊。</p>
+<p>总之，<code>contentsScale</code> 描述了 CALayer 内容的 Scale 特性，CALayer 在生成内容时会根据 <code>contentsScale</code> 做处理，并且渲染系统根据 <code>contentsScale</code> 进行渲染。另，《编写可读代码的艺术》中写到的“名字才是最好的注释”在这里得到很好的诠释，理解了 <code>contentsScale</code> 之后，再回过头看看命名，清晰准确，值得学习。</p>
+<h2 id="需要注意-scale-的地方"><a href="#需要注意-scale-的地方" class="headerlink" title="需要注意 scale 的地方"></a>需要注意 scale 的地方</h2><ol>
+<li>CALayer 的 <code>contentsScale</code> 默认为 1.0，只有在使用 Core Graphics 在 <code>drawRect:</code> 中自定义绘图时系统才会根据当前屏幕的情况设置，因此以下情况需要设置合适的 <code>contentsScale</code>：<ul>
+<li>直接设置 CALayer 的 <code>contents</code> 时。</li>
+<li>创建新的 CALayer 时。例如，CATextLayer 在 Retina 屏幕时如果不设置 <code>contentsScale</code>，所显示的文字就会模糊。</li>
+</ul>
+</li>
+<li>在使用 Image Context 时需要注意：<code>UIGraphicsBeginImageContext</code> 以 1.0 的比例系数创建 Bitmap，所以当屏幕为 Retina 时，在渲染时可能会显得模糊。要创建比例系数为其它值的图片，需要使用 <code>UIGraphicsBeginImageContextWithOptions</code>。</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://stackoverflow.com/questions/18459078/when-do-i-need-to-set-the-contentsscale-property-of-a-calayer" target="_blank" rel="noopener">When do I need to set the contentsScale property of a CALayer?</a></li>
+<li><a href="http://edsioon.me/when-consider-scale/" target="_blank" rel="noopener">何时需要考虑 scale 系数</a></li>
+<li><a href="http://stackoverflow.com/a/26054122/1971624" target="_blank" rel="noopener">UIView’s contentScaleFactor depends on implementing drawRect:?</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/12/22/2014-12-22-scranimationchain-architecture/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1053,139 +1163,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/03/01/2014-03-01-setup-octopress-blog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="尚传人">
-      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="传人的技术博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/03/01/2014-03-01-setup-octopress-blog/" class="post-title-link" itemprop="url">使用 Octopress 搭建博客</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-03-01 09:57:00" itemprop="dateCreated datePublished" datetime="2014-03-01T09:57:00+08:00">2014-03-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2018-04-05 21:03:10" itemprop="dateModified" datetime="2018-04-05T21:03:10+08:00">2018-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="为什么选择Octopress"><a href="#为什么选择Octopress" class="headerlink" title="为什么选择Octopress"></a>为什么选择Octopress</h2><p>我一直是一个喜欢做笔记的人，觉得做笔记有以下优点：</p>
-<ul>
-<li>在阅读时能够很好的帮助我思考，提炼精华，把握核心，在复习总结时非常有用</li>
-<li>能把一些零散的知识通过分类给聚合起来，形成知识体系</li>
-<li>每次看到满满一本全是笔记的时候，非常有成就感</li>
-</ul>
-<p>之前一直是在用笔在本子上做笔记，比较喜欢自由涂鸦的那种感觉，但渐渐的发现了一些问题：</p>
-<ol>
-<li>纸制的保存时间有限，而且易丢失</li>
-<li>修改扩展起来比较麻烦</li>
-<li>检索、聚合起来不方便</li>
-</ol>
-<p>后来试过像 CSDN 之类的博客，总觉得不好用，尤其是文本编辑，感觉非常麻烦， Vim 用多了，喜欢纯文本编辑的乐趣与效率，搜索过自带格式的语言，HTML 更适合展示，大量的格式信息把文本“淹没”了，而 Latex 又过于复杂，直到通过 <a href="http://github.com" target="_blank" rel="noopener">Github</a> 学习了 <a href="http://wowubuntu.com/markdown/" target="_blank" rel="noopener">Markdown</a>，终于找到了一个适合写作的语言了，在用 Markdown 写作时有种开心的感觉，就像拿 LAMY 的钢笔在 MUJI 的本子上写作一样，各种爱不释手，哈哈。为什么这么喜欢 Markdown呢？我觉得有以下原因：</p>
-<ul>
-<li>纯文本，所以兼容性强，可以用文本编辑器打开</li>
-<li>Markdown 的标记语法简单清晰，具有很好的可读性，并且不会影响文本</li>
-<li>专注于文字而不是排版</li>
-<li>格式转换非常方便，可以轻松转换成 HTML、PDF 等</li>
-</ul>
-<p>用惯了 Markdown 之后开始 YY，既然 Markdown 转换 HTML 这么容易，如果能有支持 Markdown 的博客就好了，于是我 Google 了一下，发现了 <a href="http://octopress.org" target="_blank" rel="noopener">Octopress</a>，一个非常酷的博客框架，而且可以 deploy 到 Github Pages 上，我擦，Github + Markdown，这一下子击中了我，所以立马用 Octopress 搭建了一个博客，以后要渐渐将思考、笔记记录到这个博客上了。</p>
-<h3 id="专注-坚持，一定能够有所收获！"><a href="#专注-坚持，一定能够有所收获！" class="headerlink" title="专注+坚持，一定能够有所收获！"></a>专注+坚持，一定能够有所收获！</h3><p>下面就介绍下如何通过 Octopress 搭建 Blog：</p>
-<h2 id="Octopress搭建原理"><a href="#Octopress搭建原理" class="headerlink" title="Octopress搭建原理"></a>Octopress搭建原理</h2><p>Octopress 的<a href="http://octopress.org/docs" target="_blank" rel="noopener">文档</a>上关于搭建步骤已经写的非常详细了，所以这里就不再重复。我是一个喜欢刨根问底的人（处女座），所以对搭建跟使用过程中的这些疑问很感兴趣：</p>
-<ul>
-<li>在搭建过程中 gem/bundle/rake 都是干什么的，为什么 <code>rake cmd</code> 就执行相关操作？</li>
-<li>为什么 deploy 到 Github 上的目录跟本地目录不一样（为什么有 source 跟 master 两个分支）？</li>
-</ul>
-<h3 id="搭建步骤原理"><a href="#搭建步骤原理" class="headerlink" title="搭建步骤原理"></a>搭建步骤原理</h3><p>对于第一个问题，Octopress 是基于 ruby 的，因此 gem/bundle/rake 都是 ruby 相关的一些工具，可以看一下<a href="http://henter.me/post/ruby-rvm-gem-rake-bundle-rails.html" target="_blank" rel="noopener">整理 Ruby 相关的各种概念</a>这篇文章了解下：</p>
-<ul>
-<li>Gem：ruby 中的包管理器（Package Manager），就如同 Ubuntu 中的 apt-get，方便管理与使用各类 ruby 包。但是一个项目有可能用很多包，总不能一个一个手动用 Gem 获取吧？于是 Bundle 出现了：</li>
-<li>Bundle：相当于多个 Gem 批处理运行。在配置文件 Gemfile 里说明应用依赖哪些第三方包，Bundle 自动帮你下载安装多个包，并且会下载这些包依赖的包。</li>
-<li>Rake：Ruby Make，顾名思义，一个用 ruby 开发的代码构建工具。由于 ruby 不需要编译，所以 Rake 其实相当于一个任务管理工具：<ol>
-<li>以任务的方式创建和运行脚本（Rakefile）</li>
-<li>追踪和管理任务间的依赖</li>
-</ol>
-</li>
-</ul>
-<p>所以我们就理解了安装步骤：</p>
-<ol>
-<li>首先用 <code>gem install bundler</code> 安装 Bundle</li>
-<li>通过 <code>bundle install</code>，Bundle 读取 Gemfile 中 Octopress 需要的包，进行下载安装</li>
-<li>通过 <code>rake cmd</code>，Rake 读取 Rakefile 脚本中的内容，执行对应的任务</li>
-</ol>
-<h3 id="Octopress部署框架"><a href="#Octopress部署框架" class="headerlink" title="Octopress部署框架"></a>Octopress部署框架</h3><p>对于第二个问题，Octopress 是一个生成器，它根据你的配置与主题，将 Markdown 格式的文档转化成 HTML 页面，生成出一个完成 Blog（在 <code>_deploy</code> 目录中），所以应该将生成器与 Markdown 编写的内容同生成的 Blog 网页分开，于是在 Github 上存在两个分支：</p>
-<ul>
-<li>master：生成的 Blog 是期望访问 username.github.io 就访问到的，因此利用 Github 默认显示的 master 分支的特性，将生成的 Blog 设置为 master</li>
-<li>source：Octopress 生成器与用 Markdown 编写的内容放置在 source 分支</li>
-</ul>
-<p>这样，对多台电脑同步 Octopress 博客的操作也明白为什么要这样做了：</p>
-<h3 id="Octopress-多台电脑同步方法"><a href="#Octopress-多台电脑同步方法" class="headerlink" title="Octopress 多台电脑同步方法"></a>Octopress 多台电脑同步方法</h3><p>建立本地 Octopress 仓库，操作如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone -b source https:&#x2F;&#x2F;github.com&#x2F;username&#x2F;username.github.io octopress &#x2F;&#x2F;先 clone 生成器与文章</span><br><span class="line">$ cd octopress &#x2F;&#x2F; 生成的 Blog 是被放置在生成器的一个子目录中的，因此要进入生成器目录</span><br><span class="line">$ git clone https:&#x2F;&#x2F;github.com&#x2F;username&#x2F;username.github.io _deploy &#x2F;&#x2F; 然后再 clone 所生成的内容</span><br></pre></td></tr></table></figure>
-<p>更新</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cd octopress</span><br><span class="line">$ git pull origin source # 更新 local 的 source 分支</span><br><span class="line">$ cd _deploy</span><br><span class="line">$ git pull origin master # 更新 local 的 master 分支</span><br></pre></td></tr></table></figure>
-<p>推送</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ rake generate</span><br><span class="line">$ git add .</span><br><span class="line">$ git commit -m &quot;Commit Message&quot;</span><br><span class="line">$ git push origin source # 更新 remote 的 source 分支</span><br><span class="line">$ rake deploy # 更新 remote 的 master 分支</span><br></pre></td></tr></table></figure>
-<h3 id="Octopress-搭建过程中问题总结"><a href="#Octopress-搭建过程中问题总结" class="headerlink" title="Octopress 搭建过程中问题总结"></a>Octopress 搭建过程中问题总结</h3><h4 id="1-You-have-already-activated-rake-0-9-0-but-your-Gemfile-requires-rake-0-8-7"><a href="#1-You-have-already-activated-rake-0-9-0-but-your-Gemfile-requires-rake-0-8-7" class="headerlink" title="1. You have already activated rake 0.9.0, but your Gemfile requires rake 0.8.7"></a>1. You have already activated rake 0.9.0, but your Gemfile requires rake 0.8.7</h4><p>说明 Rake 版本不匹配，使用 <code>bundle update rake</code> 更新下 Rake 即可，具体见<a href="http://stackoverflow.com/questions/6080040/you-have-already-activated-rake-0-9-0-but-your-gemfile-requires-rake-0-8-7" target="_blank" rel="noopener">这里</a>。</p>
-<h4 id="2-如何在侧边栏显示-Github-仓库"><a href="#2-如何在侧边栏显示-Github-仓库" class="headerlink" title="2. 如何在侧边栏显示 Github 仓库"></a>2. 如何在侧边栏显示 Github 仓库</h4><p>仅仅在 <code>_config.yml</code> 中将 <code>github_user</code> 填上 Github 的用户名是不行的，还需要修改 <code>default_asides</code>，将 <code>asides/github.html</code> 加入。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1253,7 +1234,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
