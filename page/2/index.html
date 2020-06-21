@@ -166,6 +166,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/10/2015-04-10-fix-xcode-upgrade-plugin-invalid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/04/10/2015-04-10-fix-xcode-upgrade-plugin-invalid/" class="post-title-link" itemprop="url">Xcode 升级后插件失效的原理与修复办法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-04-10 17:55:37" itemprop="dateCreated datePublished" datetime="2015-04-10T17:55:37+08:00">2015-04-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-04-05 22:22:08" itemprop="dateModified" datetime="2018-04-05T22:22:08+08:00">2018-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Xcode 的插件大大丰富了 Xcode 的功能，而且有了 <a href="https://github.com/supermarin/Alcatraz" target="_blank" rel="noopener">Alcatraz</a> ，插件的管理也非常容易，像我这种 Vim 党完全离不开 <a href="https://github.com/XVimProject/XVim" target="_blank" rel="noopener">XVim</a>。但是有个非常恼人的问题：一旦升级 Xcode ，插件就失效！</p>
+<p>之前 Xcode 升级到 6.2 的时候遇到过插件失效的问题，Google 之后把一段很长命令复制到 Terminal 后运行一下即可，当时一看解决了，顿时觉得满足感爆棚，自己可以拯救地球了~就没有再深入，结果升级到 6.3 时又遇到了。“同样的招式对圣斗士是不能使用第二次的！”，同样的坑对有节操的程序员是不能掉进去第二次的！因此这一次一定要搞清楚为什么会这样，以后再次遇到了如何解决。</p>
+<h3 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h3><p>Xcode 的插件放置在 <code>~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins</code> 目录下，为 .xcplugin 格式。通过 Show Content 可以看到 xcplugin 中存在一个 Info.plist，其中有一项为 <strong>DVTPlugInCompatibilityUUIDs</strong>，而这就是插件失效的原因。</p>
+<p>由于 Apple 没有公开插件开发的相关资料，这里我只能通过命名跟值猜测 DVTPlugInCompatibilityUUIDs 的作用：<strong>插件通过 DVTPlugInCompatibilityUUIDs 来指定能够运行此插件的 Xcode 版本</strong>。因此，DVTPlugInCompatibilityUUIDs 中存放的是 Xcode 版本对应的 UUID，Xcode 在启动加载控件时，将当前 UUID 同插件 Info.plist 中 DVTPlugInCompatibilityUUIDs 存放的 UUID 数组进行匹配，如果没有匹配项，说明此插件无法在该版本的 Xcode 运行，插件也就失效了。</p>
+<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><p>解决办法非常简单：将当前版本的 UUID 加到 DVTPlugInCompatibilityUUIDs 中即可。但是插件比较多（1个及以上）的情况下，一个个的打开修改非常无聊跟低效，作为“懒惰”的程序员，这时候就要用上命令行，让重复劳动自动化。思路为将命令分为两部分：</p>
+<ol>
+<li>通过 <code>find</code> 命令在插件目录下找到所有插件的 Info.plist 文件。</li>
+<li>通过 <code>xargs</code> 命令对上一步的搜索结果进行“for 循环”（就这样理解吧），针对每一个 Info.plist 文件，利用 <code>defaults write</code> 命令将当前版本的 UUID 加到 DVTPlugInCompatibilityUUIDs 中。</li>
+</ol>
+<p>此时问题来了，挖掘机技术。。。不对，是如何获取当前版本 Xcode 的 UUID 呢？首先关掉 Xcode，打开 Terminal，输入 <code>tail -f /var/log/system.log</code>，再次打开 Xcode，就能看到如下 log 信息：</p>
+<blockquote>
+<p>[MT] PluginLoading: Required plug-in compatibility UUID 9F75337B-21B4-4ADC-B558-F9CADF7073A7 for plug-in at path ‘~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/Alcatraz.xcplugin’ not present in DVTPlugInCompatibilityUUIDs</p>
+</blockquote>
+<p>可以看到，log 信息表明 Xcode 加载插件失败的原因，并且能够看到当前版本（6.3）Xcode 的 UUID 为 <code>9F75337B-21B4-4ADC-B558-F9CADF7073A7</code>。经过 <a href="http://weibo.com/u/2626996387" target="_blank" rel="noopener">@Kyrrr</a> 的提醒，有一种更好的方式来获取当前版本 Xcode 的 UUID：通过 <code>defaults read</code> 命令从 Xcode 的 Info.plist 读取 DVTPlugInCompatibilityUUID。</p>
+<p>最终的命令为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I&#123;&#125; defaults write &#123;&#125; DVTPlugInCompatibilityUUIDs -array-add `defaults <span class="built_in">read</span> /Applications/Xcode.app/Contents/Info.plist DVTPlugInCompatibilityUUID`</span><br></pre></td></tr></table></figure>
+<p>在 Terminal 中运行上述命令就解决了插件失效的问题，在插件 Info.plist 的 DVTPlugInCompatibilityUUIDs 中也能看到新增的 UUID 了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/01/10/2015-01-10-understand-contentsscale/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1084,85 +1174,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/03/02/2014-03-02-thinking-about-master-degree/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="尚传人">
-      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="传人的技术博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2014/03/02/2014-03-02-thinking-about-master-degree/" class="post-title-link" itemprop="url">关于工程硕士的思考</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-03-02 15:14:26" itemprop="dateCreated datePublished" datetime="2014-03-02T15:14:26+08:00">2014-03-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2018-04-05 21:04:23" itemprop="dateModified" datetime="2018-04-05T21:04:23+08:00">2018-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Life/" itemprop="url" rel="index"><span itemprop="name">Life</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>最近关于开题的事情搞得焦头烂额，我对论文的想法是<strong>尽量锻炼自己的工程能力，将研究生阶段所学的东西都利用了</strong>，个人感觉这才叫工程硕士。而实习单位的老师就是一定要跟单位方向结合，要有创新。观念上有冲突，很难开题。</p>
-<p>有人会说，还是做一些特别有研究方向的吧，这样才有意义。其实要是想有意义，工作之后有的是机会，从事的工作都是特别有用的，面向的都是几十万几百万甚至千万的用户，哪个不比所谓的科研项目有意义，这才几个用户，才能服务多少人？大学之所以能称为象牙塔，就是自由！工作之后是螺丝钉，技术面被大大限制（虽然深度有所加深，但技术广度往往对技术深度提升有很大帮助）。而在学校，没有任何限制，肆意发挥，想学什么就学什么，想用什么技术就用什么技术（这里不是指就可以不考虑代码的专业性，代码还是越接近工业级越好），允许你去尝试去试错，这样才能在工作后游刃有余。这就是为什么要在综合实践 JoyCar 中做那么多平台，从 STM32 无 OS 到 ARM+Linux，从 Framebuffer 到 Qt 到 iOS。在学校，一定要去做那些工作之后没时间、没精力、没条件做的东西，学校一旦毕业就很难再回去，这才是在学校需要好好珍惜的东西！</p>
-<p>有人会说，研究生，就一定要在某个方向上有很深的积累，这样才有竞争力。我一开始也是这样认为的，一定要有个研究方向。可我后来发现我理解错了，方向不一定指研究方向。是，在图像处理、安全等有很深的积累，确实非常有竞争力，可我是工程硕士，跟学术硕士比这点有先天的差距，他们天天读 paper，接触的是最前沿，我即使追赶也比较难追赶上，即使追赶上也很难拉开差距。后来我想通了，我在专业相关的基础知识上更深入一点点、积累多一点点、对课程知识多掌握一点点，这些一点点汇总起来，是不是也是种竞争力呢？而且我相信这种竞争力不简简单单是 1 + 1 = 2 的效果，而是能够互相影响互相强化的。强化这种竞争力，很乐而不为？</p>
-<p>总之，我对自己工程硕士一直有个要求，就是：夯实基础、加强动手能力。但一直以来这个要求很抽象，很难具体表述出来，直到今天看到一个博客上 About Me 的说明，特别有感触：</p>
-<p><img src="/images/blog/2014-03-02-aboutme.jpg" alt="About Me"></p>
-<p><strong>I Can Bring Ideas Into Reality!</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1234,7 +1245,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
