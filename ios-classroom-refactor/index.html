@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="背景猿辅导直播教室最早的业务形态，只有一种教室，在教室内增加各种课堂能力和活动，例如基础的课件渲染、板书笔迹等能力。在这样的业务需求下，整个教室对应一个 View Controller，教室内的每个业务模块使用 Handler（处理业务逻辑） + View（处理模块显示）的模式，教室 View Controller 是 Handler 和 View 的 Delegator，同时也接收直播引擎 SD">
+<meta property="og:type" content="article">
+<meta property="og:title" content="猿辅导 iOS 直播教室重构之路 —— 教室积木化">
+<meta property="og:url" content="http://yoursite.com/ios-classroom-refactor/index.html">
+<meta property="og:site_name" content="传人的技术博客">
+<meta property="og:description" content="背景猿辅导直播教室最早的业务形态，只有一种教室，在教室内增加各种课堂能力和活动，例如基础的课件渲染、板书笔迹等能力。在这样的业务需求下，整个教室对应一个 View Controller，教室内的每个业务模块使用 Handler（处理业务逻辑） + View（处理模块显示）的模式，教室 View Controller 是 Handler 和 View 的 Delegator，同时也接收直播引擎 SD">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/37CC0313-AEC5-419C-9054-EE019FAF06F3.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/41A83409-3074-4E58-9E76-DD134E4DB76C.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/5EF6D58C-2226-4406-A400-4EBE0C341E15.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/328C89B7-F111-4BC5-A34F-EAEFE63F2134.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/6C0CA314-26EB-48C0-8D3C-DDB5E12FBA39.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/4679D1F3-E016-4D3A-9D6E-DF7E7F5E1BE3.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/5C2F2D49-2AFF-40D5-9B79-BACCAA995E91.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/DF78592C-7BCD-49AC-930A-206CF5A5E01A.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/6C13C0A4-E3B3-4371-8376-615882190670.png">
+<meta property="og:image" content="http://yoursite.com/ios-classroom-refactor/E46A2299-F2AD-4081-8319-67488C20A080.png">
+<meta property="article:published_time" content="2021-09-28T16:35:20.000Z">
+<meta property="article:modified_time" content="2024-11-10T13:41:57.219Z">
+<meta property="article:author" content="尚传人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/ios-classroom-refactor/37CC0313-AEC5-419C-9054-EE019FAF06F3.png">
+
+<link rel="canonical" href="http://yoursite.com/ios-classroom-refactor/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>猿辅导 iOS 直播教室重构之路 —— 教室积木化 | 传人的技术博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67853822-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-67853822-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">传人的技术博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/ios-classroom-refactor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          猿辅导 iOS 直播教室重构之路 —— 教室积木化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-29 00:35:20" itemprop="dateCreated datePublished" datetime="2021-09-29T00:35:20+08:00">2021-09-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Architecture-iOS/" itemprop="url" rel="index"><span itemprop="name">Architecture, iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>猿辅导直播教室最早的业务形态，只有一种教室，在教室内增加各种课堂能力和活动，例如基础的课件渲染、板书笔迹等能力。在这样的业务需求下，整个教室对应一个 View Controller，教室内的每个业务模块使用 Handler（处理业务逻辑） + View（处理模块显示）的模式，教室 View Controller 是 Handler 和 View 的 Delegator，同时也接收直播引擎 SDK 的回调，调用 Handler 进行处理。</p>
+<p>随着业务快速迭代，跨越 12 年不同年级和不同学科的教研要求千差万别，开始出现不同类型的新教室，当时因为各种因素为了”快“，实现新教室的方式是：拷贝教室代码后针对该类型教室进行定制。正如茨威格在《断头皇后》中写的，“她那时候还太年轻，不知道所有命运赠送的礼物，早已在暗中标注了价格”，欠下的技术债，使得直播教室的架构越来越影响开发效率和体验：</p>
+<ol>
+<li>教室 View Controller 越来越长，出现多个超过 5 千行以上代码的 View Controller，而且随着教室内课堂交互功能的增加，VC 的大小还会接着增长。</li>
+<li>多个教室大量重复的代码，一个在多教室使用的功能，需要加多次。如果需要修改，也要改多次。</li>
+<li>一个业务功能的代码不够聚合，散落在 View Controller 中多个地方，增删功能时容易遗漏，导致 Bug。</li>
+<li>如果要再新增教室类型，以上问题会越来越严重。</li>
+</ol>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>经过对教室 View Controller 和业务模块进行梳理分析，发现：</p>
+<p><img src="/ios-classroom-refactor/37CC0313-AEC5-419C-9054-EE019FAF06F3.png" alt="37CC0313-AEC5-419C-9054-EE019FAF06F3"></p>
+<ul>
+<li>业务模块 Handler 的 Delegate 都是 View Controller，由 View Controller 来更新 View 或者调度其他 Handler。</li>
+<li>同时，View 的创建和层级也维护在 View Controller 中，View 事件 Delegate 给 View Controller 后交由 Handler 或者其他进行处理。</li>
+<li>所有引擎 SDK 的消息也都统一回调给了 View Controller，由 View Controller 再传递给 Handler 处理。</li>
+</ul>
+<p>由此可以看出，View Controller 由于承载的职责过多，里面充斥了各种胶水代码，是其长度过长的主要原因，同时，由于每个业务的 View 和 Handler 都需要和 View Controller 交互，耦合导致复用性下降，新增教室时只能通过拷贝代码的形式进行。总之，现有架构最核心的问题是：<strong>View Controller 的职责太多，业务模块不够内聚</strong>，解决了这些，上面的痛点就游刃而解。</p>
+<p>解决思路就是：<strong>教室积木化</strong>：</p>
+<ul>
+<li>构建教室像搭积木一样，每个业务模块像一块块积木，接口统一可拔插，能够灵活的根据业务要求进行组合，提高构建新教室的效率。</li>
+<li>View Controller 变成承载积木的容器，以及教室内资源和状态的持有者（因为生命周期一致），代码量和职责会变得很简单，不再有冗长的胶水代码。</li>
+<li>业务模块内聚，自管理与其相关的 View、Model、Event，便于集成和拔插。模块间有通信机制和分层，不再通过 View Controller 实现 Delegate 来进行调度。</li>
+<li>重构过程是渐进式的，对现有的 Handler 方式改动较小。</li>
+<li>能够方便业务写单元测试。</li>
+</ul>
+<p>为了更好的体现重构的效果，定下了一个可量化目标：</p>
+<ol>
+<li>教室 View Controller 代码行数<strong>降到 500 行以下</strong>。</li>
+<li>业务模块在多个教室复用时，<strong>基本消除重复代码</strong>。</li>
+</ol>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><h3 id="业务模块-Module"><a href="#业务模块-Module" class="headerlink" title="业务模块 Module"></a>业务模块 Module</h3><p><strong>核心点：新引入 Module 的概念，将业务模块的 View 和 Handler 原本在 View Controller 中的胶水代码抽离到 Module 中</strong><br><img src="/ios-classroom-refactor/41A83409-3074-4E58-9E76-DD134E4DB76C.png" alt="41A83409-3074-4E58-9E76-DD134E4DB76C"></p>
+<p>View Controller 目前会持有各个业务模块的 View 和 Handler，这些 View 和 Handler 的 Delegate 都是 View Controller，是 View Controller 中很大一部分的胶水代码，同时会在多个教室间重复，每次修改都需要在多个教室修改多遍。而引入 Module 后，Module 可以看成一个 Sub View Controller，负责持有 View 和 Handler，处理两者的 Delegate，将多个教室重复的代码整合进来，教室 View Controller 只负责创建并持有业务模块对应的 Module。</p>
+<p>Module 作为教室积木化的基本单位，内聚一个业务的所有代码：</p>
+<ul>
+<li>管理模块自身的业务逻辑和 View。</li>
+<li>监听其关心的直播命令。</li>
+<li>通过接口或其他方式进行模块间通信。</li>
+</ul>
+<p>实现上，Module 就是一个 Protocol，定义了 Module 的生命周期方法：<br><img src="/ios-classroom-refactor/5EF6D58C-2226-4406-A400-4EBE0C341E15.png" alt="5EF6D58C-2226-4406-A400-4EBE0C341E15"></p>
+<h3 id="模块间通信与依赖注入"><a href="#模块间通信与依赖注入" class="headerlink" title="模块间通信与依赖注入"></a>模块间通信与依赖注入</h3><p><strong>核心点：积木有缺口和凸起，模块也有依赖和消息，基于依赖注入 DI，两种类型均通过接口抽象，在模块初始化时根据不同教室需要，注入具体实现</strong></p>
+<p>由于模块不再将消息 Delegate 给 View Controller 处理，模块与模块间需要通信，之前通信选用的方式有：直接使用通知、基于 OC Runtime 的 Mediator 方式、通过 Protocol 定义接口 + Register 注册实现的方式等，进过权衡，Protocol 定义接口这种方式更适合积木化重构的业务场景，在 Swift 语言特性的加持下，最终选用了 <a target="_blank" rel="noopener" href="https://github.com/hmlongco/Resolver">Resolver</a> 这个 Swift 版本的依赖注入 Dependency Injection 框架，实现模块间通信：</p>
+<ul>
+<li>每个 Module 供外部 Module 使用的接口，通过 Protocol 抽象成 Service，并通过 register 机制将 Service 注册。</li>
+<li>Module 使用其他 Module 的接口时，用 @Inject 的 Property Wrapper 定义一个 Service 类型的属性，通过 Service 调用接口。</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块 A 定义</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleA</span>: <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;</span><br><span class="line">    <span class="comment">// doing</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块 B 使用模块 A</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleB</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Inject</span> <span class="keyword">var</span> service1: <span class="type">Service1</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">handleSomething</span>()</span> &#123;</span><br><span class="line">    service1.doSomething()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">// 注册服务</span></span><br><span class="line"><span class="type">Resolver</span>.register &#123; <span class="type">ModuleA</span>() <span class="keyword">as</span> <span class="type">Service1</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>依赖注入是一套很成熟的思想，在前后端项目上有广泛应用，积木化使用依赖注入之后：</p>
+<ul>
+<li>不仅仅是平级的业务 Module，只要是 Module 需要，直播教室内各项功能都可以抽象成 Service 进行注入。</li>
+<li>每个 Module 依赖的是 Service 接口，而不再是具体实现，由 DI 框架 Resolver 负责将真正的 Module 绑定到 Service 中，除了解耦外，在写单元测试时能够方便进行 Mock。</li>
+</ul>
+<h3 id="业务模块-View-管理：Layouter"><a href="#业务模块-View-管理：Layouter" class="headerlink" title="业务模块 View 管理：Layouter"></a>业务模块 View 管理：Layouter</h3><p><strong>核心点：由于 View Controller 不再直接持有业务 View，因此 View 的层级关系、所处的区域需要从 View Controller 中抽离</strong></p>
+<p>一开始的想法是由 Module 来管理，但是 Module 如果作为积木的一块，不应该对自己在教室的什么位置有假设，管理好自己 View 的状态就行，至于放到哪里应该是使用 Module 关心的。但是由 View Controller 管理的话，会导致多个教室间重复，也不够灵活。</p>
+<p><img src="/ios-classroom-refactor/328C89B7-F111-4BC5-A34F-EAEFE63F2134.png" alt="328C89B7-F111-4BC5-A34F-EAEFE63F2134"></p>
+<p>因此， 引入 Layouter 的概念：</p>
+<ul>
+<li>Layouter 管理 View Controller 的 View，按照 UI 样式划分成多个区域，并创建和排版对应区域的 View</li>
+<li>Module 将 View 注册到 Layouter 中，Layouter 负责将 View 按照 Identity 和 Priority 安置在期望的区域，并安排好层级关系</li>
+</ul>
+<p>实现上 Layouter 和 Module 一样，都是一个 Protocol，不同类型的教室布局实现各自具体的 Layouter，在 layout 方法中进行布局。<br><img src="/ios-classroom-refactor/6C0CA314-26EB-48C0-8D3C-DDB5E12FBA39.png" alt="6C0CA314-26EB-48C0-8D3C-DDB5E12FBA39"></p>
+<p>另外，有些区域内的排版在多个 Layouter 中是一样的，在 Layouter 的基础上引入 Area Layouter 的概念，负责一块区域的排版布局，例如课件区，Room Layouter 通过持有 Area Layouter 实现区域布局的复用。</p>
+<p><img src="/ios-classroom-refactor/4679D1F3-E016-4D3A-9D6E-DF7E7F5E1BE3.png" alt="4679D1F3-E016-4D3A-9D6E-DF7E7F5E1BE3"></p>
+<h3 id="教室状态持有者：Store"><a href="#教室状态持有者：Store" class="headerlink" title="教室状态持有者：Store"></a>教室状态持有者：Store</h3><p><strong>核心点：业务模块不再通过 Delegate 拿教室内的通用数据，而是通过 Store 将通用数据传入</strong></p>
+<p>各个业务模块经常通过 Delegate 从 View Controller 中获取例如 episodeId、teamId、userId、Episode 之类的数据，而这些数据可以理解是教室内的基础数据或状态，可以将这些数据整合到一个叫 Store 的模块中，通过依赖注入到 Module 中，这样就没必要再通过 Delegate 从 View Controller 中拿数据，省去一些胶水代码。</p>
+<p><img src="/ios-classroom-refactor/5C2F2D49-2AFF-40D5-9B79-BACCAA995E91.png" alt="5C2F2D49-2AFF-40D5-9B79-BACCAA995E91"></p>
+<p>Store 也使用 Protocol 定义，不同类型教室实现具体的 Store，当一个 Module 在多个教室复用时，虽然 Store 可能实现不一样，但 Store Service 的接口是一致的，使得 Module 在多教室复用变得容易。</p>
+<h3 id="直播命令调度拆分：Dispatcher"><a href="#直播命令调度拆分：Dispatcher" class="headerlink" title="直播命令调度拆分：Dispatcher"></a>直播命令调度拆分：Dispatcher</h3><p><strong>核心点：由业务模块主动注册其关心的直播命令，不再通过 View Controller 调度</strong></p>
+<p>直播命令的回调不再通过 View Controller 调用，直接发送到业务模块上，一方面能从 View Controller 删除很多胶水代码，另一方面能明确一个模块关心的直播命令。</p>
+<p><img src="/ios-classroom-refactor/DF78592C-7BCD-49AC-930A-206CF5A5E01A.png" alt="DF78592C-7BCD-49AC-930A-206CF5A5E01A"></p>
+<p>实现一个直播命令注册与转发的模块：Dispatcher</p>
+<ul>
+<li>通过依赖注入到 Module 中，Module 使用 Dispatcher 显式声明自己需要的直播命令。</li>
+<li>参考 RxSwift 的思想，通过注册 Block 的方式实现通知，相比 Notification 通知，这样引擎消息参数处理起来更安全和方便。</li>
+<li>Dispatcher 支持优先级，根据业务场景提供分发前、分发中、分发后三种队列。</li>
+<li>对于复合命令，由 Dispatcher 进行拆分后分发给业务 Module，业务 Module 不需要再关心复合命令细节，对其无感知。</li>
+</ul>
+<h3 id="教室容器化"><a href="#教室容器化" class="headerlink" title="教室容器化"></a>教室容器化</h3><p>在上面的设计中，Module、Layouter、Store 都是 Protocol，为什么要用 Protocol 呢？这种面向接口编程带来的灵活性是为了能够将教室 View Controller 变成一个容器，不再关心里面到底有哪些模块，如何排版布局等，所有类型教室共用该容器 View Controller：<br><img src="/ios-classroom-refactor/6C13C0A4-E3B3-4371-8376-615882190670.png" alt="6C13C0A4-E3B3-4371-8376-615882190670"></p>
+<p>至于该往教室容器中传入具体哪些 Module，使用哪种 Layouter 和 Store，这些策略交由 RoomFactory 生成。Factory 也是一个 Protocol，不同策略实现不同具体的 Factory，符合 OCP 原则。<br><img src="/ios-classroom-refactor/E46A2299-F2AD-4081-8319-67488C20A080.png" alt="E46A2299-F2AD-4081-8319-67488C20A080"></p>
+<p>基于容器化教室和策略工厂的设计，业务上能够根据配置决定加载哪些 Module，从而进行功能灰度和回退，或者针对一个 Service，有 A、B 两个实现 Module，根据配置进行加载，进行 A&#x2F;B Test，极大的提升了灵活性。</p>
+<h2 id="推进过程"><a href="#推进过程" class="headerlink" title="推进过程"></a>推进过程</h2><p>完成了重构的方案设计后，如何推进重构方案的落地是一件比方案设计更有挑战性的事情，需要脚踏实地的一点点啃掉：</p>
+<ul>
+<li>直播教室作为猿辅导的核心业务场景，一旦出问题直接影响用户核心体验，其稳定性要求高，如何保证重构方案能够比较平稳的落地？</li>
+<li>业务还在不断迭代，开发人力一直比较紧张，如何协调资源？重构任务应该如何安排，才能即不影响需求迭代速度，又能及时完成，不在同步业务最新改动时耗费大量精力？</li>
+</ul>
+<h3 id="做好重构规划"><a href="#做好重构规划" class="headerlink" title="做好重构规划"></a>做好重构规划</h3><p>首先，直播教室既有老师端又有学生端，确定先重构老师端再重构学生端的方向：</p>
+<ul>
+<li>老师端是内部分发，用户也是内部老师，灰度范围、发 Fix 等更可控，风险要低一些。</li>
+<li>老师端是纯 Swift 实现，也不需要考虑回放场景和回放教室，重构方案更容易落地。</li>
+</ul>
+<p>之后，就要规划出关键路径，寻找并行点，让能够并行的任务尽量并行：</p>
+<ul>
+<li>在完成重构方案设计后，开始实现基础定义，例如 Module、Layouter、Store 等定义，这些是关键路径，不完成的话会 Block 之后的工作。</li>
+<li>基于上一步的基础数据结构，对一个业务模块进行积木化改造，验证重构方案的可用性，并积累积木化改造的方案。</li>
+<li>完成一个模块之后，开始进人：Dispatcher 相对比较独立，可以交给一个同学负责；另外一个同学一起来对教室内相对基础和通用的模块进行积木化改造，为业务模块的改造提供前提。</li>
+<li>当 Dispatcher、Layouter 和基础模块完成改造后，就开始对一个教室进行重构，好处是：<ul>
+<li>一个教室完成改造后就能自测和初步提测，验证积木化整体流程的稳定性，提前暴露底层实现的重大问题。</li>
+<li>教室间 70% - 80% 的业务模块是复用的，改造完一个教室，其他教室的工作量就小很多。</li>
+<li>改造完的教室可以做为模板，方便其他教室进行改造时进行参考。</li>
+</ul>
+</li>
+<li>当完成了一个教室改造后，分工如下：<ul>
+<li>一个同学负责自测后提测，并修复该教室一些严重问题。</li>
+<li>另一个负责实现模块的内存泄露检测工具，用于发现内存泄露问题。并编写积木化改造 101 文档，介绍对业务模块进行改造的方式和技巧。</li>
+</ul>
+</li>
+<li>基于积木化改造 101 文档和已经改造完成的教室，进更多的人，每个人负责一个教室，这样能在短时间完成所有教室的改造。</li>
+</ul>
+<h3 id="把握住关键时间节点"><a href="#把握住关键时间节点" class="headerlink" title="把握住关键时间节点"></a>把握住关键时间节点</h3><p>重构什么时候开始搞，需要把握住关键时间节点才能降低成本，使得收益最大化。判断什么时候最合适，需要通过不断深入到业务中，分析规律，多和 PM、运营聊天，了解他们下一步的规划，在线教育的业务特点和上课时间比较有规律性，把握规律后，在很少会有新教室类型的时间段内，努力抓住时间节点推进重构的进行。</p>
+<h3 id="重复并不是所有情况下都是坏的"><a href="#重复并不是所有情况下都是坏的" class="headerlink" title="重复并不是所有情况下都是坏的"></a>重复并不是所有情况下都是坏的</h3><p>为了保证重构完成后线上的稳定性，需要先进行小规模灰度，监控被灰度用户的各项指标，在出问题时能够及时回退到重构之前的版本。如何保证回退没有问题？那就是旧教室旧逻辑完全保留，如果涉及到修改，就拷贝一份再修改，通过重复来确定重构前的环境没有变化，这样保证回退时能够回退到“和以前一模一样”，当积木化重构在线上平稳后，再将旧代码一起全部删除。</p>
+<p>我们看一下积木化重构后的成果，看是否满足最开始定下的可量化目标：</p>
+<ul>
+<li>将多个 5000 行左右的 VC 合并为一个只有不到 300 行的容器 VC。</li>
+<li>消除一个业务功能在多个教室间的重复。</li>
+<li>新增教室复合 OCP 原则，不修改教室容器 VC，而是扩展 Factory。</li>
+<li>一个教室增删模块只需要改一行代码。</li>
+</ul>
+<h2 id="Beyond-技术"><a href="#Beyond-技术" class="headerlink" title="Beyond 技术"></a>Beyond 技术</h2><p>积木化整个重构过程，在技术之外还有很多感悟和收获，这里也想聊一聊：</p>
+<h3 id="关注人的因素"><a href="#关注人的因素" class="headerlink" title="关注人的因素"></a>关注人的因素</h3><p>教室积木化是涉及到老师端、学生端核心业务场景的大重构，需要协调很多资源团队合作才能完成，那我们需要更关注人的因素，让参与进来的所有人都意识到重构不是炫技，不是开发瞎搞，而是件对大家都好的事情：</p>
+<ul>
+<li>对于开发同学，积木化重构解决的是大家的长期以来的痛点，“天下苦秦久矣”，用重构的设计方案和大家多描述重构之后的样子，大家就有动力参与进来。同时，重构过程中有很多活都是脏活累活，一个人做的话很容易疲劳和烦躁，一点经验是多几个人，大家分一分，一个人头上没几个，也能感觉到团队作战的优势。</li>
+<li>对于 PM 同学，在进行积木化重构方案设计时就不断同他们沟通，了解之后的长期迭代方向，并同步重构的作用是为了更好的支撑产品迭代，例如能够提供更灵活的配置与 A&#x2F;B Test，例如能更快的增删模块，“给我一首歌的时间”就完成了。这样 PM 同学在需求排期上也愿意为重构协调时间。</li>
+<li>对于测试同学，虽然重构需要教室全功能回测，工作量较大，但是同样的，重构之后，由于少了很多重复代码，不容易遗漏，交付质量也会有所提升，增删模块的提测时间会更早，同时，在提测过程中，也及时同步了为什么先提测一个教室，再整体提测，测试同学也能更认可。</li>
+<li>对于上级 Leader，依次从能够更好支撑业务，提高代码质量，让开发同学写代码更开心等几个方面说明重构的意义，同时也提供了详细的设计文档和 Roadmap，于是 Leader 也认可这件事情，帮忙协调资源等。</li>
+</ul>
+<p>总之，上面所有看起来像“影响力”的东西，都基于平时日积月累的“信任感”，做好每一个需求，认真对待交付质量和 Bug，多和 PM 沟通交流，与其他团队建立良好的关系，成为一个“靠谱”的工程师，这些东西终归在积木化重构上得到回报。</p>
+<h3 id="但行好事，莫问前程"><a href="#但行好事，莫问前程" class="headerlink" title="但行好事，莫问前程"></a>但行好事，莫问前程</h3><p>直播教室由于业务方向上的不断快速迭代和探索，积累了大量技术债，导致无法通过简单重构解决，同时直播教室又是核心业务场景，对其进行大重构，风险不低，说心里话，是会害怕的，怕重构出故障，怕投入大量资源却没有完成。这时候需要的就是<strong>勇气</strong>，既然这件事经过判断是对的事情，能够为业务带来价值，同时也做好了设计和规划，就应该抛开其他想法，有勇气去把事情搞定。</p>
+<p>有勇气开始后，设计出来重构方案时是激动的，但没有落地的方案都是“纸上谈兵”，而重构的落地过程是枯燥的，有很多脏活累活，有很多设计时没有想到的问题，没有捷径，只能“结硬寨，打呆仗”一点点解决，中间有想放弃的时刻，有很烦躁的时候，还是咬牙坚持了下来。</p>
+<p>我是幸运的：iOS 团队的小伙伴们都很给力，大家一起努力把事情搞定。PM 和测试同学也非常支持，愿意协调排期。我的 Leader 全力支持，在业务压力较大的时候，协调了 Android 同学来写一些 iOS 需求，为积木化重构空出了 iOS 人力，也非常感谢 Android 同学的支援。</p>
+<p>最终，有了勇气，有了坚持，再加上幸运，经过 2020Q4、2021Q1 两个 Q 的努力分别完成了老师端和学生端的教室积木化重构，所有的辛苦和投入在 2021Q2 得到了回报，这个 Q 上了 4 个新教室，证明之前判断的正确性，给自己带来极大的成就感和正反馈，难以想象如果没有经过积木化重构新增 4 个新教室的样子。</p>
+<p>总之，但行好事，莫问前程。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/how-to-keep-foresight-in-none-infra-team/" rel="prev" title="如何在业务团队保持”技术前瞻性“？">
+      <i class="fa fa-chevron-left"></i> 如何在业务团队保持”技术前瞻性“？
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%A8%A1%E5%9D%97-Module"><span class="nav-number">3.1.</span> <span class="nav-text">业务模块 Module</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E9%97%B4%E9%80%9A%E4%BF%A1%E4%B8%8E%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5"><span class="nav-number">3.2.</span> <span class="nav-text">模块间通信与依赖注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%A8%A1%E5%9D%97-View-%E7%AE%A1%E7%90%86%EF%BC%9ALayouter"><span class="nav-number">3.3.</span> <span class="nav-text">业务模块 View 管理：Layouter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%99%E5%AE%A4%E7%8A%B6%E6%80%81%E6%8C%81%E6%9C%89%E8%80%85%EF%BC%9AStore"><span class="nav-number">3.4.</span> <span class="nav-text">教室状态持有者：Store</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%92%AD%E5%91%BD%E4%BB%A4%E8%B0%83%E5%BA%A6%E6%8B%86%E5%88%86%EF%BC%9ADispatcher"><span class="nav-number">3.5.</span> <span class="nav-text">直播命令调度拆分：Dispatcher</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%99%E5%AE%A4%E5%AE%B9%E5%99%A8%E5%8C%96"><span class="nav-number">3.6.</span> <span class="nav-text">教室容器化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E8%BF%9B%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">推进过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9A%E5%A5%BD%E9%87%8D%E6%9E%84%E8%A7%84%E5%88%92"><span class="nav-number">4.1.</span> <span class="nav-text">做好重构规划</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%8A%E6%8F%A1%E4%BD%8F%E5%85%B3%E9%94%AE%E6%97%B6%E9%97%B4%E8%8A%82%E7%82%B9"><span class="nav-number">4.2.</span> <span class="nav-text">把握住关键时间节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E5%B9%B6%E4%B8%8D%E6%98%AF%E6%89%80%E6%9C%89%E6%83%85%E5%86%B5%E4%B8%8B%E9%83%BD%E6%98%AF%E5%9D%8F%E7%9A%84"><span class="nav-number">4.3.</span> <span class="nav-text">重复并不是所有情况下都是坏的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Beyond-%E6%8A%80%E6%9C%AF"><span class="nav-number">5.</span> <span class="nav-text">Beyond 技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E6%B3%A8%E4%BA%BA%E7%9A%84%E5%9B%A0%E7%B4%A0"><span class="nav-number">5.1.</span> <span class="nav-text">关注人的因素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%86%E8%A1%8C%E5%A5%BD%E4%BA%8B%EF%BC%8C%E8%8E%AB%E9%97%AE%E5%89%8D%E7%A8%8B"><span class="nav-number">5.2.</span> <span class="nav-text">但行好事，莫问前程</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="尚传人"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">尚传人</p>
+  <div class="site-description" itemprop="description">Stay Hungry, Stay Foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/joeshang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;joeshang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shangchuanren@gmail.com" title="E-Mail → mailto:shangchuanren@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2464216170" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;2464216170" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/bridge_joe" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;bridge_joe" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尚传人</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

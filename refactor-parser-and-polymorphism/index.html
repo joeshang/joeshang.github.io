@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="对于 Parser，一般我们能想到的是同一个数据流，根据协议或者格式的要求进行区分，解析成不同含义的元素。这个解析过程一般存在着复杂的条件逻辑，用于匹配协议或者格式的要求。 抽象一下，可以将 Parser 看成有复杂条件逻辑处理同一数据流的场景。而复杂的条件逻辑是编程中最难理解的东西之一，复杂的 if&#x2F;else 或者 switch&#x2F;case 中包含了许多细节，容易引入 Bug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重构技巧：Parser 与多态">
+<meta property="og:url" content="http://yoursite.com/refactor-parser-and-polymorphism/index.html">
+<meta property="og:site_name" content="传人的技术博客">
+<meta property="og:description" content="对于 Parser，一般我们能想到的是同一个数据流，根据协议或者格式的要求进行区分，解析成不同含义的元素。这个解析过程一般存在着复杂的条件逻辑，用于匹配协议或者格式的要求。 抽象一下，可以将 Parser 看成有复杂条件逻辑处理同一数据流的场景。而复杂的条件逻辑是编程中最难理解的东西之一，复杂的 if&#x2F;else 或者 switch&#x2F;case 中包含了许多细节，容易引入 Bug">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/blog/1A323420-7A1B-4934-8D05-32B2B53AFB1F.png">
+<meta property="og:image" content="http://yoursite.com/images/blog/command-comic-1.png">
+<meta property="article:published_time" content="2020-06-20T15:11:43.000Z">
+<meta property="article:modified_time" content="2024-11-10T13:41:57.222Z">
+<meta property="article:author" content="尚传人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/blog/1A323420-7A1B-4934-8D05-32B2B53AFB1F.png">
+
+<link rel="canonical" href="http://yoursite.com/refactor-parser-and-polymorphism/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>重构技巧：Parser 与多态 | 传人的技术博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67853822-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-67853822-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">传人的技术博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/refactor-parser-and-polymorphism/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          重构技巧：Parser 与多态
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-20 23:11:43" itemprop="dateCreated datePublished" datetime="2020-06-20T23:11:43+08:00">2020-06-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Architecture/" itemprop="url" rel="index"><span itemprop="name">Architecture</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="/images/blog/1A323420-7A1B-4934-8D05-32B2B53AFB1F.png"></p>
+<p>对于 Parser，一般我们能想到的是同一个数据流，根据协议或者格式的要求进行区分，解析成不同含义的元素。这个解析过程一般存在着复杂的条件逻辑，用于匹配协议或者格式的要求。</p>
+<p>抽象一下，可以将 Parser 看成有<strong>复杂条件逻辑处理同一数据流</strong>的场景。而复杂的条件逻辑是编程中最难理解的东西之一，复杂的 if&#x2F;else 或者 switch&#x2F;case 中包含了许多细节，容易引入 Bug ，也使得修改变得麻烦。</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>在《重构 Refactoring》这本书中，针对上面的问题，有个技巧被称为“以多态取代条件表达式”（Replace Conditional with Polymorphism）</p>
+<p><img src="/images/blog/command-comic-1.png"></p>
+<p>这个技巧的核心在于，将每一条分支逻辑隔离到一个类中，用多态来承载各个类型特有的行为，“上层”或者“业务层”不再关心每一条分支的具体细节，不再事事躬亲，只作分发（Dispatch）的工作。</p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><h3 id="JS-回调重构"><a href="#JS-回调重构" class="headerlink" title="JS 回调重构"></a>JS 回调重构</h3><p>最早的 WebViewController 在处理 JS 回调的方法是用一堆 if&#x2F;else 语句：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	<span class="keyword">if</span> ([name isEqualToString:@“command1”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand1:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command2”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand2:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command3”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand3:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command4”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand4:name arguments:arguments];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样写的问题是导致 WebViewController 越来越庞大，一堆业务逻辑耦合到 WebViewController 中（例如登录通知，语音跟读的回调等），维护性变差。另外，如果想配置 WebViewController 只支持某些或者不支持某些 JS 特定的回调的话，甚至根据页面 URL 进行动态调整，也不是很干净。于是趁着 UIWebView 升级 WKWebView，做了一次重构：基于命令模式，将 JS 回调的处理抽离到一个个 Handler 中，JS 回调的名称和参数也在 Handler 中维护，WebViewController 中不再含有任何与 WebView 无关的业务逻辑，当 WebView 触发了 JS 回调后，调用 Command Manager 这个 Invoker 去调用 Command。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)registerCommands &#123;</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command1Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command2Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command3Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command4Handler new]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	JSCommand *command = [JSCommand commandWithName:name arguments:arguments];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager handleCommand:command];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="图片标注操作栈"><a href="#图片标注操作栈" class="headerlink" title="图片标注操作栈"></a>图片标注操作栈</h3><p>对于图片标注功能，支持笔迹、图片、文本、橡皮擦、套索等，同时有 Undo、Redo、ClearAll 等操作。</p>
+<p>由于涉及到 Undo、Redo 操作，因此需要维护一个操作栈。基于此，需要将每种操作抽象成 Action，Action 中有 type 属性，用于描述 Action 的具体类型。同时定义 ActionManager 的类，负责维护操作栈，并基于操作栈实现 Undo、Redo 操作。</p>
+<p>一开始的代码可能是这样的：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    <span class="keyword">if</span> (action.type == ActionTypeStroke) &#123;</span><br><span class="line">        <span class="comment">// handle stroke</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (action.type == ActionTypeLasso) &#123;</span><br><span class="line">        <span class="comment">// handle lasso</span></span><br><span class="line">    &#125; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 undo&#x2F;redo 方法中，除了处理操作栈外，需要根据 Action 的不同，处理该类型 Action 在 undo 时应该做的事情。但回过头来看看 ActionManager 的职责，其没有必要了解 Action 的具体细节，因此，Action 应作为基类或者接口，定义 do&#x2F;undo 两个方法，各个子类 Action 实现 do&#x2F;undo 方法，分别在 ActionManager 在 redo&#x2F;undo 中调用。这样修改之后，ActionManager 的逻辑变得清晰：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    [action undo];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SVG-解析库"><a href="#SVG-解析库" class="headerlink" title="SVG 解析库"></a>SVG 解析库</h3><p>最近看了下 <a target="_blank" rel="noopener" href="https://chromium.googlesource.com/skia/+/chrome/m44/src/svg/parser">Skia 中 SVG Parser 的源码</a>，虽然 Parser 中 switch 语句依然存在，但是 switch 中只是针对不同的标签（Path、Line、Rect、Circle 等）生成不同的 Element，至于如何解析 Element，由各个 Element 子类实现 Element 基类中定义的 translate 方法，负责解析出各自类型 Element 中的属性。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/arts-20200608/" rel="prev" title="ARTS 20200608">
+      <i class="fa fa-chevron-left"></i> ARTS 20200608
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/arts-20200615/" rel="next" title="ARTS 20200615">
+      ARTS 20200615 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%80%81"><span class="nav-number">1.</span> <span class="nav-text">多态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JS-%E5%9B%9E%E8%B0%83%E9%87%8D%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">JS 回调重构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E6%A0%87%E6%B3%A8%E6%93%8D%E4%BD%9C%E6%A0%88"><span class="nav-number">2.2.</span> <span class="nav-text">图片标注操作栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVG-%E8%A7%A3%E6%9E%90%E5%BA%93"><span class="nav-number">2.3.</span> <span class="nav-text">SVG 解析库</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="尚传人"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">尚传人</p>
+  <div class="site-description" itemprop="description">Stay Hungry, Stay Foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/joeshang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;joeshang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shangchuanren@gmail.com" title="E-Mail → mailto:shangchuanren@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2464216170" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;2464216170" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/bridge_joe" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;bridge_joe" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尚传人</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

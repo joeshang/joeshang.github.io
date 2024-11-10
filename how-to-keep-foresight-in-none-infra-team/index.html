@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作为技术人员，一直很羡慕别人在基础设施领域做的一些很牛逼的工具和框架，虽然业务看起来就是在”搬砖“，但业务以及业务背后的服务才是一个公司的根本，这也是为什么有些公司技术并不牛逼，但发展却超出想象的原因。这并不代表对技术不重视，反而相反，将技术与业务结合起来，能够用合适的技术将业务支撑起来也是工程师的核心价值，毕竟工程师，就是“能将梦想照进现实的人”。 那作为一个业务团队，如何能够保持”技术前瞻性“">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在业务团队保持”技术前瞻性“？">
+<meta property="og:url" content="http://yoursite.com/how-to-keep-foresight-in-none-infra-team/index.html">
+<meta property="og:site_name" content="传人的技术博客">
+<meta property="og:description" content="作为技术人员，一直很羡慕别人在基础设施领域做的一些很牛逼的工具和框架，虽然业务看起来就是在”搬砖“，但业务以及业务背后的服务才是一个公司的根本，这也是为什么有些公司技术并不牛逼，但发展却超出想象的原因。这并不代表对技术不重视，反而相反，将技术与业务结合起来，能够用合适的技术将业务支撑起来也是工程师的核心价值，毕竟工程师，就是“能将梦想照进现实的人”。 那作为一个业务团队，如何能够保持”技术前瞻性“">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-28T17:00:51.000Z">
+<meta property="article:modified_time" content="2024-11-10T13:41:57.219Z">
+<meta property="article:author" content="尚传人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/how-to-keep-foresight-in-none-infra-team/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>如何在业务团队保持”技术前瞻性“？ | 传人的技术博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67853822-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-67853822-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">传人的技术博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/how-to-keep-foresight-in-none-infra-team/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何在业务团队保持”技术前瞻性“？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-29 01:00:51" itemprop="dateCreated datePublished" datetime="2021-03-29T01:00:51+08:00">2021-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Thought/" itemprop="url" rel="index"><span itemprop="name">Thought</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>作为技术人员，一直很羡慕别人在基础设施领域做的一些很牛逼的工具和框架，虽然业务看起来就是在”搬砖“，但业务以及业务背后的服务才是一个公司的根本，这也是为什么有些公司技术并不牛逼，但发展却超出想象的原因。这并不代表对技术不重视，反而相反，将技术与业务结合起来，能够用合适的技术将业务支撑起来也是工程师的核心价值，毕竟工程师，就是“能将梦想照进现实的人”。</p>
+<p>那作为一个业务团队，如何能够保持”技术前瞻性“，支撑业务的快速发展和迭代？所谓”前瞻性“，就是”晴天修屋顶“，听起来很好理解，但实际涉及到的问题有：</p>
+<ul>
+<li>如何判断什么时候是晴天，即什么时候需要修？</li>
+<li>应该修什么样的屋顶？</li>
+<li>用什么工具和办法修？</li>
+</ul>
+<p>我就从下面几个方面，谈谈我的思考</p>
+<h2 id="真正深入业务，了解业务全貌，跟进业务走向"><a href="#真正深入业务，了解业务全貌，跟进业务走向" class="headerlink" title="真正深入业务，了解业务全貌，跟进业务走向"></a>真正深入业务，了解业务全貌，跟进业务走向</h2><p>在业务开发团队，开发同学经常有的迷茫和吐槽是：</p>
+<ul>
+<li>感觉就是在搬砖，PM 给个需求就做，天天就在写需求，没意思，也没什么技术成长</li>
+<li>这个需求感觉好傻啊，为什么要这样搞？这个需求又大又急，为什么这么急？代码越搞越脏</li>
+</ul>
+<p>当然，不排除有运营或者 PM 提一些“拍脑袋”的需求，但这是业务开发团队相对难以改变的，要么换家公司（我感觉这方面都差不多吧？），要么拍回去，剩下能做的，就是从开发团队本身看看能做什么？</p>
+<p>在业务开发团队，我认为非常重要的一点就是”真正深入业务“，对于开发同学，可能容易只看到技术，忽略业务本身。但在业务开发团队，技术是支撑业务的，只有深入了解业务，才能在业务角度做出”前瞻性“。</p>
+<h3 id="了解公司业务全貌"><a href="#了解公司业务全貌" class="headerlink" title="了解公司业务全貌"></a>了解公司业务全貌</h3><p>《Netflix 文化手册》中的文化准则 2 是”要培养基层员工的高层视角“。我以前也觉得自己就是”搬砖”的，战略、业务啥的都是大佬考虑，自己做好活就行了，后来发现不对：</p>
+<ul>
+<li>公司需要的是聚焦，人多不一定力量大，人的力气往一处使才力量大，这也是 OKR 做聚焦的目的。当了解公司业务全貌后，能比较清楚知道自己做的工作是否和公司方向对齐，聚焦自己的工作。</li>
+<li>团队变多后团队之间的交互反而容易出问题，因为没有人能总览全貌，当流程较长且对流程不熟悉时，整个项目容易出问题。而熟悉业务全貌后，能够发现团队间交互问题，提前暴露风险。</li>
+</ul>
+<h3 id="做需求时多问问背景"><a href="#做需求时多问问背景" class="headerlink" title="做需求时多问问背景"></a>做需求时多问问背景</h3><p>我觉得很多时候开发人员需求做得恶心，并不是因为难或者有技术挑战，反而是因为觉得没有意义或者不知道有什么意义，那这个时候需求背景就显得很重要了。</p>
+<ul>
+<li>在看 PRD 时，我们经常忽略掉背景的 WHY，而只关注要做什么的 WHAT。当我们了解了公司业务，明白了需求背景，才能意识到这个需求有意义，做起来相对有动力一些，也更能从长期思维考虑，在实现时如何更全面。</li>
+</ul>
+<h3 id="跟进业务走向"><a href="#跟进业务走向" class="headerlink" title="跟进业务走向"></a>跟进业务走向</h3><p>有时候不明白为什么 PM 突然出了一个又急又大的活，这就需要我们多关注产品&#x2F;UI OKR，多和 PM 聊聊天，提前探探他们之后想做哪方面的尝试，这样能够在技术上提前准备好。</p>
+<ul>
+<li>例如要更活泼的交互，那就多调研动画框架等</li>
+<li>例如要开更多的教室或课堂活动，那就做架构重构，提高配置灵活性等</li>
+<li>例如要提高运营或者生产效率，那就分析流程，将流程平台化等</li>
+</ul>
+<h2 id="关注人员-组织变化，提高对接效率"><a href="#关注人员-组织变化，提高对接效率" class="headerlink" title="关注人员&#x2F;组织变化，提高对接效率"></a>关注人员&#x2F;组织变化，提高对接效率</h2><p>在业务团队，除了关注业务上的演进方向外，还有一方面特别容易被忽略，就是：人员（组织）变化。</p>
+<p>随着业务需求，公司或者团队可能会快速扩充某个团队或者组建新的团队，当团队人数急剧增加或者需要和新团队频繁对接时（很多情况不是技术团队扩张，而是非技术团队扩张），原来一些手动操作的工作就成为的效率瓶颈，也会让业务团队的开发感到”烦躁“，觉得自己每天都在做一些琐碎工作；同时团队间如果依赖过重，导致互相影响，在联调和问题排查时也非常难受。</p>
+<p>那业务团队可以做的“前瞻性”工作就是提高效率。具体措施是：</p>
+<ul>
+<li>将手动操作自动化：将之前手动跑的 SQL 或者操作脚本化，配置成 Job，自动定期跑 + 将结果推送给关心的人；将手动检查做成对非技术同学更友好的形式，搞成自动检查任务，每次自动检查。</li>
+<li>将配置&#x2F;管理平台化：以前人少的时候还可以自己手动改改配置，手动发布之类，随着人数增加，需要实现一个配置&#x2F;管理的平台，交给使用方根据自己需求进行配置和管理，业务团队的开发同学就可以从琐碎配置中解放出来，主力维护平台。</li>
+<li>隔离变化：当团队变多，需求的开发链条变长后，作为开发联调中的一环，需要隔离其他团队由于内部变化而导致的问题。</li>
+</ul>
+<p>以上做法，除了提高效率外，还能应对团队规模变化，例如平台化了之后，由于对接的是平台，人数可以随意扩容，算法复杂度从  O(n) 降为 O(1)。</p>
+<h2 id="深入和扩充技术栈，真正用技术支撑业务"><a href="#深入和扩充技术栈，真正用技术支撑业务" class="headerlink" title="深入和扩充技术栈，真正用技术支撑业务"></a>深入和扩充技术栈，真正用技术支撑业务</h2><p>技术同学容易犯两种错误：</p>
+<ul>
+<li>新技术是”银弹“：拿着锤子看啥都是钉子，为了上新技术而上新技术，或者为了造轮子而造轮子，而不考虑业务的落地场景，是否真正解决痛点。</li>
+<li>”稳定压倒一切“：对新技术不敏感也没深入了解，要么对新技术嗤之以鼻，要么不知道有更合适的技术来解决业务问题，觉得保持现状挺好。</li>
+</ul>
+<p>我个人觉得，第一个问题基础设施团队相对容易犯，第二个问题业务团队相对容易犯（只是个人看法，上面的问题我都犯过，现在也在不断自省，提醒自己不能迷恋”新技术“，也不能因为不了解某种技术就否定）。</p>
+<p>因此对于业务团队，我认为能做的事情是：<strong>深入和扩充</strong>技术栈，<strong>真正</strong>用技术支撑业务。注意加粗的字，为什么要强调呢？</p>
+<p>关于”深入和扩充“：在做业务开发时经常是够用就行，先尽快把业务实现，并不会深挖技术栈，也不想了解别的组是怎么实现的，但这样是不够的：</p>
+<ul>
+<li>深入技术栈：如果要做到极致性能，就是需要深挖所在的技术栈，不深入了解，遇到疑难问题找不到思路和问题分析，遇到业务难点不知道怎么实现和优化，导致”技术深度不够”，无论对个人成长（例如出去面试），还是公司内成长（成为技术专家，在团队内营造“信任感”）都是不利的。</li>
+<li>扩充技术栈：多扩充技术栈，一方面可以从别的技术栈学习好的思想和设计，看看能不能吸收自己所用的技术栈中；另一方面，多了解其他端的实现，并不是为了全栈一个人包圆了，而是在交流沟通上更加顺畅，也能站在更全面角度选择和评估技术方案。</li>
+</ul>
+<p>关于”真正“：在深入和扩充技术栈后，开发同学手里有了“锤子”，特别想砸钉子，要忍住这种冲动。</p>
+<ul>
+<li>把自己想象成一个工匠，深入&#x2F;扩充技术栈只是往自己的工具集中增加了一种工具，工匠最主要的工作是做工艺品，要根据具体情况选用合适的工具，眼睛盯着的是工艺品，而不是工具。</li>
+<li>“真正”强调的是：在深入业务之后，针对业务中的痛点，看能否从新工具中找到一样合适的。</li>
+</ul>
+<p>总之，通过深入和扩充技术栈，开发同学扩展了自己的工具集，可以针对业务中的痛点，用更合适的工具来解决问题，应对变化，达到“技术前瞻性”的目的。</p>
+<h2 id="解决问题时多思考长期改进"><a href="#解决问题时多思考长期改进" class="headerlink" title="解决问题时多思考长期改进"></a>解决问题时多思考长期改进</h2><p>在遇到一些疑难问题时，多写总结，不能解决了就过去了，从长期角度可以看看有什么改进，这样也能保证“技术前瞻性”：</p>
+<ul>
+<li>例如出现了内存泄露，把泄露处的代码改了是解决了问题，但从长期改进看，能不能搞一个内存泄露检测工具？</li>
+<li>例如出现了性能卡顿，优化卡顿出代码也解决了问题，但从长期改进看，需要 APM 监控和自动化压力测试等</li>
+</ul>
+<p>最后，我们再尝试回答最一开始的问题：</p>
+<ul>
+<li>什么时候需要修？跟进业务走向 + 关注人员&#x2F;组织变化 + 遇到问题时关注长期角度</li>
+<li>应该修什么样的屋顶？真正深入业务，了解业务全貌 + 思考长期改进</li>
+<li>用什么工具和办法修？深入和扩充技术栈，手动操作自动化，配置平台化，隔离变化</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/arts-20200615/" rel="prev" title="ARTS 20200615">
+      <i class="fa fa-chevron-left"></i> ARTS 20200615
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/ios-classroom-refactor/" rel="next" title="猿辅导 iOS 直播教室重构之路 —— 教室积木化">
+      猿辅导 iOS 直播教室重构之路 —— 教室积木化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%9F%E6%AD%A3%E6%B7%B1%E5%85%A5%E4%B8%9A%E5%8A%A1%EF%BC%8C%E4%BA%86%E8%A7%A3%E4%B8%9A%E5%8A%A1%E5%85%A8%E8%B2%8C%EF%BC%8C%E8%B7%9F%E8%BF%9B%E4%B8%9A%E5%8A%A1%E8%B5%B0%E5%90%91"><span class="nav-number">1.</span> <span class="nav-text">真正深入业务，了解业务全貌，跟进业务走向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E5%85%AC%E5%8F%B8%E4%B8%9A%E5%8A%A1%E5%85%A8%E8%B2%8C"><span class="nav-number">1.1.</span> <span class="nav-text">了解公司业务全貌</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9A%E9%9C%80%E6%B1%82%E6%97%B6%E5%A4%9A%E9%97%AE%E9%97%AE%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">做需求时多问问背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9F%E8%BF%9B%E4%B8%9A%E5%8A%A1%E8%B5%B0%E5%90%91"><span class="nav-number">1.3.</span> <span class="nav-text">跟进业务走向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E6%B3%A8%E4%BA%BA%E5%91%98-%E7%BB%84%E7%BB%87%E5%8F%98%E5%8C%96%EF%BC%8C%E6%8F%90%E9%AB%98%E5%AF%B9%E6%8E%A5%E6%95%88%E7%8E%87"><span class="nav-number">2.</span> <span class="nav-text">关注人员&#x2F;组织变化，提高对接效率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E5%92%8C%E6%89%A9%E5%85%85%E6%8A%80%E6%9C%AF%E6%A0%88%EF%BC%8C%E7%9C%9F%E6%AD%A3%E7%94%A8%E6%8A%80%E6%9C%AF%E6%94%AF%E6%92%91%E4%B8%9A%E5%8A%A1"><span class="nav-number">3.</span> <span class="nav-text">深入和扩充技术栈，真正用技术支撑业务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E6%97%B6%E5%A4%9A%E6%80%9D%E8%80%83%E9%95%BF%E6%9C%9F%E6%94%B9%E8%BF%9B"><span class="nav-number">4.</span> <span class="nav-text">解决问题时多思考长期改进</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="尚传人"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">尚传人</p>
+  <div class="site-description" itemprop="description">Stay Hungry, Stay Foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/joeshang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;joeshang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shangchuanren@gmail.com" title="E-Mail → mailto:shangchuanren@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2464216170" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;2464216170" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/bridge_joe" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;bridge_joe" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尚传人</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

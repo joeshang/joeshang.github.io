@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Stay Hungry, Stay Foolish">
+<meta property="og:type" content="website">
+<meta property="og:title" content="传人的技术博客">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="传人的技术博客">
+<meta property="og:description" content="Stay Hungry, Stay Foolish">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="尚传人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>传人的技术博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67853822-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-67853822-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">传人的技术博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/ios-classroom-refactor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/ios-classroom-refactor/" class="post-title-link" itemprop="url">猿辅导 iOS 直播教室重构之路 —— 教室积木化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-29 00:35:20" itemprop="dateCreated datePublished" datetime="2021-09-29T00:35:20+08:00">2021-09-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Architecture-iOS/" itemprop="url" rel="index"><span itemprop="name">Architecture, iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>猿辅导直播教室最早的业务形态，只有一种教室，在教室内增加各种课堂能力和活动，例如基础的课件渲染、板书笔迹等能力。在这样的业务需求下，整个教室对应一个 View Controller，教室内的每个业务模块使用 Handler（处理业务逻辑） + View（处理模块显示）的模式，教室 View Controller 是 Handler 和 View 的 Delegator，同时也接收直播引擎 SDK 的回调，调用 Handler 进行处理。</p>
+<p>随着业务快速迭代，跨越 12 年不同年级和不同学科的教研要求千差万别，开始出现不同类型的新教室，当时因为各种因素为了”快“，实现新教室的方式是：拷贝教室代码后针对该类型教室进行定制。正如茨威格在《断头皇后》中写的，“她那时候还太年轻，不知道所有命运赠送的礼物，早已在暗中标注了价格”，欠下的技术债，使得直播教室的架构越来越影响开发效率和体验：</p>
+<ol>
+<li>教室 View Controller 越来越长，出现多个超过 5 千行以上代码的 View Controller，而且随着教室内课堂交互功能的增加，VC 的大小还会接着增长。</li>
+<li>多个教室大量重复的代码，一个在多教室使用的功能，需要加多次。如果需要修改，也要改多次。</li>
+<li>一个业务功能的代码不够聚合，散落在 View Controller 中多个地方，增删功能时容易遗漏，导致 Bug。</li>
+<li>如果要再新增教室类型，以上问题会越来越严重。</li>
+</ol>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>经过对教室 View Controller 和业务模块进行梳理分析，发现：</p>
+<p><img src="/ios-classroom-refactor/37CC0313-AEC5-419C-9054-EE019FAF06F3.png" alt="37CC0313-AEC5-419C-9054-EE019FAF06F3"></p>
+<ul>
+<li>业务模块 Handler 的 Delegate 都是 View Controller，由 View Controller 来更新 View 或者调度其他 Handler。</li>
+<li>同时，View 的创建和层级也维护在 View Controller 中，View 事件 Delegate 给 View Controller 后交由 Handler 或者其他进行处理。</li>
+<li>所有引擎 SDK 的消息也都统一回调给了 View Controller，由 View Controller 再传递给 Handler 处理。</li>
+</ul>
+<p>由此可以看出，View Controller 由于承载的职责过多，里面充斥了各种胶水代码，是其长度过长的主要原因，同时，由于每个业务的 View 和 Handler 都需要和 View Controller 交互，耦合导致复用性下降，新增教室时只能通过拷贝代码的形式进行。总之，现有架构最核心的问题是：<strong>View Controller 的职责太多，业务模块不够内聚</strong>，解决了这些，上面的痛点就游刃而解。</p>
+<p>解决思路就是：<strong>教室积木化</strong>：</p>
+<ul>
+<li>构建教室像搭积木一样，每个业务模块像一块块积木，接口统一可拔插，能够灵活的根据业务要求进行组合，提高构建新教室的效率。</li>
+<li>View Controller 变成承载积木的容器，以及教室内资源和状态的持有者（因为生命周期一致），代码量和职责会变得很简单，不再有冗长的胶水代码。</li>
+<li>业务模块内聚，自管理与其相关的 View、Model、Event，便于集成和拔插。模块间有通信机制和分层，不再通过 View Controller 实现 Delegate 来进行调度。</li>
+<li>重构过程是渐进式的，对现有的 Handler 方式改动较小。</li>
+<li>能够方便业务写单元测试。</li>
+</ul>
+<p>为了更好的体现重构的效果，定下了一个可量化目标：</p>
+<ol>
+<li>教室 View Controller 代码行数<strong>降到 500 行以下</strong>。</li>
+<li>业务模块在多个教室复用时，<strong>基本消除重复代码</strong>。</li>
+</ol>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><h3 id="业务模块-Module"><a href="#业务模块-Module" class="headerlink" title="业务模块 Module"></a>业务模块 Module</h3><p><strong>核心点：新引入 Module 的概念，将业务模块的 View 和 Handler 原本在 View Controller 中的胶水代码抽离到 Module 中</strong><br><img src="/ios-classroom-refactor/41A83409-3074-4E58-9E76-DD134E4DB76C.png" alt="41A83409-3074-4E58-9E76-DD134E4DB76C"></p>
+<p>View Controller 目前会持有各个业务模块的 View 和 Handler，这些 View 和 Handler 的 Delegate 都是 View Controller，是 View Controller 中很大一部分的胶水代码，同时会在多个教室间重复，每次修改都需要在多个教室修改多遍。而引入 Module 后，Module 可以看成一个 Sub View Controller，负责持有 View 和 Handler，处理两者的 Delegate，将多个教室重复的代码整合进来，教室 View Controller 只负责创建并持有业务模块对应的 Module。</p>
+<p>Module 作为教室积木化的基本单位，内聚一个业务的所有代码：</p>
+<ul>
+<li>管理模块自身的业务逻辑和 View。</li>
+<li>监听其关心的直播命令。</li>
+<li>通过接口或其他方式进行模块间通信。</li>
+</ul>
+<p>实现上，Module 就是一个 Protocol，定义了 Module 的生命周期方法：<br><img src="/ios-classroom-refactor/5EF6D58C-2226-4406-A400-4EBE0C341E15.png" alt="5EF6D58C-2226-4406-A400-4EBE0C341E15"></p>
+<h3 id="模块间通信与依赖注入"><a href="#模块间通信与依赖注入" class="headerlink" title="模块间通信与依赖注入"></a>模块间通信与依赖注入</h3><p><strong>核心点：积木有缺口和凸起，模块也有依赖和消息，基于依赖注入 DI，两种类型均通过接口抽象，在模块初始化时根据不同教室需要，注入具体实现</strong></p>
+<p>由于模块不再将消息 Delegate 给 View Controller 处理，模块与模块间需要通信，之前通信选用的方式有：直接使用通知、基于 OC Runtime 的 Mediator 方式、通过 Protocol 定义接口 + Register 注册实现的方式等，进过权衡，Protocol 定义接口这种方式更适合积木化重构的业务场景，在 Swift 语言特性的加持下，最终选用了 <a target="_blank" rel="noopener" href="https://github.com/hmlongco/Resolver">Resolver</a> 这个 Swift 版本的依赖注入 Dependency Injection 框架，实现模块间通信：</p>
+<ul>
+<li>每个 Module 供外部 Module 使用的接口，通过 Protocol 抽象成 Service，并通过 register 机制将 Service 注册。</li>
+<li>Module 使用其他 Module 的接口时，用 @Inject 的 Property Wrapper 定义一个 Service 类型的属性，通过 Service 调用接口。</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块 A 定义</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleA</span>: <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;</span><br><span class="line">    <span class="comment">// doing</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块 B 使用模块 A</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleB</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Inject</span> <span class="keyword">var</span> service1: <span class="type">Service1</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">handleSomething</span>()</span> &#123;</span><br><span class="line">    service1.doSomething()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">// 注册服务</span></span><br><span class="line"><span class="type">Resolver</span>.register &#123; <span class="type">ModuleA</span>() <span class="keyword">as</span> <span class="type">Service1</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>依赖注入是一套很成熟的思想，在前后端项目上有广泛应用，积木化使用依赖注入之后：</p>
+<ul>
+<li>不仅仅是平级的业务 Module，只要是 Module 需要，直播教室内各项功能都可以抽象成 Service 进行注入。</li>
+<li>每个 Module 依赖的是 Service 接口，而不再是具体实现，由 DI 框架 Resolver 负责将真正的 Module 绑定到 Service 中，除了解耦外，在写单元测试时能够方便进行 Mock。</li>
+</ul>
+<h3 id="业务模块-View-管理：Layouter"><a href="#业务模块-View-管理：Layouter" class="headerlink" title="业务模块 View 管理：Layouter"></a>业务模块 View 管理：Layouter</h3><p><strong>核心点：由于 View Controller 不再直接持有业务 View，因此 View 的层级关系、所处的区域需要从 View Controller 中抽离</strong></p>
+<p>一开始的想法是由 Module 来管理，但是 Module 如果作为积木的一块，不应该对自己在教室的什么位置有假设，管理好自己 View 的状态就行，至于放到哪里应该是使用 Module 关心的。但是由 View Controller 管理的话，会导致多个教室间重复，也不够灵活。</p>
+<p><img src="/ios-classroom-refactor/328C89B7-F111-4BC5-A34F-EAEFE63F2134.png" alt="328C89B7-F111-4BC5-A34F-EAEFE63F2134"></p>
+<p>因此， 引入 Layouter 的概念：</p>
+<ul>
+<li>Layouter 管理 View Controller 的 View，按照 UI 样式划分成多个区域，并创建和排版对应区域的 View</li>
+<li>Module 将 View 注册到 Layouter 中，Layouter 负责将 View 按照 Identity 和 Priority 安置在期望的区域，并安排好层级关系</li>
+</ul>
+<p>实现上 Layouter 和 Module 一样，都是一个 Protocol，不同类型的教室布局实现各自具体的 Layouter，在 layout 方法中进行布局。<br><img src="/ios-classroom-refactor/6C0CA314-26EB-48C0-8D3C-DDB5E12FBA39.png" alt="6C0CA314-26EB-48C0-8D3C-DDB5E12FBA39"></p>
+<p>另外，有些区域内的排版在多个 Layouter 中是一样的，在 Layouter 的基础上引入 Area Layouter 的概念，负责一块区域的排版布局，例如课件区，Room Layouter 通过持有 Area Layouter 实现区域布局的复用。</p>
+<p><img src="/ios-classroom-refactor/4679D1F3-E016-4D3A-9D6E-DF7E7F5E1BE3.png" alt="4679D1F3-E016-4D3A-9D6E-DF7E7F5E1BE3"></p>
+<h3 id="教室状态持有者：Store"><a href="#教室状态持有者：Store" class="headerlink" title="教室状态持有者：Store"></a>教室状态持有者：Store</h3><p><strong>核心点：业务模块不再通过 Delegate 拿教室内的通用数据，而是通过 Store 将通用数据传入</strong></p>
+<p>各个业务模块经常通过 Delegate 从 View Controller 中获取例如 episodeId、teamId、userId、Episode 之类的数据，而这些数据可以理解是教室内的基础数据或状态，可以将这些数据整合到一个叫 Store 的模块中，通过依赖注入到 Module 中，这样就没必要再通过 Delegate 从 View Controller 中拿数据，省去一些胶水代码。</p>
+<p><img src="/ios-classroom-refactor/5C2F2D49-2AFF-40D5-9B79-BACCAA995E91.png" alt="5C2F2D49-2AFF-40D5-9B79-BACCAA995E91"></p>
+<p>Store 也使用 Protocol 定义，不同类型教室实现具体的 Store，当一个 Module 在多个教室复用时，虽然 Store 可能实现不一样，但 Store Service 的接口是一致的，使得 Module 在多教室复用变得容易。</p>
+<h3 id="直播命令调度拆分：Dispatcher"><a href="#直播命令调度拆分：Dispatcher" class="headerlink" title="直播命令调度拆分：Dispatcher"></a>直播命令调度拆分：Dispatcher</h3><p><strong>核心点：由业务模块主动注册其关心的直播命令，不再通过 View Controller 调度</strong></p>
+<p>直播命令的回调不再通过 View Controller 调用，直接发送到业务模块上，一方面能从 View Controller 删除很多胶水代码，另一方面能明确一个模块关心的直播命令。</p>
+<p><img src="/ios-classroom-refactor/DF78592C-7BCD-49AC-930A-206CF5A5E01A.png" alt="DF78592C-7BCD-49AC-930A-206CF5A5E01A"></p>
+<p>实现一个直播命令注册与转发的模块：Dispatcher</p>
+<ul>
+<li>通过依赖注入到 Module 中，Module 使用 Dispatcher 显式声明自己需要的直播命令。</li>
+<li>参考 RxSwift 的思想，通过注册 Block 的方式实现通知，相比 Notification 通知，这样引擎消息参数处理起来更安全和方便。</li>
+<li>Dispatcher 支持优先级，根据业务场景提供分发前、分发中、分发后三种队列。</li>
+<li>对于复合命令，由 Dispatcher 进行拆分后分发给业务 Module，业务 Module 不需要再关心复合命令细节，对其无感知。</li>
+</ul>
+<h3 id="教室容器化"><a href="#教室容器化" class="headerlink" title="教室容器化"></a>教室容器化</h3><p>在上面的设计中，Module、Layouter、Store 都是 Protocol，为什么要用 Protocol 呢？这种面向接口编程带来的灵活性是为了能够将教室 View Controller 变成一个容器，不再关心里面到底有哪些模块，如何排版布局等，所有类型教室共用该容器 View Controller：<br><img src="/ios-classroom-refactor/6C13C0A4-E3B3-4371-8376-615882190670.png" alt="6C13C0A4-E3B3-4371-8376-615882190670"></p>
+<p>至于该往教室容器中传入具体哪些 Module，使用哪种 Layouter 和 Store，这些策略交由 RoomFactory 生成。Factory 也是一个 Protocol，不同策略实现不同具体的 Factory，符合 OCP 原则。<br><img src="/ios-classroom-refactor/E46A2299-F2AD-4081-8319-67488C20A080.png" alt="E46A2299-F2AD-4081-8319-67488C20A080"></p>
+<p>基于容器化教室和策略工厂的设计，业务上能够根据配置决定加载哪些 Module，从而进行功能灰度和回退，或者针对一个 Service，有 A、B 两个实现 Module，根据配置进行加载，进行 A&#x2F;B Test，极大的提升了灵活性。</p>
+<h2 id="推进过程"><a href="#推进过程" class="headerlink" title="推进过程"></a>推进过程</h2><p>完成了重构的方案设计后，如何推进重构方案的落地是一件比方案设计更有挑战性的事情，需要脚踏实地的一点点啃掉：</p>
+<ul>
+<li>直播教室作为猿辅导的核心业务场景，一旦出问题直接影响用户核心体验，其稳定性要求高，如何保证重构方案能够比较平稳的落地？</li>
+<li>业务还在不断迭代，开发人力一直比较紧张，如何协调资源？重构任务应该如何安排，才能即不影响需求迭代速度，又能及时完成，不在同步业务最新改动时耗费大量精力？</li>
+</ul>
+<h3 id="做好重构规划"><a href="#做好重构规划" class="headerlink" title="做好重构规划"></a>做好重构规划</h3><p>首先，直播教室既有老师端又有学生端，确定先重构老师端再重构学生端的方向：</p>
+<ul>
+<li>老师端是内部分发，用户也是内部老师，灰度范围、发 Fix 等更可控，风险要低一些。</li>
+<li>老师端是纯 Swift 实现，也不需要考虑回放场景和回放教室，重构方案更容易落地。</li>
+</ul>
+<p>之后，就要规划出关键路径，寻找并行点，让能够并行的任务尽量并行：</p>
+<ul>
+<li>在完成重构方案设计后，开始实现基础定义，例如 Module、Layouter、Store 等定义，这些是关键路径，不完成的话会 Block 之后的工作。</li>
+<li>基于上一步的基础数据结构，对一个业务模块进行积木化改造，验证重构方案的可用性，并积累积木化改造的方案。</li>
+<li>完成一个模块之后，开始进人：Dispatcher 相对比较独立，可以交给一个同学负责；另外一个同学一起来对教室内相对基础和通用的模块进行积木化改造，为业务模块的改造提供前提。</li>
+<li>当 Dispatcher、Layouter 和基础模块完成改造后，就开始对一个教室进行重构，好处是：<ul>
+<li>一个教室完成改造后就能自测和初步提测，验证积木化整体流程的稳定性，提前暴露底层实现的重大问题。</li>
+<li>教室间 70% - 80% 的业务模块是复用的，改造完一个教室，其他教室的工作量就小很多。</li>
+<li>改造完的教室可以做为模板，方便其他教室进行改造时进行参考。</li>
+</ul>
+</li>
+<li>当完成了一个教室改造后，分工如下：<ul>
+<li>一个同学负责自测后提测，并修复该教室一些严重问题。</li>
+<li>另一个负责实现模块的内存泄露检测工具，用于发现内存泄露问题。并编写积木化改造 101 文档，介绍对业务模块进行改造的方式和技巧。</li>
+</ul>
+</li>
+<li>基于积木化改造 101 文档和已经改造完成的教室，进更多的人，每个人负责一个教室，这样能在短时间完成所有教室的改造。</li>
+</ul>
+<h3 id="把握住关键时间节点"><a href="#把握住关键时间节点" class="headerlink" title="把握住关键时间节点"></a>把握住关键时间节点</h3><p>重构什么时候开始搞，需要把握住关键时间节点才能降低成本，使得收益最大化。判断什么时候最合适，需要通过不断深入到业务中，分析规律，多和 PM、运营聊天，了解他们下一步的规划，在线教育的业务特点和上课时间比较有规律性，把握规律后，在很少会有新教室类型的时间段内，努力抓住时间节点推进重构的进行。</p>
+<h3 id="重复并不是所有情况下都是坏的"><a href="#重复并不是所有情况下都是坏的" class="headerlink" title="重复并不是所有情况下都是坏的"></a>重复并不是所有情况下都是坏的</h3><p>为了保证重构完成后线上的稳定性，需要先进行小规模灰度，监控被灰度用户的各项指标，在出问题时能够及时回退到重构之前的版本。如何保证回退没有问题？那就是旧教室旧逻辑完全保留，如果涉及到修改，就拷贝一份再修改，通过重复来确定重构前的环境没有变化，这样保证回退时能够回退到“和以前一模一样”，当积木化重构在线上平稳后，再将旧代码一起全部删除。</p>
+<p>我们看一下积木化重构后的成果，看是否满足最开始定下的可量化目标：</p>
+<ul>
+<li>将多个 5000 行左右的 VC 合并为一个只有不到 300 行的容器 VC。</li>
+<li>消除一个业务功能在多个教室间的重复。</li>
+<li>新增教室复合 OCP 原则，不修改教室容器 VC，而是扩展 Factory。</li>
+<li>一个教室增删模块只需要改一行代码。</li>
+</ul>
+<h2 id="Beyond-技术"><a href="#Beyond-技术" class="headerlink" title="Beyond 技术"></a>Beyond 技术</h2><p>积木化整个重构过程，在技术之外还有很多感悟和收获，这里也想聊一聊：</p>
+<h3 id="关注人的因素"><a href="#关注人的因素" class="headerlink" title="关注人的因素"></a>关注人的因素</h3><p>教室积木化是涉及到老师端、学生端核心业务场景的大重构，需要协调很多资源团队合作才能完成，那我们需要更关注人的因素，让参与进来的所有人都意识到重构不是炫技，不是开发瞎搞，而是件对大家都好的事情：</p>
+<ul>
+<li>对于开发同学，积木化重构解决的是大家的长期以来的痛点，“天下苦秦久矣”，用重构的设计方案和大家多描述重构之后的样子，大家就有动力参与进来。同时，重构过程中有很多活都是脏活累活，一个人做的话很容易疲劳和烦躁，一点经验是多几个人，大家分一分，一个人头上没几个，也能感觉到团队作战的优势。</li>
+<li>对于 PM 同学，在进行积木化重构方案设计时就不断同他们沟通，了解之后的长期迭代方向，并同步重构的作用是为了更好的支撑产品迭代，例如能够提供更灵活的配置与 A&#x2F;B Test，例如能更快的增删模块，“给我一首歌的时间”就完成了。这样 PM 同学在需求排期上也愿意为重构协调时间。</li>
+<li>对于测试同学，虽然重构需要教室全功能回测，工作量较大，但是同样的，重构之后，由于少了很多重复代码，不容易遗漏，交付质量也会有所提升，增删模块的提测时间会更早，同时，在提测过程中，也及时同步了为什么先提测一个教室，再整体提测，测试同学也能更认可。</li>
+<li>对于上级 Leader，依次从能够更好支撑业务，提高代码质量，让开发同学写代码更开心等几个方面说明重构的意义，同时也提供了详细的设计文档和 Roadmap，于是 Leader 也认可这件事情，帮忙协调资源等。</li>
+</ul>
+<p>总之，上面所有看起来像“影响力”的东西，都基于平时日积月累的“信任感”，做好每一个需求，认真对待交付质量和 Bug，多和 PM 沟通交流，与其他团队建立良好的关系，成为一个“靠谱”的工程师，这些东西终归在积木化重构上得到回报。</p>
+<h3 id="但行好事，莫问前程"><a href="#但行好事，莫问前程" class="headerlink" title="但行好事，莫问前程"></a>但行好事，莫问前程</h3><p>直播教室由于业务方向上的不断快速迭代和探索，积累了大量技术债，导致无法通过简单重构解决，同时直播教室又是核心业务场景，对其进行大重构，风险不低，说心里话，是会害怕的，怕重构出故障，怕投入大量资源却没有完成。这时候需要的就是<strong>勇气</strong>，既然这件事经过判断是对的事情，能够为业务带来价值，同时也做好了设计和规划，就应该抛开其他想法，有勇气去把事情搞定。</p>
+<p>有勇气开始后，设计出来重构方案时是激动的，但没有落地的方案都是“纸上谈兵”，而重构的落地过程是枯燥的，有很多脏活累活，有很多设计时没有想到的问题，没有捷径，只能“结硬寨，打呆仗”一点点解决，中间有想放弃的时刻，有很烦躁的时候，还是咬牙坚持了下来。</p>
+<p>我是幸运的：iOS 团队的小伙伴们都很给力，大家一起努力把事情搞定。PM 和测试同学也非常支持，愿意协调排期。我的 Leader 全力支持，在业务压力较大的时候，协调了 Android 同学来写一些 iOS 需求，为积木化重构空出了 iOS 人力，也非常感谢 Android 同学的支援。</p>
+<p>最终，有了勇气，有了坚持，再加上幸运，经过 2020Q4、2021Q1 两个 Q 的努力分别完成了老师端和学生端的教室积木化重构，所有的辛苦和投入在 2021Q2 得到了回报，这个 Q 上了 4 个新教室，证明之前判断的正确性，给自己带来极大的成就感和正反馈，难以想象如果没有经过积木化重构新增 4 个新教室的样子。</p>
+<p>总之，但行好事，莫问前程。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/how-to-keep-foresight-in-none-infra-team/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/how-to-keep-foresight-in-none-infra-team/" class="post-title-link" itemprop="url">如何在业务团队保持”技术前瞻性“？</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-29 01:00:51" itemprop="dateCreated datePublished" datetime="2021-03-29T01:00:51+08:00">2021-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Thought/" itemprop="url" rel="index"><span itemprop="name">Thought</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>作为技术人员，一直很羡慕别人在基础设施领域做的一些很牛逼的工具和框架，虽然业务看起来就是在”搬砖“，但业务以及业务背后的服务才是一个公司的根本，这也是为什么有些公司技术并不牛逼，但发展却超出想象的原因。这并不代表对技术不重视，反而相反，将技术与业务结合起来，能够用合适的技术将业务支撑起来也是工程师的核心价值，毕竟工程师，就是“能将梦想照进现实的人”。</p>
+<p>那作为一个业务团队，如何能够保持”技术前瞻性“，支撑业务的快速发展和迭代？所谓”前瞻性“，就是”晴天修屋顶“，听起来很好理解，但实际涉及到的问题有：</p>
+<ul>
+<li>如何判断什么时候是晴天，即什么时候需要修？</li>
+<li>应该修什么样的屋顶？</li>
+<li>用什么工具和办法修？</li>
+</ul>
+<p>我就从下面几个方面，谈谈我的思考</p>
+<h2 id="真正深入业务，了解业务全貌，跟进业务走向"><a href="#真正深入业务，了解业务全貌，跟进业务走向" class="headerlink" title="真正深入业务，了解业务全貌，跟进业务走向"></a>真正深入业务，了解业务全貌，跟进业务走向</h2><p>在业务开发团队，开发同学经常有的迷茫和吐槽是：</p>
+<ul>
+<li>感觉就是在搬砖，PM 给个需求就做，天天就在写需求，没意思，也没什么技术成长</li>
+<li>这个需求感觉好傻啊，为什么要这样搞？这个需求又大又急，为什么这么急？代码越搞越脏</li>
+</ul>
+<p>当然，不排除有运营或者 PM 提一些“拍脑袋”的需求，但这是业务开发团队相对难以改变的，要么换家公司（我感觉这方面都差不多吧？），要么拍回去，剩下能做的，就是从开发团队本身看看能做什么？</p>
+<p>在业务开发团队，我认为非常重要的一点就是”真正深入业务“，对于开发同学，可能容易只看到技术，忽略业务本身。但在业务开发团队，技术是支撑业务的，只有深入了解业务，才能在业务角度做出”前瞻性“。</p>
+<h3 id="了解公司业务全貌"><a href="#了解公司业务全貌" class="headerlink" title="了解公司业务全貌"></a>了解公司业务全貌</h3><p>《Netflix 文化手册》中的文化准则 2 是”要培养基层员工的高层视角“。我以前也觉得自己就是”搬砖”的，战略、业务啥的都是大佬考虑，自己做好活就行了，后来发现不对：</p>
+<ul>
+<li>公司需要的是聚焦，人多不一定力量大，人的力气往一处使才力量大，这也是 OKR 做聚焦的目的。当了解公司业务全貌后，能比较清楚知道自己做的工作是否和公司方向对齐，聚焦自己的工作。</li>
+<li>团队变多后团队之间的交互反而容易出问题，因为没有人能总览全貌，当流程较长且对流程不熟悉时，整个项目容易出问题。而熟悉业务全貌后，能够发现团队间交互问题，提前暴露风险。</li>
+</ul>
+<h3 id="做需求时多问问背景"><a href="#做需求时多问问背景" class="headerlink" title="做需求时多问问背景"></a>做需求时多问问背景</h3><p>我觉得很多时候开发人员需求做得恶心，并不是因为难或者有技术挑战，反而是因为觉得没有意义或者不知道有什么意义，那这个时候需求背景就显得很重要了。</p>
+<ul>
+<li>在看 PRD 时，我们经常忽略掉背景的 WHY，而只关注要做什么的 WHAT。当我们了解了公司业务，明白了需求背景，才能意识到这个需求有意义，做起来相对有动力一些，也更能从长期思维考虑，在实现时如何更全面。</li>
+</ul>
+<h3 id="跟进业务走向"><a href="#跟进业务走向" class="headerlink" title="跟进业务走向"></a>跟进业务走向</h3><p>有时候不明白为什么 PM 突然出了一个又急又大的活，这就需要我们多关注产品&#x2F;UI OKR，多和 PM 聊聊天，提前探探他们之后想做哪方面的尝试，这样能够在技术上提前准备好。</p>
+<ul>
+<li>例如要更活泼的交互，那就多调研动画框架等</li>
+<li>例如要开更多的教室或课堂活动，那就做架构重构，提高配置灵活性等</li>
+<li>例如要提高运营或者生产效率，那就分析流程，将流程平台化等</li>
+</ul>
+<h2 id="关注人员-组织变化，提高对接效率"><a href="#关注人员-组织变化，提高对接效率" class="headerlink" title="关注人员&#x2F;组织变化，提高对接效率"></a>关注人员&#x2F;组织变化，提高对接效率</h2><p>在业务团队，除了关注业务上的演进方向外，还有一方面特别容易被忽略，就是：人员（组织）变化。</p>
+<p>随着业务需求，公司或者团队可能会快速扩充某个团队或者组建新的团队，当团队人数急剧增加或者需要和新团队频繁对接时（很多情况不是技术团队扩张，而是非技术团队扩张），原来一些手动操作的工作就成为的效率瓶颈，也会让业务团队的开发感到”烦躁“，觉得自己每天都在做一些琐碎工作；同时团队间如果依赖过重，导致互相影响，在联调和问题排查时也非常难受。</p>
+<p>那业务团队可以做的“前瞻性”工作就是提高效率。具体措施是：</p>
+<ul>
+<li>将手动操作自动化：将之前手动跑的 SQL 或者操作脚本化，配置成 Job，自动定期跑 + 将结果推送给关心的人；将手动检查做成对非技术同学更友好的形式，搞成自动检查任务，每次自动检查。</li>
+<li>将配置&#x2F;管理平台化：以前人少的时候还可以自己手动改改配置，手动发布之类，随着人数增加，需要实现一个配置&#x2F;管理的平台，交给使用方根据自己需求进行配置和管理，业务团队的开发同学就可以从琐碎配置中解放出来，主力维护平台。</li>
+<li>隔离变化：当团队变多，需求的开发链条变长后，作为开发联调中的一环，需要隔离其他团队由于内部变化而导致的问题。</li>
+</ul>
+<p>以上做法，除了提高效率外，还能应对团队规模变化，例如平台化了之后，由于对接的是平台，人数可以随意扩容，算法复杂度从  O(n) 降为 O(1)。</p>
+<h2 id="深入和扩充技术栈，真正用技术支撑业务"><a href="#深入和扩充技术栈，真正用技术支撑业务" class="headerlink" title="深入和扩充技术栈，真正用技术支撑业务"></a>深入和扩充技术栈，真正用技术支撑业务</h2><p>技术同学容易犯两种错误：</p>
+<ul>
+<li>新技术是”银弹“：拿着锤子看啥都是钉子，为了上新技术而上新技术，或者为了造轮子而造轮子，而不考虑业务的落地场景，是否真正解决痛点。</li>
+<li>”稳定压倒一切“：对新技术不敏感也没深入了解，要么对新技术嗤之以鼻，要么不知道有更合适的技术来解决业务问题，觉得保持现状挺好。</li>
+</ul>
+<p>我个人觉得，第一个问题基础设施团队相对容易犯，第二个问题业务团队相对容易犯（只是个人看法，上面的问题我都犯过，现在也在不断自省，提醒自己不能迷恋”新技术“，也不能因为不了解某种技术就否定）。</p>
+<p>因此对于业务团队，我认为能做的事情是：<strong>深入和扩充</strong>技术栈，<strong>真正</strong>用技术支撑业务。注意加粗的字，为什么要强调呢？</p>
+<p>关于”深入和扩充“：在做业务开发时经常是够用就行，先尽快把业务实现，并不会深挖技术栈，也不想了解别的组是怎么实现的，但这样是不够的：</p>
+<ul>
+<li>深入技术栈：如果要做到极致性能，就是需要深挖所在的技术栈，不深入了解，遇到疑难问题找不到思路和问题分析，遇到业务难点不知道怎么实现和优化，导致”技术深度不够”，无论对个人成长（例如出去面试），还是公司内成长（成为技术专家，在团队内营造“信任感”）都是不利的。</li>
+<li>扩充技术栈：多扩充技术栈，一方面可以从别的技术栈学习好的思想和设计，看看能不能吸收自己所用的技术栈中；另一方面，多了解其他端的实现，并不是为了全栈一个人包圆了，而是在交流沟通上更加顺畅，也能站在更全面角度选择和评估技术方案。</li>
+</ul>
+<p>关于”真正“：在深入和扩充技术栈后，开发同学手里有了“锤子”，特别想砸钉子，要忍住这种冲动。</p>
+<ul>
+<li>把自己想象成一个工匠，深入&#x2F;扩充技术栈只是往自己的工具集中增加了一种工具，工匠最主要的工作是做工艺品，要根据具体情况选用合适的工具，眼睛盯着的是工艺品，而不是工具。</li>
+<li>“真正”强调的是：在深入业务之后，针对业务中的痛点，看能否从新工具中找到一样合适的。</li>
+</ul>
+<p>总之，通过深入和扩充技术栈，开发同学扩展了自己的工具集，可以针对业务中的痛点，用更合适的工具来解决问题，应对变化，达到“技术前瞻性”的目的。</p>
+<h2 id="解决问题时多思考长期改进"><a href="#解决问题时多思考长期改进" class="headerlink" title="解决问题时多思考长期改进"></a>解决问题时多思考长期改进</h2><p>在遇到一些疑难问题时，多写总结，不能解决了就过去了，从长期角度可以看看有什么改进，这样也能保证“技术前瞻性”：</p>
+<ul>
+<li>例如出现了内存泄露，把泄露处的代码改了是解决了问题，但从长期改进看，能不能搞一个内存泄露检测工具？</li>
+<li>例如出现了性能卡顿，优化卡顿出代码也解决了问题，但从长期改进看，需要 APM 监控和自动化压力测试等</li>
+</ul>
+<p>最后，我们再尝试回答最一开始的问题：</p>
+<ul>
+<li>什么时候需要修？跟进业务走向 + 关注人员&#x2F;组织变化 + 遇到问题时关注长期角度</li>
+<li>应该修什么样的屋顶？真正深入业务，了解业务全貌 + 思考长期改进</li>
+<li>用什么工具和办法修？深入和扩充技术栈，手动操作自动化，配置平台化，隔离变化</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/arts-20200615/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/arts-20200615/" class="post-title-link" itemprop="url">ARTS 20200615</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-21 23:15:05" itemprop="dateCreated datePublished" datetime="2020-06-21T23:15:05+08:00">2020-06-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ARTS/" itemprop="url" rel="index"><span itemprop="name">ARTS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/validate-binary-search-tree/">Validate Binary Search Tree - LeetCode</a></p>
+<p>比较简单，二叉搜索树的特性是节点的左子树小于节点的值，右子树大于节点的值。本质就是二叉树中序遍历的应用，中序遍历二叉搜索树得到的数组一定是有序的。</p>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2016/416/">Understanding Swift Performance - WWDC 2016 - Videos - Apple Developer</a><br>没看完，主要看了 Allocation 和 Dispatch 部分，准备看完后写一个 Swift 性能相关的文章，嗯，下周的 Share 有了。。。</p>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ol>
+<li>如何从远端 Git 仓库中拉取某个制定文件：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/1125476/retrieve-a-single-file-from-a-repository">git - Retrieve a single file from a repository - Stack Overflow</a></li>
+<li>使用 Fastlane 快速更新 Push 证书：<code>fastlane pem -a bundle_id -u username -p &quot;password&quot; --force --development</code></li>
+</ol>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a target="_blank" rel="noopener" href="https://joeshang.github.io/2020/06/20/refactor-parser-and-polymorphism/">重构技巧：Parser 与多态</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/refactor-parser-and-polymorphism/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/refactor-parser-and-polymorphism/" class="post-title-link" itemprop="url">重构技巧：Parser 与多态</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-20 23:11:43" itemprop="dateCreated datePublished" datetime="2020-06-20T23:11:43+08:00">2020-06-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Architecture/" itemprop="url" rel="index"><span itemprop="name">Architecture</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/blog/1A323420-7A1B-4934-8D05-32B2B53AFB1F.png"></p>
+<p>对于 Parser，一般我们能想到的是同一个数据流，根据协议或者格式的要求进行区分，解析成不同含义的元素。这个解析过程一般存在着复杂的条件逻辑，用于匹配协议或者格式的要求。</p>
+<p>抽象一下，可以将 Parser 看成有<strong>复杂条件逻辑处理同一数据流</strong>的场景。而复杂的条件逻辑是编程中最难理解的东西之一，复杂的 if&#x2F;else 或者 switch&#x2F;case 中包含了许多细节，容易引入 Bug ，也使得修改变得麻烦。</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>在《重构 Refactoring》这本书中，针对上面的问题，有个技巧被称为“以多态取代条件表达式”（Replace Conditional with Polymorphism）</p>
+<p><img src="/images/blog/command-comic-1.png"></p>
+<p>这个技巧的核心在于，将每一条分支逻辑隔离到一个类中，用多态来承载各个类型特有的行为，“上层”或者“业务层”不再关心每一条分支的具体细节，不再事事躬亲，只作分发（Dispatch）的工作。</p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><h3 id="JS-回调重构"><a href="#JS-回调重构" class="headerlink" title="JS 回调重构"></a>JS 回调重构</h3><p>最早的 WebViewController 在处理 JS 回调的方法是用一堆 if&#x2F;else 语句：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	<span class="keyword">if</span> ([name isEqualToString:@“command1”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand1:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command2”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand2:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command3”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand3:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command4”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand4:name arguments:arguments];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样写的问题是导致 WebViewController 越来越庞大，一堆业务逻辑耦合到 WebViewController 中（例如登录通知，语音跟读的回调等），维护性变差。另外，如果想配置 WebViewController 只支持某些或者不支持某些 JS 特定的回调的话，甚至根据页面 URL 进行动态调整，也不是很干净。于是趁着 UIWebView 升级 WKWebView，做了一次重构：基于命令模式，将 JS 回调的处理抽离到一个个 Handler 中，JS 回调的名称和参数也在 Handler 中维护，WebViewController 中不再含有任何与 WebView 无关的业务逻辑，当 WebView 触发了 JS 回调后，调用 Command Manager 这个 Invoker 去调用 Command。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)registerCommands &#123;</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command1Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command2Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command3Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command4Handler new]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	JSCommand *command = [JSCommand commandWithName:name arguments:arguments];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager handleCommand:command];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="图片标注操作栈"><a href="#图片标注操作栈" class="headerlink" title="图片标注操作栈"></a>图片标注操作栈</h3><p>对于图片标注功能，支持笔迹、图片、文本、橡皮擦、套索等，同时有 Undo、Redo、ClearAll 等操作。</p>
+<p>由于涉及到 Undo、Redo 操作，因此需要维护一个操作栈。基于此，需要将每种操作抽象成 Action，Action 中有 type 属性，用于描述 Action 的具体类型。同时定义 ActionManager 的类，负责维护操作栈，并基于操作栈实现 Undo、Redo 操作。</p>
+<p>一开始的代码可能是这样的：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    <span class="keyword">if</span> (action.type == ActionTypeStroke) &#123;</span><br><span class="line">        <span class="comment">// handle stroke</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (action.type == ActionTypeLasso) &#123;</span><br><span class="line">        <span class="comment">// handle lasso</span></span><br><span class="line">    &#125; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 undo&#x2F;redo 方法中，除了处理操作栈外，需要根据 Action 的不同，处理该类型 Action 在 undo 时应该做的事情。但回过头来看看 ActionManager 的职责，其没有必要了解 Action 的具体细节，因此，Action 应作为基类或者接口，定义 do&#x2F;undo 两个方法，各个子类 Action 实现 do&#x2F;undo 方法，分别在 ActionManager 在 redo&#x2F;undo 中调用。这样修改之后，ActionManager 的逻辑变得清晰：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    [action undo];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SVG-解析库"><a href="#SVG-解析库" class="headerlink" title="SVG 解析库"></a>SVG 解析库</h3><p>最近看了下 <a target="_blank" rel="noopener" href="https://chromium.googlesource.com/skia/+/chrome/m44/src/svg/parser">Skia 中 SVG Parser 的源码</a>，虽然 Parser 中 switch 语句依然存在，但是 switch 中只是针对不同的标签（Path、Line、Rect、Circle 等）生成不同的 Element，至于如何解析 Element，由各个 Element 子类实现 Element 基类中定义的 translate 方法，负责解析出各自类型 Element 中的属性。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/arts-20200608/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/arts-20200608/" class="post-title-link" itemprop="url">ARTS 20200608</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-14 22:15:04" itemprop="dateCreated datePublished" datetime="2020-06-14T22:15:04+08:00">2020-06-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ARTS/" itemprop="url" rel="index"><span itemprop="name">ARTS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-width-of-binary-tree/">Maximum Width of Binary Tree - LeetCode</a></p>
+<p>还是二叉树相关的题目，不管是否简单与否，按照模块进行训练比较成体系一些。（其实是周末带娃太累，刷不了复杂的题。。。）<br>计算二叉树的最大宽度这道题本身比较简单，主要有一个思维转换，所谓二叉树的宽度，就是每一层的节点个数，看到层，就转换为二叉树的层序遍历，使用队列，计算每一层节点个数，最后算出最大值即为二叉树的宽度</p>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2018/416/">iOS Memory Deep Dive - WWDC 2018 - Videos - Apple Developer</a></p>
+<p>WWDC 2020 要来了，看了下 2018 年关于 iOS 内存的一个 Session：</p>
+<h3 id="内存占用"><a href="#内存占用" class="headerlink" title="内存占用"></a>内存占用</h3><p>Pages Memory 和 Page Fault 没什么好说的，OS 基础知识。<br>iOS 上内存可以分成三类：</p>
+<ol>
+<li>Clean Memory：可以 Page Out 的内存，例如代码段</li>
+<li>Dirty Memory：被 App 写入过数据的内存，例如堆、图片解码区</li>
+<li>Compressed Memory：iOS 设备由于存储硬件的特性，并不会像桌面端一样进行 Swap，而是直接 Page Out。但从 iOS 7 开始，统开始采用压缩内存的办法来释放内存空间，被压缩的内存称为 Compressed Memory，再次访问时会先解压。因此，如果在收到 Memory Warning 时去释放被压缩内存，由于被解压，导致内存用的更多。。。</li>
+</ol>
+<p>在一些缓存数据场景，建议用 NSCache 替换 NSDictionary，因为 NSCache 会根据系统情况自动清理内存。</p>
+<h3 id="内存占用分析工具"><a href="#内存占用分析工具" class="headerlink" title="内存占用分析工具"></a>内存占用分析工具</h3><p><img src="/images/blog/630C9DF7-3048-40A4-8ECE-41E3AF3D09DB.png"></p>
+<ul>
+<li>malloc_history：查看内存分配历史</li>
+<li>leaks：查看泄漏内存</li>
+<li>vmmap：查看虚拟捏成</li>
+<li>heap：查看堆内存</li>
+</ul>
+<p>一些调试技巧：</p>
+<ul>
+<li>Xcode Memory Debugger 可以看内存中所有对象的内存使用情况和依赖关系</li>
+<li>在 Product -&gt; Scheme -&gt; Edit Scheme -&gt; Diagnostics 打开 Malloc Stack（Live Allocations Only），可以定位占用过大内存</li>
+</ul>
+<h3 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h3><p>图片在使用时，会将 jpg&#x2F;png&#x2F;webp 解码成 Bitmap，对于 RGBA，一个像素就是 4 字节，使用建议：</p>
+<ul>
+<li>使用 UIGraphicsImageRenderer 替代 UIGraphicsBeginImageContextWithOptions，iOS 12 上会自动选择格式，例如黑白图或单色，会讲 RGBA 降为 1 字节。</li>
+<li>修改颜色，建议用 tintColor，不会有额外的内存开销。</li>
+<li>Downsampling 图片时，一般会先解码，然后搞一个小的画布进行渲染，解码还是造成内存峰尖。因此建议使用 ImageIO 框架，CGImageSourceCreateThumbnailAtIndex 不会造成图片解码。</li>
+</ul>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ul>
+<li><p>如何从 UIBezierPath 中提取构造过程：<br><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/3051760/how-to-get-a-list-of-points-from-a-uibezierpath">iOS - How to get a list of points from a UIBezierPath? - Stack Overflow</a></p>
+</li>
+<li><p>iOS 后台杀 App 以前一直以为只有两种情况：</p>
+<ul>
+<li>iOS 系统 Bug（13.2 有一波）</li>
+<li>App 占用内存过多，进入后台后被另一个使用内存大户把系统内存吃光。</li>
+</ul>
+</li>
+</ul>
+<p>最近看同事的分析，发现还会有两点导致系统杀 App：</p>
+<ul>
+<li>出现内存泄漏：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/48107801/ios-app-getting-killed-immediately-after-entering-background">memory leaks - IOS App getting killed immediately after entering background - Stack Overflow</a></li>
+<li>进入后台持续访问像 Camera 或者 Shared System Database 等资源，也会导致系统把 App 干掉（<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/app_and_environment/scenes/preparing_your_ui_to_run_in_the_background">Preparing Your UI to Run in the Background | Apple Developer Documentation</a>）</li>
+</ul>
+<p>一些第三方 SDK 例如环信会导致这个问题： <a target="_blank" rel="noopener" href="http://www.easemob.com/question/13822">http://www.easemob.com/question/13822</a> ，至于环信的原因，有大佬用 Hopper 反解了 EMClient 的 -applicationDidEnterBackground: 方法，如下图。可以看到 isLoggedIn 方法，与登陆了之后才会被 kill 现象完全吻合。</p>
+<p><img src="/images/blog/4373c66306b22120a4dd0493bcbbb543.png"></p>
+<p>至于被 Kill 的原因，是因为其调用了 beginBackgroundTaskWithExpirationHandler，而此方法要求在 expiration 到期前调用 endBackgroundTask，需要成对调用，否则系统会杀掉 App，具体见：<br><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/uiapplication/1623031-beginbackgroundtaskwithexpiratio">https://developer.apple.com/documentation/uikit/uiapplication/1623031-beginbackgroundtaskwithexpiratio</a></p>
+<p>高级，是时候学一波逆向和 Hopper 了</p>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a target="_blank" rel="noopener" href="https://joeshang.github.io/2020/06/14/refactor-multiplexer-and-indirectional-layer/">重构技巧：数据选择器与中间层</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/refactor-multiplexer-and-indirectional-layer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/refactor-multiplexer-and-indirectional-layer/" class="post-title-link" itemprop="url">重构技巧：数据选择器与中间层</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-14 21:20:46" itemprop="dateCreated datePublished" datetime="2020-06-14T21:20:46+08:00">2020-06-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Architecture/" itemprop="url" rel="index"><span itemprop="name">Architecture</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/blog/cs-of-luxun.png"></p>
+<blockquote>
+<p>Any problem  in computer science can be solved by anther layer of indirection  </p>
+</blockquote>
+<p>在计算机领域有句名言：“计算机科学领域的任何问题都可以通过一个中间层来解决”，能找到很多例子：</p>
+<ul>
+<li>虚拟内存： 为了更好的隔离和管理内存，在程序和物理内存之间增加虚拟的内存控件作为中间层。</li>
+<li>操作系统：为了防止应用程序直接（随意）访问硬件，也为了降低使用硬件的复杂度，操作系统和驱动程序来作为中间层。</li>
+<li>JVM：Java 通过构造一个 JVM 虚拟机，隔离了不同平台的底层实现，使得 Java 的字节码可以多个平台上不加修改地运行。</li>
+<li>其他还有很多，例如 TCP&#x2F;IP、汇编等。</li>
+</ul>
+<p>总之，中间层的核心思想，是通过层与层之间的接口，隔离两个层各自的细节和变化。这种间接性 Indirection 的思想除了在架构设计上得到应用，在一些需求变化导致的重构场景也比较适合，这类场景我称为“多路开关”，或者也可以叫“数据选择器”，具体请看下面。</p>
+<h2 id="数据选择器"><a href="#数据选择器" class="headerlink" title="数据选择器"></a>数据选择器</h2><p>在电子技术（特别是数字电路）中，数据选择器（Data Selector），或称多路复用器（multiplexer，简称：MUX），是一种可以从多个模拟或数字输入信号中选择一个信号进行输出的器件。</p>
+<p><img src="/images/blog/Multiplexer2.png"></p>
+<p>在软件开发中，多个输入对应一个输出的场景也比较常见：列表页原来只使用一种类型的数据，在 TableView 的 DataSource 中都是直接使用对应的 Model，随着需求变化，多了一种类型数据，而 Cell 样式是相同的。</p>
+<p>此时应该如何修改代码来比较稳的应对这样的变化？直接改吗？那原来使用数据的地方会多一堆 if&#x2F;else 条件语句，难以维护不易读，如果再增加一条数据源，数据使用的地方还需要再次改动。。。</p>
+<p>这类场景，和数字电路中的数据选择器类似，多路数据输入一路数据输出，由选择器负责切换数据输入。参考相同思路，也构造“数据选择器”：</p>
+<ol>
+<li>抽取中间层，构造“选择器”，重构原有代码接入选择器。抽象层可以用数据抽象，也可以用一个函数封装获取数据的方法，并将“选择器”相关的代码集中到一起，方便维护和处理。</li>
+<li>测试重构后的代码。由于第一步是通过抽取中间层构造“选择器”，数据的消费方不再是直接访问原来的数据，而是通过“选择器”获取数据，因此需要进行测试，保证没有重构出问题，那下一步接入新数据出现问题，就是“选择器”在选择时有问题。</li>
+<li>接入新的数据源。基于前面的重构，这一步的接入变得简单，专注于在“选择器”代码中根据业务需求选择走哪条数据源，数据消费部分的代码和逻辑完全不需要修改，同时选择器的选择逻辑也可以抽出来进行单测。</li>
+</ol>
+<h3 id="快速投票模块"><a href="#快速投票模块" class="headerlink" title="快速投票模块"></a>快速投票模块</h3><p>直播教室内的快速投票原来是基于 Ballot 命令进行显示消失的，后来服务器换成 WidgetState 的方案，相当于一条新的数据源，并且服务器期望根据 Config 配置到底使用哪条数据源。</p>
+<p>重构就是分三步走：</p>
+<ol>
+<li>将原来直接使用 Ballot 的地方抽到函数中，并将 Ballot 和 WidgetState 中共同使用的数据抽出来，使用无依赖的基础数据类型描述（例如 bool 或字典等），原来直接用 Ballot 的消费方，现在使用这些基础数据类型。</li>
+<li>测试第一步的重构。</li>
+<li>接入 WidgetState 的数据，在第一步的函数中，根据 Config 决定是从 Ballot 转还是从 WidgetState 转。</li>
+</ol>
+<h3 id="笔迹库重构"><a href="#笔迹库重构" class="headerlink" title="笔迹库重构"></a>笔迹库重构</h3><p>以前笔迹库只渲染笔迹，所有的操作栈（Undo、Redo、Lasso、ClearScreen）等都和笔迹 View 绑定较死，现在由于要接入图形，是一个新的数据源。</p>
+<p>重构依然是分三步走：</p>
+<ol>
+<li>将操作栈从笔迹 View 中抽出，由一个专门的 Manager 来负责管理，并生成每一步的渲染数据，笔迹 View 就负责渲染笔迹相关的数据。</li>
+<li>测试第一步的重构。</li>
+<li>在 Manager 中接入图形数据，并实现一个图形 View 负责渲染图形相关的数据。</li>
+</ol>
+<p>同时，为了保证上线的稳定性，需要有开关回退，那新旧两个 View 都在，根据开关进行区分，又是一个“数据选择器”。于是抽象一个 Protocol 做为中间层，外部使用是 UIView<Protocol>，由这个中间 View 根据开关切换。</p>
+<p>最后来回顾一下所谓的“选择器“，这有什么新的东西吗？仔细看下“选择器”代码，其实就是由于多了一路数据而导致的变化，抽取中间层相当于将变化隔离开，嗯，最后还是“隔离变化”，万变不离其宗。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/arts-20200526/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/arts-20200526/" class="post-title-link" itemprop="url">ARTS 20200526</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-31 17:06:31" itemprop="dateCreated datePublished" datetime="2020-05-31T17:06:31+08:00">2020-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ARTS/" itemprop="url" rel="index"><span itemprop="name">ARTS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/invert-binary-tree/">Invert Binary Tree - LeetCode</a></p>
+<p>决定从递归思想 + 树开始练习，周末家里有突发情况，所以选了一道简单+“有名”的翻转二叉树。树的结构由于自带子节点，所以很适合递归思想，对于这道题，翻转二叉树就是递归交换子树，递归起来可以有两种思路：</p>
+<ol>
+<li><p>每次交换的是左右子树，至于左右子树的结果，调用 invertTree 获取</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">TreeNode* <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = <span class="built_in">invertTree</span>(root-&gt;left);</span><br><span class="line">        root-&gt;left = <span class="built_in">invertTree</span>(root-&gt;right); </span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        <span class="keyword">return</span> root; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>每次交换左右子节点，然后再递归调用左右子节点</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = root-&gt;left;</span><br><span class="line">        root-&gt;left = root-&gt;right;</span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        <span class="built_in">invertTree</span>(root-&gt;left);</span><br><span class="line">        <span class="built_in">invertTree</span>(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a target="_blank" rel="noopener" href="https://www.essentialdeveloper.com/articles/why-ios-developers-feel-stuck-in-their-careers-and-what-to-do">Why iOS Developers Feel Stuck In Their Careers &amp; What To Do — Essential Developer</a></p>
+<p>对于目前阶段的我而言，一直处于焦虑之中，一方面随着工作年限变多，无论是自己还是“业界”，对于自己的要求变得更高，另一方面，iOS 或者客户端相对服务器端而言，离业务有点远，核心竞争力并不突出。看到这篇文章，没想到”浓眉大眼“ Work Life Balance 的国外 iOS 同行也会 Feel Stuck。。。</p>
+<p>文章的核心观点和我的看法是：</p>
+<ul>
+<li>不要过于急功近利，设置不切实际的目标。学习的过程是曲折向上的，需要花时间持续投入，不要期望有立竿见影的效果，先坚持一段时间再说（例如 ARTS 活动）。</li>
+<li>Feeling Stuck 的原因有时候和工作环境有关，有些事可以缓解，例如同优秀的人合作（remarkable people），例如团队中有 mentor 可以指导如何高效的写和维护高质量的代码等等。关于环境这块我是这样想的，虽然环境会影响人，但个人是可以潜移默化影响环境的，要做“催化剂”</li>
+<li>将工作中遇到的挑战与技术成长结合起来。工作不仅仅是编程或者技术本身，即使是一个简单的需求，那如何在 Commit 拆分上更清楚，如果是重复劳动，能否有一些自动化的工具来提高效率？在遇到例如网络超时问题时，能否更深入的排查，使用 Charles + WireShark 工具，重新翻看 TCP&#x2F;IP 等书籍查漏补缺？另外，软技能一样重要，沟通能力、领导力等，也可以提高。</li>
+</ul>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ol>
+<li>当 UILabel 的 adjustsFontSizeToFitWidth 为 YES 时，UILabel 会根据内容多少来调整字体大小，但是此时 baseline 不变，会导致文字在 Y 轴不居中。解决办法是：将 baselineAdjustment 设置为 UIBaselineAdjustmentAlignCenters。</li>
+<li>UIScrollView 的 directionalLockEnabled 能够锁死每次滑动只影响一个方向，但是当滑动是对角线的情况，就失效了，需要在 beganDragging 时记录初始 offset，并将 direction 初始化为 .none，在 DidScroll 时判断 direction 类型，并根据 vertical 或 horizontal 来设置 contentOffset，最后在 DidEndDecelerating 和 DidEndDragging（willDecelerate 为 false）时重置为 .none</li>
+<li>Swift 会对其符号进行修饰（Name Mangling），具体原理见：<a target="_blank" rel="noopener" href="https://mikeash.com/pyblog/friday-qa-2014-08-15-swift-name-mangling.html">mikeash.com: Friday Q&amp;A 2014-08-15: Swift Name Mangling</a>。在 Bugly 上，如果崩溃在 Swift 方法中，被修饰过的命名就很难读了。Xcode 提供了对 Swift 符号进行 demangling 的工具，在命令行输入 <code>xcrun swift-demangle</code>之后，将对应的 Swift 符号拷入，点回车，就能看到解析后的结果了</li>
+</ol>
+<h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a target="_blank" rel="noopener" href="https://joeshang.github.io/2020/06/14/cname-explain/">CNAME 有什么用？</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/cname-explain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/cname-explain/" class="post-title-link" itemprop="url">CNAME 有什么用？</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-30 17:01:44" itemprop="dateCreated datePublished" datetime="2020-05-30T17:01:44+08:00">2020-05-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>之前一直好奇，公司用的 CDN 是公司域名，是如何转到阿里云或者腾讯云的？后来翻看了 DNS 的一些知识，发现和 CNAME 有关：</p>
+<p>CNAME 是 Canonical Name  的缩写，也成为别名指向。</p>
+<p>DNS 中 CNAME 记录和 A 记录的区别在于，A 记录是把一个域名解析到一个 IP 地址（Address，这也是 A 记录名字的原因），CNAME 记录是把一个域名解析到另一个域名，相当于加了一个中间层。</p>
+<p>通过 dig 能看到 DNS 域名解析的过程，具体见：<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2016/06/dns.html">https://www.ruanyifeng.com/blog/2016/06/dns.html</a></p>
+<p>CNAME 有什么用？有句话是”在软件开发中，没有什么是加一个中间层搞不定的，如果不行，就再加一层“，哈哈，开个玩笑。CNAME 加中间层的好处是：</p>
+<ul>
+<li>多个域名都指向同一个别名，当 IP 变化时，只需要更新该别名的 IP 地址（A 记录），其他域名不需要改变</li>
+<li>有的域名不属于自己，例如 CDN 服务，服务商提供的就是一个 CNAME，将自己的 CDN 域名绑定到 CNAME 上，CDN 服务提供商就可以根据地区、负载均衡、错误转移等情况，动态改别名的 A 记录，不影响自己 CDN 到 CNAME 的映射。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/swiftui-the-shortest-path-to-great-app/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/swiftui-the-shortest-path-to-great-app/" class="post-title-link" itemprop="url">SwiftUI：The Shortest Path to a Great App</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-17 21:26:52" itemprop="dateCreated datePublished" datetime="2019-08-17T21:26:52+08:00">2019-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>SwiftUI 可以说是 WWDC 2019 中最让人激动的技术了，什么是 SwiftUI 呢？官方说法为：SwiftUI is a modern way to declare user interfaces for any Apple platform. Create beautiful, dynamic apps faster than ever before。</p>
+<p>总之，这套新的 UI 框架用 WWDC Session 中的话描述就是：</p>
+<blockquote>
+<p>The Shortest Path to a Great App  </p>
+</blockquote>
+<p>那下面我们就用 SwiftUI 实现一个 iOS 中最常见的列表页，看看到底 Modern、Faster 在哪里？</p>
+<h2 id="First-Glance"><a href="#First-Glance" class="headerlink" title="First Glance"></a>First Glance</h2><p><img src="/images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png"></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">LandMarkView</span> : <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> landmarks: [<span class="type">LandMark</span>]</span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">        <span class="type">List</span>(landmarks) &#123; landmark <span class="keyword">in</span></span><br><span class="line">           <span class="type">HStack</span> &#123;</span><br><span class="line">              <span class="type">Image</span>(landmark.thumbnail)</span><br><span class="line">              <span class="type">Text</span>(landmark.name)</span><br><span class="line">              <span class="type">Spacer</span>()</span><br><span class="line"></span><br><span class="line">              <span class="keyword">if</span> landmark.isFavorite &#123;</span><br><span class="line">                 <span class="type">Image</span>(systemName: <span class="string">&quot;star.fill&quot;</span>)</span><br><span class="line">                    .foregroundColor(.yellow)</span><br><span class="line">              &#125;</span><br><span class="line">           &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同使用 UIKit 写一个列表页进行对比：</p>
+<ul>
+<li>不需要实现 UITableViewDelegate 和 UITableViewDataSource，写一堆冗长的代码，在 <code>List(items)</code> 中描述列表的数据，在 List 的 Closure 中描述每个 Cell</li>
+<li>不需要使用 AutoLayout 或 Frame 对元素进行排版，HStack（View Container）将元素包起来，简单清晰</li>
+<li>当数据 landmarks 有变化时，不需要再调用 reloadData，包括 landmarks 个数有变化或 landmark.isFavorite 值变化，SwiftUI 都会自动更新界面</li>
+</ul>
+<p>可以看到，SwiftUI 极大地简化了构建 UI 的过程（Faster），这种耳目一新的构建方式是 Declarative 声明式编程（Modern），而之前 UIKit 的方式是 Imperative 命令式编程，两者有什么区别呢？</p>
+<h2 id="Imperative-vs-Declarative"><a href="#Imperative-vs-Declarative" class="headerlink" title="Imperative vs Declarative"></a>Imperative vs Declarative</h2><p><img src="/images/blog/v2-8567c3cd5dc30d90b7e3bd9268d01444_1200x500.jpg"></p>
+<ul>
+<li>Imperative：命令式，明确而详细的告诉机器做一些事情，从而达到你想要的结果，专注于 How。这种方式更贴近机器思维，CPU 就是一条条执行 PC 指向的机器码。</li>
+<li>Declarative：声明式，描述你想要什么，交由机器来来完成你想要的，专注于 What。这种方式更贴近人类思维，最开始都是先确定自己想要什么，才会一步步实现。</li>
+</ul>
+<p>举个例子，如果我们要去旅游：</p>
+<ul>
+<li>对于 Imperative，就是自由行，自己要安排详细的行程，包括购买机票，查询各种交通，预定酒店，预定游玩场所的门票，确定吃饭的餐厅等等。</li>
+<li>对于 Declarative，就是跟团游，自己只需要表达想去哪里玩，旅行社或者代理商会帮你安排整个行程。</li>
+</ul>
+<p>Declarative 的核心在于描述 What，将 How 委托给一个 Expert 来完成。如何描述 What，这里就涉及到了 DSL 领域描述语言。</p>
+<p>在 SwiftUI 之前，我们其实或多或少接触过 Declarative，最典型的就是 SQL，SQL 语句就是一种 DSL，例如对于 <code>SELECT * from product WHERE id = 996</code> 这条语句，只是描述了我们想从 product 表中找到 id 为 996 的商品（What），至于怎么找（How），交给数据库来处理，数据库会高效、健壮的取到数据并返回给我们。</p>
+<p>另外，AutoLayout 也可以看成一种简单的 Declarative。</p>
+<p>Imperative 和 Declarative 两者各有优缺点，从目前的趋势来看，React&#x2F;Flutter&#x2F;SwiftUI 通过 Declarative 来构建 UI，看起来 Declarative 是未来 UI 编程的趋势。为什么大家都不约而同的选择 Declarative 呢？今年 WWDC 中 Apple 工程师给出了答案：</p>
+<p><img src="/images/blog/68AD25E9-0498-4248-98C8-06AC10638CD6.png"><br><img src="/images/blog/7A8637F8-6B5A-44ED-A904-B2F793DF9096.png"></p>
+<p>对于一个 App 而言，其代码分为两部分 Basic Features 和 Exciting&#x2F;Custom Features，让 App 出彩、给用户带来很棒体验的是 Exciting&#x2F;Custom Features，SwiftUI 的目的就是为了减少开发者在 Basic Features 部分的负担，让开发者更专注于 Exciting&#x2F;Custom Features。</p>
+<h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><blockquote>
+<p>A view defines a piece of UI  </p>
+</blockquote>
+<p>上面也提到了，声明式相当于将具体的操作委托给一个 Engine，由 Engine 来做具体的脏活累活，向上提供一个抽象层。在 SwiftUI 中这个抽象层就是 View，SwiftUI 中的 View 不再是 UIKit 中的 UIView，没有 Backing Store，不涉及到真正的渲染，View 只是一个抽象概念，描述 UI 应该如何展示。我们看下 View 的定义：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">protocol</span> <span class="title">View</span> : <span class="title">_View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">associatedtype</span> <span class="type">Body</span> : <span class="type">View</span></span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">Self</span>.<span class="type">Body</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，在 SwiftUI 中 View 只是一个 protocol，里面有一个 body 的属性，body 又是 View。这样就可以通过 body 将 View 串起来，形成 View Hierarchy。</p>
+<h2 id="Swift-5-1-Magic-for-SwiftUI-DSL"><a href="#Swift-5-1-Magic-for-SwiftUI-DSL" class="headerlink" title="Swift 5.1 Magic for SwiftUI DSL"></a>Swift 5.1 Magic for SwiftUI DSL</h2><p>为了实现 SwiftUI 的声明式编程，提供 DSL，Swift 语言在 5.1 中引入了一些新特性：（注：这一节的内容参考  <a target="_blank" rel="noopener" href="https://xiaozhuanlan.com/topic/7652341890">SwiftUI 的一些初步探索 (一) － 小专栏</a> 和 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68294674">SwiftUI 的 DSL 语法分析 - 知乎</a> 较多）</p>
+<h3 id="Opaque-Return-Types"><a href="#Opaque-Return-Types" class="headerlink" title="Opaque Return Types"></a>Opaque Return Types</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ContentView</span>: <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">        <span class="type">Text</span>(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面一段自定义 View 的代码中 <code>var body: some View</code> 这行中多了一个 <code>some</code>，这个 some 是干吗用的？由于 View 只是 protocol，在 Swift 5.1 之前，带有 associatedtype 的协议是不能做为类型来用，只能作为类型约束：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Error</span></span><br><span class="line"><span class="comment">// Protocol &#x27;View&#x27; can only be used as a generic constraint</span></span><br><span class="line"><span class="comment">// because it has Self or associated type requirements</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">createView</span>()</span> -&gt; <span class="type">View</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// OK</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">createView</span>&lt;<span class="type">T</span>: <span class="type">View</span>&gt;()</span> -&gt; <span class="type">T</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相当于在声明 body 时，不能用 View，需要指定具体的类型，例如 VStack、Text 等，但如果 body 的类型变化，每次都需要修改，比较麻烦。因此 Swift 5.1 引入了 Opaque Return Types，使用方式是 <code>some protocol</code>，当 body 的类型变成 <code>some View</code> 后，相当于它向编译器作出保证，每次 body 得到的一定是某一个确定的、遵守View协议的类型，但是请编译器“网开一面”，不要再细究具体的类型。返回类型<strong>确定单一</strong>这个条件十分重要，写成下面的样子编译器会报错：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Error</span></span><br><span class="line"><span class="comment">// Function declares an opaque return type, but the return </span></span><br><span class="line"><span class="comment">// statements in its body do not have matching underlying types</span></span><br><span class="line"><span class="keyword">let</span> someCondition: <span class="type">Bool</span> <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> someCondition &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="type">Text</span>(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="type">Button</span>(action: &#123;&#125;) &#123;</span><br><span class="line">            <span class="type">Text</span>(<span class="string">&quot;Tap me&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Property-Delegates"><a href="#Property-Delegates" class="headerlink" title="Property Delegates"></a>Property Delegates</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RoomDetail</span> : <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> room: <span class="type">Room</span></span><br><span class="line">    <span class="meta">@State</span> <span class="keyword">private</span> <span class="keyword">var</span> zoomed <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">        <span class="type">Image</span>(room.imageName)</span><br><span class="line">            .resizable()</span><br><span class="line">            .aspectRatio(contentMode: zoomed <span class="operator">?</span> .fill : .fit)</span><br><span class="line">			  .tapAction &#123; <span class="keyword">self</span>.zoomed.toggle() &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的代码中，一旦 zoomed 的值发生变化，SwiftUI 会自动更新 UI，这一切都源于 <code>@State</code>。State 本质上只是一个自定义类，用 @propertyDelegate 修饰，<code>@State var zoomed</code> 会将 zoomed 的读写转到 State 类中实现了。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@propertyDelegate</span> <span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">State</span>&lt;<span class="title">Value</span>&gt;</span></span><br><span class="line"><span class="class">@<span class="title">propertyDelegate</span> <span class="title">public</span> <span class="title">struct</span> <span class="title">Binding</span>&lt;<span class="title">Value</span>&gt;</span></span><br><span class="line"><span class="class">@<span class="title">propertyDelegate</span> <span class="title">public</span> <span class="title">struct</span> <span class="title">Environment</span>&lt;<span class="title">Value</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>里面 <code>@propertyDelegate</code> 是 Swift 5.1 引入的新特性 Property Delegate，这个特性有什么用呢？假设我们有一个设置页面，需要在 UserDefault 中存储一些属性，</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Preferences</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> shouldAlert: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">UserDefaults</span>.standard.object(forKey: <span class="string">&quot;shouldAlert&quot;</span>) <span class="keyword">as?</span> <span class="type">Bool</span> <span class="operator">??</span> <span class="literal">false</span></span><br><span class="line">        &#125; <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="type">UserDefaults</span>.standard.set(newValue, forKey: <span class="string">&quot;shouldAlert&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">     <span class="keyword">static</span> <span class="keyword">var</span> refreshRequency: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">UserDefaults</span>.standard.object(forKey: <span class="string">&quot;refreshRequency&quot;</span>) <span class="keyword">as?</span> <span class="type">TimeInterval</span> <span class="operator">??</span> <span class="number">6000</span></span><br><span class="line">        &#125; <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="type">UserDefaults</span>.standard.set(newValue, forKey: <span class="string">&quot;refreshRequency&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现 shouldAlert 和 refreshRequency 代码重复较多，如果再多一些设置值，Preferences 这个类会写的烦死。针对这种情况，Swift 5.1 引入 Property Delegate，可以将 Property 的相同行为 Delegate 给一个代理对象去做：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@propertyDelegate</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">UserDefault</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> key: <span class="type">String</span></span><br><span class="line">    <span class="keyword">let</span> defaultValue: <span class="type">T</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> value: <span class="type">T</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">UserDefaults</span>.standard.object(forKey: key) <span class="keyword">as?</span> <span class="type">T</span> <span class="operator">??</span> defaultValue</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="type">UserDefaults</span>.standard.set(newValue, forKey: key)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Preferences</span> </span>&#123;</span><br><span class="line">    <span class="meta">@UserDefault</span>(key: <span class="string">&quot;shouldAlert&quot;</span>, defaultValue: <span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> shouldAlert: <span class="type">Bool</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@UserDefault</span>(key: <span class="string">&quot;refreshRequency&quot;</span>, defaultValue: <span class="number">6000</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> refreshRequency: <span class="type">TimeInterval</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当使用 <code> @UserDefault(key: &quot;shouldAlert&quot;, defaultValue: false)</code> 修饰过 shouldAlert 之后，shouldAlert 会被编译器处理成下面的样子：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Preferences</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> <span class="variable">$shouldAlert</span> <span class="operator">=</span> <span class="type">UserDefault</span>&lt;<span class="type">Bool</span>&gt;(key: <span class="string">&quot;shouldAlert&quot;</span>, defaultValue: <span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> shouldAlert: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$shouldAlert</span>.value</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="variable">$shouldAlert</span>.value <span class="operator">=</span> newValue</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到 <code>@State</code>，当 zoomed 被 <code>@State</code> 修饰后，zoomed 的读写被 Delegate 到 State 类中，SwiftUI 框架在 State 类中根据 zoomed 值的变化去触发界面的更新，达到 Value 变化 UI 自动更新的效果。</p>
+<h3 id="Trailing-Closure-Function-Builder"><a href="#Trailing-Closure-Function-Builder" class="headerlink" title="Trailing Closure &amp; Function Builder"></a>Trailing Closure &amp; Function Builder</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">HStack</span>(alignment: .center) &#123;</span><br><span class="line">   <span class="type">Image</span>(landmark.thumbnail)</span><br><span class="line">   <span class="type">Text</span>(landmark.name)</span><br><span class="line">   <span class="type">Spacer</span>()</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> landmark.isFavorite &#123;</span><br><span class="line">      <span class="type">Image</span>(systemName: <span class="string">&quot;star.fill&quot;</span>)</span><br><span class="line">         .foregroundColor(.yellow)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HStack 中 View 与 View 之间没有 , 区分，也没有 return，这种 DSL 的写法主要基于 Swift 的 Trailing Closure 和 Function Builder。下面是 HStack 的定义：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">HStack</span>&lt;<span class="title">Content</span>&gt; <span class="title">where</span> <span class="title">Content</span> : <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">@inlinable</span> <span class="keyword">public</span> <span class="function"><span class="keyword">init</span>(<span class="params">alignment</span>: <span class="type">VerticalAlignment</span> <span class="operator">=</span> .center, </span></span><br><span class="line"><span class="function">                           <span class="params">spacing</span>: <span class="type">Length</span>? <span class="operator">=</span> <span class="literal">nil</span>, </span></span><br><span class="line"><span class="function">                           <span class="meta">@ViewBuilder</span> <span class="params">content</span>: () -&gt; <span class="type">Content</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>首先对于  Trailing Closure，如果一个 Swift 方法中最后一个参数是 Closure，则可以将 Closure 提到括号外面。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@_functionBuilder</span> <span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">ViewBuilder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">buildBlock</span>()</span> -&gt; <span class="type">EmptyView</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">buildBlock</span>(<span class="keyword">_</span> <span class="params">content</span>: <span class="type">Content</span>)</span> -&gt; <span class="type">Content</span> <span class="keyword">where</span> <span class="type">Content</span> : <span class="type">View</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其次对于 Function Builder，可以看到 content 前面有一个 <code>@ViewBuilder</code> ，而 ViewBuilder 使用了 <code>@_functionBuilder</code> 修饰，被 <code>@ViewBuilder</code> 修饰过的 Closure 就会被修改语法树，转调 ViewBuilder 的 buildBlock 函数。最终</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">HStack</span>(alignment: .center) &#123;</span><br><span class="line">   <span class="type">Image</span>(landmark.thumbnail)</span><br><span class="line">   <span class="type">Text</span>(landmark.name)</span><br><span class="line">   <span class="type">Spacer</span>()</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> landmark.isFavorite &#123;</span><br><span class="line">      <span class="type">Image</span>(systemName: <span class="string">&quot;star.fill&quot;</span>)</span><br><span class="line">         .foregroundColor(.yellow)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>被转换成了</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">HStack</span>(alignment: .center) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="type">ViewBuilder</span>.buildBlock(</span><br><span class="line">        <span class="type">Image</span>(landmark.thumbnail),</span><br><span class="line">        <span class="type">Text</span>(landmark.name),</span><br><span class="line">        <span class="type">Spacer</span>()</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>最后，Apple 为 SwiftUI 提供了一个无论是内容还是交互都非常棒的<a target="_blank" rel="noopener" href="https://developer.apple.com/tutorials/swiftui">官方教程</a>，值得学习 SwiftUI 时跟着教程动手练习，正如同今年 WWDC 的主题一样，一起 Write Code，Blow Minds 吧。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://xiaozhuanlan.com/topic/7652341890">SwiftUI 的一些初步探索 (一) － 小专栏</a></li>
+<li><a target="_blank" rel="noopener" href="https://swiftrocks.com/inside-swiftui-compiler-magic.html">Inside SwiftUI’s Declarative Syntax’s Compiler Magic - SwiftRocks</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68294674">SwiftUI 的 DSL 语法分析 - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/56434549/what-enables-swiftuis-dsl">swift - What enables SwiftUI’s DSL? - Stack Overflow</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/ios-copying/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/ios-copying/" class="post-title-link" itemprop="url">iOS 中的 Copying</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-04 10:29:12" itemprop="dateCreated datePublished" datetime="2018-04-04T10:29:12+08:00">2018-04-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Copying 在 iOS 中有很多概念，例如浅拷贝与深拷贝、copy 与 mutableCopy、NSCopying 协议，一直想彻底搞明白这些概念，刨根问底不搞懂不罢休嘛。于是搜 Google 看了一些博客，又去翻了 Apple 相关的文档，发现网上许多博客都理解错了，下面说说自己的理解。</p>
+<h2 id="浅拷贝与深拷贝"><a href="#浅拷贝与深拷贝" class="headerlink" title="浅拷贝与深拷贝"></a>浅拷贝与深拷贝</h2><p>对于浅拷贝（Swallow Copy）与深拷贝（Deep Copy），经常看到这样的说法：<code>浅复制是指针拷贝，仅仅拷贝指向对象的指针；深复制是内容拷贝，会拷贝对象本身。</code> 这句话并没有说错，但需要注意的是<strong>指针&#x2F;内容拷贝针对的是谁</strong>，无论浅拷贝还是深拷贝，被拷贝的对象都会被复制一份，有新的对象产生，而在复制对象的内容时，对于被拷贝对象中的指针类型的成员变量，浅拷贝只是复制指针，而深拷贝除了复制指针外，会复制指针指向的内容。下面我们以 Apple 官方文档中的图片进行说明：</p>
+<p><img src="/images/blog/ios-object-copy.png" alt="Object Copy"></p>
+<p>对普通对象 ObjectA 进行 copy，无论浅拷贝还是深拷贝，都会复制出一个新的对象 ObjectB，只是浅拷贝时 ObjectA 与 ObjectB 中的 textColor 指针还指向同一个 NSColor 对象，而深拷贝时 ObjectA 和 ObjectB 中的 textColor 指针分别指向各自的 NSColor 对象（NSColor 对象被复制了一份）。</p>
+<p><img src="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Art/CopyingCollections_2x.png" alt="Collection Copy"></p>
+<p>对集合对象  Array1 进行 copy，无论浅拷贝还是深拷贝，都会复制出一个新的对象 Array2，只是浅拷贝时 Array1 与 Array2 中各个元素的指针还指向同一个对象，而深拷贝时 Array1 和 Array2 中各个元素的指针分别指向各自的对象（对象被复制了一份）。</p>
+<h2 id="Copy-与-MutableCopy"><a href="#Copy-与-MutableCopy" class="headerlink" title="Copy 与 MutableCopy"></a>Copy 与 MutableCopy</h2><p>在说明 copy 与 mutableCopy 之前，我们思考一下：拷贝的目的是什么？在动态库加载时，只读的 TEXT 段是被所有使用动态库的程序共享的， 而可写的 DATA 段会使用 COW（Copy On Write）技术，当某个程序需要修改 DATA 段时会拷贝一份，供此程序专用。因此，拷贝的目的主要用于拷贝一份新的数据进行修改，而不会影响到原有的数据。如果不修改，拷贝就没有必要。</p>
+<p>在 iOS 中，有一些系统类根据是否可变进行了区分，例如 NSString 与 NSMutableString，NSArray 与 NSMutableArray 等。为了在两者之间进行转换（我理解这是主要目的），NSObject 提供了 <code>copy</code> 与 <code>mutableCopy</code>  方法， <code>copy</code> 复制后对象是不可变对象，<code>mutableCopy</code> 复制后对象是可变对象。对象有不可变对象和可变对象，复制方法有 <code>copy</code> 和 <code>mutableCopy</code>，因此存在四种情况：</p>
+<ol>
+<li>不可变对象 <code>copy</code>：对象是不可变的，再复制出一份不可变对象没有意义，因此<strong>根本没有发生任何拷贝</strong>，对象只有一份。</li>
+<li>不可变对象 <code>mutableCopy</code>：可变对象的能够修改，原来的不可变对象不支持，因此需要复制出一个新对象，是<strong>浅拷贝</strong>。</li>
+<li>可变对象 <code>copy</code>：不可变对象不能修改，原来的可变对象不支持，因此需要复制出新对象，是<strong>浅拷贝</strong>。</li>
+<li>可变对象 <code>mutableCopy</code>：可变对象的修改不应该影响到原来的可变对象，因此需要复制出新对象，是<strong>浅拷贝</strong>。</li>
+</ol>
+<h3 id="如何进行深拷贝呢？"><a href="#如何进行深拷贝呢？" class="headerlink" title="如何进行深拷贝呢？"></a>如何进行深拷贝呢？</h3><p>对于集合类型的对象，将 <code>initWithArray:copyItems:</code> 第二个参数设置成 YES 时，会对集合内每一个元素发送 <code>copyWithZone:</code> 消息，元素进行复制，但是对于元素中指针类型的成员变量，依然是浅拷贝，因此这种拷贝被称为单层深拷贝（one-level-deep copy）。</p>
+<p>如果想进行完全的深拷贝，可以先通过 NSKeyedArchiver 将对象归档，再通过 NSKeyedUnarchiver 将对象解归档。由于在归档时，对象中每个成员变量都会收到 <code>encodeWithCoder:</code> 消息，相当于将对象所有的数据均序列化保存到磁盘上（可以看成换了种数据格式的拷贝），再通过 <code>initWithCoder:</code> 解归档时，就将拷贝过的数据经过转换后读取出来，深拷贝。</p>
+<h3 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h3><p>如果自定义的类也想要支持 <code>copy</code> 和 <code>mutableCopy</code> 方法，就需要实现 <code>NSCopying</code> 和 <code>NSMutableCopying</code> 协议。在实现 <code>copyWithZone:</code> 方法时需要注意：</p>
+<ul>
+<li><code>copyWithZone:</code> 相当于新创建一个对象，并将当前对象的值复制到新创建的对象中。设置时应直接访问成员变量而不是通过属性访问。</li>
+<li>直接从 NSObject 继承的类，应使用 <code>[[[self class] allocWithZone:zone] init]</code>，使得在创建新对象时能够使用正确的类。</li>
+<li>父类中已经实现了 <code>copyWithZone:</code> 时，应先调用父类的方法，让父类创建对应的对象（self class 能保证创建对象是正确的），并拷贝父类中定义的成员变量。</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)copyWithZone:(<span class="built_in">NSZone</span> *)zone &#123;</span><br><span class="line">    YourClass *object = [<span class="keyword">super</span> copyWithZone:zone];</span><br><span class="line">    _property = xxx;</span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/ObjectCopying.html">Object copying</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html">Copying Collections</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/pro648/tips/wiki/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B9%8B%E5%BD%92%E6%A1%A3%E8%A7%A3%E6%A1%A3-NSKeyedArchiver-NSKeyedUnarchiver">数据存储之归档解档 NSKeyedArchiver NSKeyedUnarchiver · pro648&#x2F;tips Wiki · GitHub</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="尚传人"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">尚传人</p>
+  <div class="site-description" itemprop="description">Stay Hungry, Stay Foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/joeshang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;joeshang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shangchuanren@gmail.com" title="E-Mail → mailto:shangchuanren@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2464216170" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;2464216170" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/bridge_joe" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;bridge_joe" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尚传人</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

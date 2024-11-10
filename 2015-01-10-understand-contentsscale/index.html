@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在看《iOS CoreAnimation: Advanced  Techiques》时，不太理解 CALayer 的 contentsScale 属性，在后面的 CATextLayer 中再次遇到，于是花功夫 Google 了一下各类文档，下面说说自己对 contentsScale 的理解，可能涉及的方面有些多： Point与PixeliOS 中的绘图系统使用的尺寸单位为 Point，而屏幕显">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解 contentsScale">
+<meta property="og:url" content="http://yoursite.com/2015-01-10-understand-contentsscale/index.html">
+<meta property="og:site_name" content="传人的技术博客">
+<meta property="og:description" content="最近在看《iOS CoreAnimation: Advanced  Techiques》时，不太理解 CALayer 的 contentsScale 属性，在后面的 CATextLayer 中再次遇到，于是花功夫 Google 了一下各类文档，下面说说自己对 contentsScale 的理解，可能涉及的方面有些多： Point与PixeliOS 中的绘图系统使用的尺寸单位为 Point，而屏幕显">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/images/blog/calayer-uiview-structure.jpg">
+<meta property="article:published_time" content="2015-01-09T17:33:10.000Z">
+<meta property="article:modified_time" content="2024-11-10T13:41:57.218Z">
+<meta property="article:author" content="尚传人">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/blog/calayer-uiview-structure.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2015-01-10-understand-contentsscale/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>理解 contentsScale | 传人的技术博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67853822-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-67853822-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">传人的技术博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015-01-10-understand-contentsscale/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          理解 contentsScale
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-01-10 01:33:10" itemprop="dateCreated datePublished" datetime="2015-01-10T01:33:10+08:00">2015-01-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在看《iOS CoreAnimation: Advanced  Techiques》时，不太理解 CALayer 的 <code>contentsScale</code> 属性，在后面的 CATextLayer 中再次遇到，于是花功夫 Google 了一下各类文档，下面说说自己对 <code>contentsScale</code> 的理解，可能涉及的方面有些多：</p>
+<h2 id="Point与Pixel"><a href="#Point与Pixel" class="headerlink" title="Point与Pixel"></a>Point与Pixel</h2><p>iOS 中的绘图系统使用的尺寸单位为 Point，而屏幕显示的单位为 Pixel，为什么要这样做呢？其实就是为了<strong>隔离变化</strong>：对于绘图而言，并不关心如何在屏幕上显示，这些属于硬件细节，也不应该关心，因此框架使用了万金油方法——抽象，绘图使用与硬件无关的 Point，系统根据当前屏幕的情况自动将 Point 转成 Pixel，所以不论以后硬件屏幕如何变化，使用 Point 的绘图系统以不变应万变，这就是抽象的好处！</p>
+<p>对于非 Retina 与 Retina 的屏幕，Point 与 Pixel 的转化关系如下：</p>
+<ul>
+<li>非 Retina：1 Point &#x3D; 1 x 1 Pixel</li>
+<li>Retina：1 Point &#x3D; 2 x 2 Pixel</li>
+</ul>
+<p>系统通过一个变量来表示这种映射关系，这就是 UIScreen 中的 <code>scale</code> 属性的作用。需要注意的是，Retina 屏幕 1 个 Point 对应 4 个 Pixel，但 <code>scale</code> 为 2，为什么不是4呢？因为在屏幕的二维空间中，一切可显示的物体都有 X 轴跟 Y 轴性质，Retina 屏幕的映射是 X 跟 Y 两个方向同时放大两倍实现的，所以 <code>scale</code> 为 2（这也是为什么上面写成 2 x 2 而不是直接为 4 的原因）。</p>
+<h2 id="CALayer-与-Render"><a href="#CALayer-与-Render" class="headerlink" title="CALayer 与 Render"></a>CALayer 与 Render</h2><p>在 iOS 中，如果想要显示什么，可能第一时间想到的就是 UIView 及其子类，但是 UIView 本身其实并不负责显示，从 UIView 从 UIResponder 继承可以看出，UIView 的主要任务是响应触摸事件（在责任链中），那 UIView 是如何实现显示的呢？通过<strong>组合</strong>，将责任委托给成员变量：每个 UIView 都有一个 Backing Layer，UIView 将显示的任务就交给 CALayer 这个小弟啦，自己作为一个 Wrapper，将 CALayer 一些比较复杂的操作封装成简单已用的接口，供外部使用。下图就是二者的关系图（直接用笔记中的手绘，见谅）：</p>
+<p><img src="/images/blog/calayer-uiview-structure.jpg"></p>
+<p>因此对纹理封装的 CALayer 才是显示的核心，CALayer 的 <code>contents</code> 才指定了真正的要显示的内容，理解了这一点，下面就开始介绍正主<code>contentsScale</code>（现在才开始真是醉了），按照惯例，先看下官方文档，我截取了一段：</p>
+<blockquote>
+<p>This value defines the mapping between the logical coordinate space of the layer (measured in points) and the physical coordinate space (measured in pixels). Higher scale factors indicate that each point in the layer is represented by more than one pixel at render time.<br>Core Animation uses the value you specify as a cue to determine how to render your content.</p>
+</blockquote>
+<p>官方文档有两个关键点：</p>
+<ol>
+<li><code>contentsScale</code> 决定了 CALayer 的内容如何从 Point 映射到 Pixel。</li>
+<li><code>contentsScale</code> 决定了 CALayer 的内容如何被渲染。</li>
+</ol>
+<p>为了理解这两个关键点，就要介绍下 CALayer 内容的来源了。CALayer 内容的来源有两种：</p>
+<h3 id="1-通过-Core-Graphics-自定义绘图到-CALayer-的-Backing-Store-中"><a href="#1-通过-Core-Graphics-自定义绘图到-CALayer-的-Backing-Store-中" class="headerlink" title="1. 通过 Core Graphics 自定义绘图到 CALayer 的 Backing Store 中"></a>1. 通过 Core Graphics 自定义绘图到 CALayer 的 Backing Store 中</h3><p>CALayer 会根据 <code>contentsScale</code> 创建 Backing Store，并且根据 <code>contentScale</code> 设置 Context 的 CTM（Concurrent Transform Matrix）。例如，Layer 的尺寸为 10 Point x 10 Point，当<code>contentsScale</code> 为 2.0 时，最后生成的 Backing Store 大小为 20 Pixel x 20 Pixel，并且在将创建的 Graphics Context 传入 <code>drawLayer:InContext:</code> 前，会调用 <code>CGContextScaleCTM(context, 2, 2)</code> 进行放大，这样会使生成的内容自动满足屏幕的要求。</p>
+<h3 id="2-将CGImage类型的图片设置为CALayer的contents"><a href="#2-将CGImage类型的图片设置为CALayer的contents" class="headerlink" title="2. 将CGImage类型的图片设置为CALayer的contents"></a>2. 将CGImage类型的图片设置为CALayer的contents</h3><p>图片的尺寸是像素相关的，iOS 在加载图片时，通过图片的名称进行处理。例如对于 @2x 的图片，在加载为 UIImage 时，会将 <code>scale</code> 设置为 2，<code>size</code> 为像素大小除以 <code>scale</code>，这样就保证了 UIImage 在 Retina 屏幕上能够正常显示。但需要注意的是：将 UIImage 转换成 CGImage 时会丢失 <code>scale</code> 属性，使用 CGImageGetWidth&#x2F;Height 时得到的是像素尺寸。</p>
+<p>与 Core Graphics 生成内容不同的是，图片作为纹理已经被上传至 GPU，CALayer 不需要分配 Backing Store，<code>contentsScale</code> 会在渲染时起作用：对于 Retina 的屏幕，如果 <code>contentsScale</code> 为 2.0，与屏幕的 <code>scale</code> 匹配，则渲染系统不对内容进行处理，如果 <code>contentsScale</code> 为 1.0，说明 Layer 的内容并不匹配屏幕 <code>scale</code>，渲染系统会对 Layer 的内容进行两倍的 Scale 操作。由于图片本身内容没那么多，于是渲染系统会填充像素，导致模糊。</p>
+<p>总之，<code>contentsScale</code> 描述了 CALayer 内容的 Scale 特性，CALayer 在生成内容时会根据 <code>contentsScale</code> 做处理，并且渲染系统根据 <code>contentsScale</code> 进行渲染。另，《编写可读代码的艺术》中写到的“名字才是最好的注释”在这里得到很好的诠释，理解了 <code>contentsScale</code> 之后，再回过头看看命名，清晰准确，值得学习。</p>
+<h2 id="需要注意-scale-的地方"><a href="#需要注意-scale-的地方" class="headerlink" title="需要注意 scale 的地方"></a>需要注意 scale 的地方</h2><ol>
+<li>CALayer 的 <code>contentsScale</code> 默认为 1.0，只有在使用 Core Graphics 在 <code>drawRect:</code> 中自定义绘图时系统才会根据当前屏幕的情况设置，因此以下情况需要设置合适的 <code>contentsScale</code>：</li>
+</ol>
+<ul>
+<li>直接设置 CALayer 的 <code>contents</code> 时。</li>
+<li>创建新的 CALayer 时。例如，CATextLayer 在 Retina 屏幕时如果不设置 <code>contentsScale</code>，所显示的文字就会模糊。</li>
+</ul>
+<ol start="2">
+<li>在使用 Image Context 时需要注意：<code>UIGraphicsBeginImageContext</code> 以 1.0 的比例系数创建 Bitmap，所以当屏幕为 Retina 时，在渲染时可能会显得模糊。要创建比例系数为其它值的图片，需要使用 <code>UIGraphicsBeginImageContextWithOptions</code>。</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/18459078/when-do-i-need-to-set-the-contentsscale-property-of-a-calayer">When do I need to set the contentsScale property of a CALayer?</a></li>
+<li><a target="_blank" rel="noopener" href="http://edsioon.me/when-consider-scale/">何时需要考虑 scale 系数</a></li>
+<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/a/26054122/1971624">UIView’s contentScaleFactor depends on implementing drawRect:?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014-12-22-scranimationchain-architecture/" rel="prev" title="SCRAnimationChain 的设计思路">
+      <i class="fa fa-chevron-left"></i> SCRAnimationChain 的设计思路
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015-04-10-fix-xcode-upgrade-plugin-invalid/" rel="next" title="Xcode 升级后插件失效的原理与修复办法">
+      Xcode 升级后插件失效的原理与修复办法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Point%E4%B8%8EPixel"><span class="nav-number">1.</span> <span class="nav-text">Point与Pixel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CALayer-%E4%B8%8E-Render"><span class="nav-number">2.</span> <span class="nav-text">CALayer 与 Render</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%80%9A%E8%BF%87-Core-Graphics-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%98%E5%9B%BE%E5%88%B0-CALayer-%E7%9A%84-Backing-Store-%E4%B8%AD"><span class="nav-number">2.1.</span> <span class="nav-text">1. 通过 Core Graphics 自定义绘图到 CALayer 的 Backing Store 中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B0%86CGImage%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%9B%BE%E7%89%87%E8%AE%BE%E7%BD%AE%E4%B8%BACALayer%E7%9A%84contents"><span class="nav-number">2.2.</span> <span class="nav-text">2. 将CGImage类型的图片设置为CALayer的contents</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F-scale-%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="nav-number">3.</span> <span class="nav-text">需要注意 scale 的地方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="尚传人"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">尚传人</p>
+  <div class="site-description" itemprop="description">Stay Hungry, Stay Foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/joeshang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;joeshang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shangchuanren@gmail.com" title="E-Mail → mailto:shangchuanren@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2464216170" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;2464216170" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/bridge_joe" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;bridge_joe" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尚传人</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="为什么选择Octopress我一直是一个喜欢做笔记的人，觉得做笔记有以下优点：  在阅读时能够很好的帮助我思考，提炼精华，把握核心，在复习总结时非常有用 能把一些零散的知识通过分类给聚合起来，形成知识体系 每次看到满满一本全是笔记的时候，非常有成就感  之前一直是在用笔在本子上做笔记，比较喜欢自由涂鸦的那种感觉，但渐渐的发现了一些问题：  纸制的保存时间有限，而且易丢失 修改扩展起来比较麻烦 检索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Octopress 搭建博客">
+<meta property="og:url" content="http://yoursite.com/2014-03-01-setup-octopress-blog/index.html">
+<meta property="og:site_name" content="传人的技术博客">
+<meta property="og:description" content="为什么选择Octopress我一直是一个喜欢做笔记的人，觉得做笔记有以下优点：  在阅读时能够很好的帮助我思考，提炼精华，把握核心，在复习总结时非常有用 能把一些零散的知识通过分类给聚合起来，形成知识体系 每次看到满满一本全是笔记的时候，非常有成就感  之前一直是在用笔在本子上做笔记，比较喜欢自由涂鸦的那种感觉，但渐渐的发现了一些问题：  纸制的保存时间有限，而且易丢失 修改扩展起来比较麻烦 检索">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2014-03-01T01:57:00.000Z">
+<meta property="article:modified_time" content="2024-11-10T13:41:57.217Z">
+<meta property="article:author" content="尚传人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2014-03-01-setup-octopress-blog/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用 Octopress 搭建博客 | 传人的技术博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67853822-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-67853822-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">传人的技术博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014-03-01-setup-octopress-blog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用 Octopress 搭建博客
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-03-01 09:57:00" itemprop="dateCreated datePublished" datetime="2014-03-01T09:57:00+08:00">2014-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="为什么选择Octopress"><a href="#为什么选择Octopress" class="headerlink" title="为什么选择Octopress"></a>为什么选择Octopress</h2><p>我一直是一个喜欢做笔记的人，觉得做笔记有以下优点：</p>
+<ul>
+<li>在阅读时能够很好的帮助我思考，提炼精华，把握核心，在复习总结时非常有用</li>
+<li>能把一些零散的知识通过分类给聚合起来，形成知识体系</li>
+<li>每次看到满满一本全是笔记的时候，非常有成就感</li>
+</ul>
+<p>之前一直是在用笔在本子上做笔记，比较喜欢自由涂鸦的那种感觉，但渐渐的发现了一些问题：</p>
+<ol>
+<li>纸制的保存时间有限，而且易丢失</li>
+<li>修改扩展起来比较麻烦</li>
+<li>检索、聚合起来不方便</li>
+</ol>
+<p>后来试过像 CSDN 之类的博客，总觉得不好用，尤其是文本编辑，感觉非常麻烦， Vim 用多了，喜欢纯文本编辑的乐趣与效率，搜索过自带格式的语言，HTML 更适合展示，大量的格式信息把文本“淹没”了，而 Latex 又过于复杂，直到通过 <a target="_blank" rel="noopener" href="http://github.com/">Github</a> 学习了 <a target="_blank" rel="noopener" href="http://wowubuntu.com/markdown/">Markdown</a>，终于找到了一个适合写作的语言了，在用 Markdown 写作时有种开心的感觉，就像拿 LAMY 的钢笔在 MUJI 的本子上写作一样，各种爱不释手，哈哈。为什么这么喜欢 Markdown呢？我觉得有以下原因：</p>
+<ul>
+<li>纯文本，所以兼容性强，可以用文本编辑器打开</li>
+<li>Markdown 的标记语法简单清晰，具有很好的可读性，并且不会影响文本</li>
+<li>专注于文字而不是排版</li>
+<li>格式转换非常方便，可以轻松转换成 HTML、PDF 等</li>
+</ul>
+<p>用惯了 Markdown 之后开始 YY，既然 Markdown 转换 HTML 这么容易，如果能有支持 Markdown 的博客就好了，于是我 Google 了一下，发现了 <a target="_blank" rel="noopener" href="http://octopress.org/">Octopress</a>，一个非常酷的博客框架，而且可以 deploy 到 Github Pages 上，我擦，Github + Markdown，这一下子击中了我，所以立马用 Octopress 搭建了一个博客，以后要渐渐将思考、笔记记录到这个博客上了。</p>
+<h3 id="专注-坚持，一定能够有所收获！"><a href="#专注-坚持，一定能够有所收获！" class="headerlink" title="专注+坚持，一定能够有所收获！"></a>专注+坚持，一定能够有所收获！</h3><p>下面就介绍下如何通过 Octopress 搭建 Blog：</p>
+<h2 id="Octopress搭建原理"><a href="#Octopress搭建原理" class="headerlink" title="Octopress搭建原理"></a>Octopress搭建原理</h2><p>Octopress 的<a target="_blank" rel="noopener" href="http://octopress.org/docs">文档</a>上关于搭建步骤已经写的非常详细了，所以这里就不再重复。我是一个喜欢刨根问底的人（处女座），所以对搭建跟使用过程中的这些疑问很感兴趣：</p>
+<ul>
+<li>在搭建过程中 gem&#x2F;bundle&#x2F;rake 都是干什么的，为什么 <code>rake cmd</code> 就执行相关操作？</li>
+<li>为什么 deploy 到 Github 上的目录跟本地目录不一样（为什么有 source 跟 master 两个分支）？</li>
+</ul>
+<h3 id="搭建步骤原理"><a href="#搭建步骤原理" class="headerlink" title="搭建步骤原理"></a>搭建步骤原理</h3><p>对于第一个问题，Octopress 是基于 ruby 的，因此 gem&#x2F;bundle&#x2F;rake 都是 ruby 相关的一些工具，可以看一下<a target="_blank" rel="noopener" href="http://henter.me/post/ruby-rvm-gem-rake-bundle-rails.html">整理 Ruby 相关的各种概念</a>这篇文章了解下：</p>
+<ul>
+<li>Gem：ruby 中的包管理器（Package Manager），就如同 Ubuntu 中的 apt-get，方便管理与使用各类 ruby 包。但是一个项目有可能用很多包，总不能一个一个手动用 Gem 获取吧？于是 Bundle 出现了：</li>
+<li>Bundle：相当于多个 Gem 批处理运行。在配置文件 Gemfile 里说明应用依赖哪些第三方包，Bundle 自动帮你下载安装多个包，并且会下载这些包依赖的包。</li>
+<li>Rake：Ruby Make，顾名思义，一个用 ruby 开发的代码构建工具。由于 ruby 不需要编译，所以 Rake 其实相当于一个任务管理工具：<ol>
+<li>以任务的方式创建和运行脚本（Rakefile）</li>
+<li>追踪和管理任务间的依赖</li>
+</ol>
+</li>
+</ul>
+<p>所以我们就理解了安装步骤：</p>
+<ol>
+<li>首先用 <code>gem install bundler</code> 安装 Bundle</li>
+<li>通过 <code>bundle install</code>，Bundle 读取 Gemfile 中 Octopress 需要的包，进行下载安装</li>
+<li>通过 <code>rake cmd</code>，Rake 读取 Rakefile 脚本中的内容，执行对应的任务</li>
+</ol>
+<h3 id="Octopress部署框架"><a href="#Octopress部署框架" class="headerlink" title="Octopress部署框架"></a>Octopress部署框架</h3><p>对于第二个问题，Octopress 是一个生成器，它根据你的配置与主题，将 Markdown 格式的文档转化成 HTML 页面，生成出一个完成 Blog（在 <code>_deploy</code> 目录中），所以应该将生成器与 Markdown 编写的内容同生成的 Blog 网页分开，于是在 Github 上存在两个分支：</p>
+<ul>
+<li>master：生成的 Blog 是期望访问 username.github.io 就访问到的，因此利用 Github 默认显示的 master 分支的特性，将生成的 Blog 设置为 master</li>
+<li>source：Octopress 生成器与用 Markdown 编写的内容放置在 source 分支</li>
+</ul>
+<p>这样，对多台电脑同步 Octopress 博客的操作也明白为什么要这样做了：</p>
+<h3 id="Octopress-多台电脑同步方法"><a href="#Octopress-多台电脑同步方法" class="headerlink" title="Octopress 多台电脑同步方法"></a>Octopress 多台电脑同步方法</h3><p>建立本地 Octopress 仓库，操作如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone -b source https://github.com/username/username.github.io octopress //先 clone 生成器与文章</span><br><span class="line">$ cd octopress // 生成的 Blog 是被放置在生成器的一个子目录中的，因此要进入生成器目录</span><br><span class="line">$ git clone https://github.com/username/username.github.io _deploy // 然后再 clone 所生成的内容</span><br></pre></td></tr></table></figure>
+
+<p>更新</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cd octopress</span><br><span class="line">$ git pull origin source # 更新 local 的 source 分支</span><br><span class="line">$ cd _deploy</span><br><span class="line">$ git pull origin master # 更新 local 的 master 分支</span><br></pre></td></tr></table></figure>
+
+<p>推送</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ rake generate</span><br><span class="line">$ git add .</span><br><span class="line">$ git commit -m &quot;Commit Message&quot;</span><br><span class="line">$ git push origin source # 更新 remote 的 source 分支</span><br><span class="line">$ rake deploy # 更新 remote 的 master 分支</span><br></pre></td></tr></table></figure>
+
+<h3 id="Octopress-搭建过程中问题总结"><a href="#Octopress-搭建过程中问题总结" class="headerlink" title="Octopress 搭建过程中问题总结"></a>Octopress 搭建过程中问题总结</h3><h4 id="1-You-have-already-activated-rake-0-9-0-but-your-Gemfile-requires-rake-0-8-7"><a href="#1-You-have-already-activated-rake-0-9-0-but-your-Gemfile-requires-rake-0-8-7" class="headerlink" title="1. You have already activated rake 0.9.0, but your Gemfile requires rake 0.8.7"></a>1. You have already activated rake 0.9.0, but your Gemfile requires rake 0.8.7</h4><p>说明 Rake 版本不匹配，使用 <code>bundle update rake</code> 更新下 Rake 即可，具体见<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/6080040/you-have-already-activated-rake-0-9-0-but-your-gemfile-requires-rake-0-8-7">这里</a>。</p>
+<h4 id="2-如何在侧边栏显示-Github-仓库"><a href="#2-如何在侧边栏显示-Github-仓库" class="headerlink" title="2. 如何在侧边栏显示 Github 仓库"></a>2. 如何在侧边栏显示 Github 仓库</h4><p>仅仅在 <code>_config.yml</code> 中将 <code>github_user</code> 填上 Github 的用户名是不行的，还需要修改 <code>default_asides</code>，将 <code>asides/github.html</code> 加入。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2014-03-02-thinking-about-master-degree/" rel="next" title="关于工程硕士的思考">
+      关于工程硕士的思考 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9Octopress"><span class="nav-number">1.</span> <span class="nav-text">为什么选择Octopress</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%93%E6%B3%A8-%E5%9D%9A%E6%8C%81%EF%BC%8C%E4%B8%80%E5%AE%9A%E8%83%BD%E5%A4%9F%E6%9C%89%E6%89%80%E6%94%B6%E8%8E%B7%EF%BC%81"><span class="nav-number">1.1.</span> <span class="nav-text">专注+坚持，一定能够有所收获！</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Octopress%E6%90%AD%E5%BB%BA%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">Octopress搭建原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4%E5%8E%9F%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text">搭建步骤原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Octopress%E9%83%A8%E7%BD%B2%E6%A1%86%E6%9E%B6"><span class="nav-number">2.2.</span> <span class="nav-text">Octopress部署框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Octopress-%E5%A4%9A%E5%8F%B0%E7%94%B5%E8%84%91%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">Octopress 多台电脑同步方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Octopress-%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93"><span class="nav-number">2.4.</span> <span class="nav-text">Octopress 搭建过程中问题总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-You-have-already-activated-rake-0-9-0-but-your-Gemfile-requires-rake-0-8-7"><span class="nav-number">2.4.1.</span> <span class="nav-text">1. You have already activated rake 0.9.0, but your Gemfile requires rake 0.8.7</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%A6%82%E4%BD%95%E5%9C%A8%E4%BE%A7%E8%BE%B9%E6%A0%8F%E6%98%BE%E7%A4%BA-Github-%E4%BB%93%E5%BA%93"><span class="nav-number">2.4.2.</span> <span class="nav-text">2. 如何在侧边栏显示 Github 仓库</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="尚传人"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">尚传人</p>
+  <div class="site-description" itemprop="description">Stay Hungry, Stay Foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/joeshang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;joeshang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shangchuanren@gmail.com" title="E-Mail → mailto:shangchuanren@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2464216170" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;2464216170" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/bridge_joe" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;bridge_joe" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尚传人</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

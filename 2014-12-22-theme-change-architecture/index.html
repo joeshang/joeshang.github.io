@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="现在 App 类似桌面软件的趋势，在功能完善之后，渐渐追求个性化，以满足不同用户的审美，主题更换就是其中一项，像 Weico 微博客户端，UC 浏览器。所谓主题，可以看成相同功能不同展现可视资源的集合，例如，按钮无论在什么主题下都需要背景图片这个资源，只是在不同主题下是不同的背景图片而已。 如何在 iOS 中实现主题更换的核心思路为：  资源按主题放置：相同功能的资源名称相同，放在不同的主题路径或">
+<meta property="og:type" content="article">
+<meta property="og:title" content="主题更换的设计思路">
+<meta property="og:url" content="http://yoursite.com/2014-12-22-theme-change-architecture/index.html">
+<meta property="og:site_name" content="传人的技术博客">
+<meta property="og:description" content="现在 App 类似桌面软件的趋势，在功能完善之后，渐渐追求个性化，以满足不同用户的审美，主题更换就是其中一项，像 Weico 微博客户端，UC 浏览器。所谓主题，可以看成相同功能不同展现可视资源的集合，例如，按钮无论在什么主题下都需要背景图片这个资源，只是在不同主题下是不同的背景图片而已。 如何在 iOS 中实现主题更换的核心思路为：  资源按主题放置：相同功能的资源名称相同，放在不同的主题路径或">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2014-12-22T03:26:02.000Z">
+<meta property="article:modified_time" content="2024-11-10T13:41:57.218Z">
+<meta property="article:author" content="尚传人">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2014-12-22-theme-change-architecture/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>主题更换的设计思路 | 传人的技术博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-67853822-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-67853822-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">传人的技术博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014-12-22-theme-change-architecture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          主题更换的设计思路
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-12-22 11:26:02" itemprop="dateCreated datePublished" datetime="2014-12-22T11:26:02+08:00">2014-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>现在 App 类似桌面软件的趋势，在功能完善之后，渐渐追求个性化，以满足不同用户的审美，主题更换就是其中一项，像 Weico 微博客户端，UC 浏览器。所谓主题，可以看成<strong>相同功能不同展现可视资源的集合</strong>，例如，按钮无论在什么主题下都需要背景图片这个资源，只是在不同主题下是不同的背景图片而已。</p>
+<p>如何在 iOS 中实现主题更换的核心思路为：</p>
+<ol>
+<li>资源按主题放置：相同功能的资源名称相同，放在不同的主题路径或者前缀使用主题名。</li>
+<li>增加中间层，隔离不同主题相同功能资源使用的变化。</li>
+</ol>
+<h2 id="1-主题管理"><a href="#1-主题管理" class="headerlink" title="1. 主题管理"></a>1. 主题管理</h2><p>主题的特性导致代码不关心资源的表现是什么，只关心资源的功能，而主题是易变化的，因此需要将易变化的部分抽离出来，整合到一个管理者中，主题的变化在管理者中完成，而不影响资源使用的地方。而且这个管理者是全局唯一的，因此使用单例。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+ (ThemeManager *)sharedInstance &#123;</span><br><span class="line">    <span class="keyword">static</span> ThemeManager *sharedInstance = <span class="literal">nil</span>;</span><br><span class="line">    <span class="keyword">if</span> (sharedInstance == <span class="literal">nil</span>) &#123;</span><br><span class="line">        sharedInstance = [[ThemeManager alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sharedInstance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主题中的资源使用 plist 进行存储，颜色的 RGBA 值跟字体的信息可以直接存入 plist，而图片则可以存入图片的位置。按主题命名 plist 文件，ThemeManager 的初始化跟主题更换就从 Main Bundle 中按主题名字读取对应的 plist 文件。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)init &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</span><br><span class="line">        <span class="built_in">NSUserDefaults</span> *defaults = [<span class="built_in">NSUserDefaults</span> standardUserDefaults];</span><br><span class="line">        <span class="built_in">NSString</span> *themeName = [defaults objectForKey:<span class="string">@&quot;theme&quot;</span>] ?: <span class="string">@&quot;default&quot;</span>;</span><br><span class="line">                                            </span><br><span class="line">        <span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:themeName ofType:<span class="string">@&quot;plist&quot;</span>];</span><br><span class="line">        <span class="keyword">self</span>.theme = [<span class="built_in">NSDictionary</span> dictionaryWithContentsOfFile:path];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码中不再是直接使用主题相关的资源，而是通过 ThemeManager 得到对应主题下的资源。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接使用资源：</span></span><br><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@&quot;xxx_btn_background&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过主题管理器使用资源：</span></span><br><span class="line"><span class="built_in">NSDictionary</span> *theme = [ThemeManager sharedInstance].theme;</span><br><span class="line"><span class="built_in">NSString</span> *imageName = [theme objectForKey:<span class="string">@&quot;xxx_btn_background&quot;</span>];</span><br><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:imageName];</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码在使用时还是有些复杂，代码只关心资源的功能，不关系也不应该关心取资源的细节，因此应在 ThemeManager 对取资源进行如下封装：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">UIImage</span> *)imageForKey:(<span class="built_in">NSString</span> *)key;</span><br></pre></td></tr></table></figure>
+
+<p>在使用主题中的资源时，代码就变成了：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIImage</span> *image = [[ThemeManager sharedInstance] imageForKey:<span class="string">@&quot;xxx_btn_background&quot;</span>];</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-资源的放置"><a href="#2-资源的放置" class="headerlink" title="2. 资源的放置"></a>2. 资源的放置</h2><p>当系统将主题相关的资源文件部署到 iOS 设备中时，在默认情况下，系统会将所有的资源** plat 平铺**拷贝到 Main Bundle 目录下，即使你的资源是按文件夹来组织的。（我们可以在模拟器中查看 Bundle 的情况，模拟器的路径是：<code>~/Library/Application Support/iPhone Simulator</code>）</p>
+<p>因此，在将资源文件加入到工程时，不要选默认的 “Recursively create groups for any add folders”，要选择 **”Create Folder Reference for any add folders”**，这样才能保证资源文件按照原有文件夹的组织格式被拷贝到 Main Bundle 中。</p>
+<p>关于上述的两个选项，就涉及到 Xcode 的 Group（黄色）跟 Folder Reference（蓝色）的概念了，参见从别处摘抄来的理解：</p>
+<p><em>XCode 项目中的文件夹分成两类: group 和 directory reference, 分别是虚结构和实结构. 黄颜色的 group 是默认的格式, 它的结构和磁盘上的文件夹毫无关系, 仅仅表示资源的逻辑组织结构, 这在管理源文件是非常方便. 同一段代码可以被很多项目使用, 也可能只使用一个目录的部分文件, 它不需要被拷贝到当前项目中, 但可以在当前项目中保持一个清晰的逻辑结构. 而且引用头文件时不需要指明复杂的层次结构, 因为这些文件在XCode看来是 flat 的, 即它们处在同一层文件夹里.<br>但是 group 带来便利的同时也导致更加棘手的麻烦, 文件重名冲突问题; 尤其当你要使用上千个资源文件时, 这种问题已经极难避免; 而且, 资源文件一般是要拷贝到目标程序中的, 虽然它们在项目中可以有结构的组织, 但是复制到程序中时将会 flat 地输出到程序的根目录中, 这将是怎样的一个灾难! 同时, 如果你在外部向文件夹中加入了上百幅图片, 你不得不把它们再向xcode中加入一遍. 归根结底, 还要求助于我们传统的蓝色的 directory reference。</em></p>
+<h2 id="3-主题更换通知"><a href="#3-主题更换通知" class="headerlink" title="3. 主题更换通知"></a>3. 主题更换通知</h2><p>对于没有显示的界面，更换主题是不需要通知的，因为在取资源时是根据当前主题取的，但是对于正在显示的界面，更换主题时就需要进行通知，让界面重新取资源后再重绘。由于这类通知是全局性的，因此应该使用 <code>NSNotification</code> 实现通知机制。</p>
+<p>在 ThemeManager 的 <code>changeTheme</code> 中调用 <code>[NSNotificaitonCenter defaultCenter]</code> 的 <code>postNotificationName:object:</code> 发出通知，而在各个涉及到主题更换的 ViewController中 使用 <code>addObserver:selector:name:object:</code> 监听通知事件。</p>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>其实主题的设计思路跟类簇很像，例如对于 NSNumber，不同类型的数据其实真正返回的是 NSNumber 相对于此类型的子类，但是对于 NSNumber 的使用者而言，其并不关心 NSNumber 返回的具体子类是什么，只要满足 NSNumber 定义的接口就行。设计总是类似的，针对易变化的部分，增加一个中间层（接口）将易变化的部分封装起来，提供给使用者稳定不易变的服务。</p>
+<p>总之，OOP 跟 Design Pattern 在我看来主要做了两件事：</p>
+<ol>
+<li>隔离变化</li>
+<li>封装细节</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://twinlogix.com/en/blog/how-create-multiple-themes-ios-apps">HOW TO CREATE MULTIPLE THEMES FOR IOS APPS</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/yanghua_kobe/article/details/9555575">iOS开发之主题皮肤</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rnystrom/RNThemeManager">RNThemeManager</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014-12-19-calayer-mask/" rel="prev" title="关于使用 CALayer 中 mask 的一些技巧">
+      <i class="fa fa-chevron-left"></i> 关于使用 CALayer 中 mask 的一些技巧
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014-12-22-scranimationchain-architecture/" rel="next" title="SCRAnimationChain 的设计思路">
+      SCRAnimationChain 的设计思路 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%BB%E9%A2%98%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">1. 主题管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%B5%84%E6%BA%90%E7%9A%84%E6%94%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">2. 资源的放置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%B8%BB%E9%A2%98%E6%9B%B4%E6%8D%A2%E9%80%9A%E7%9F%A5"><span class="nav-number">3.</span> <span class="nav-text">3. 主题更换通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">4. 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="尚传人"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">尚传人</p>
+  <div class="site-description" itemprop="description">Stay Hungry, Stay Foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/joeshang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;joeshang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:shangchuanren@gmail.com" title="E-Mail → mailto:shangchuanren@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/2464216170" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;2464216170" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/bridge_joe" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;bridge_joe" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">尚传人</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
