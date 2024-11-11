@@ -166,6 +166,109 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/ios-copying/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/ios-copying/" class="post-title-link" itemprop="url">iOS 中的 Copying</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-04 10:29:12" itemprop="dateCreated datePublished" datetime="2018-04-04T10:29:12+08:00">2018-04-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Copying 在 iOS 中有很多概念，例如浅拷贝与深拷贝、copy 与 mutableCopy、NSCopying 协议，一直想彻底搞明白这些概念，刨根问底不搞懂不罢休嘛。于是搜 Google 看了一些博客，又去翻了 Apple 相关的文档，发现网上许多博客都理解错了，下面说说自己的理解。</p>
+<h2 id="浅拷贝与深拷贝"><a href="#浅拷贝与深拷贝" class="headerlink" title="浅拷贝与深拷贝"></a>浅拷贝与深拷贝</h2><p>对于浅拷贝（Swallow Copy）与深拷贝（Deep Copy），经常看到这样的说法：<code>浅复制是指针拷贝，仅仅拷贝指向对象的指针；深复制是内容拷贝，会拷贝对象本身。</code> 这句话并没有说错，但需要注意的是<strong>指针&#x2F;内容拷贝针对的是谁</strong>，无论浅拷贝还是深拷贝，被拷贝的对象都会被复制一份，有新的对象产生，而在复制对象的内容时，对于被拷贝对象中的指针类型的成员变量，浅拷贝只是复制指针，而深拷贝除了复制指针外，会复制指针指向的内容。下面我们以 Apple 官方文档中的图片进行说明：</p>
+<p><img src="/images/blog/ios-object-copy.png" alt="Object Copy"></p>
+<p>对普通对象 ObjectA 进行 copy，无论浅拷贝还是深拷贝，都会复制出一个新的对象 ObjectB，只是浅拷贝时 ObjectA 与 ObjectB 中的 textColor 指针还指向同一个 NSColor 对象，而深拷贝时 ObjectA 和 ObjectB 中的 textColor 指针分别指向各自的 NSColor 对象（NSColor 对象被复制了一份）。</p>
+<p><img src="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Art/CopyingCollections_2x.png" alt="Collection Copy"></p>
+<p>对集合对象  Array1 进行 copy，无论浅拷贝还是深拷贝，都会复制出一个新的对象 Array2，只是浅拷贝时 Array1 与 Array2 中各个元素的指针还指向同一个对象，而深拷贝时 Array1 和 Array2 中各个元素的指针分别指向各自的对象（对象被复制了一份）。</p>
+<h2 id="Copy-与-MutableCopy"><a href="#Copy-与-MutableCopy" class="headerlink" title="Copy 与 MutableCopy"></a>Copy 与 MutableCopy</h2><p>在说明 copy 与 mutableCopy 之前，我们思考一下：拷贝的目的是什么？在动态库加载时，只读的 TEXT 段是被所有使用动态库的程序共享的， 而可写的 DATA 段会使用 COW（Copy On Write）技术，当某个程序需要修改 DATA 段时会拷贝一份，供此程序专用。因此，拷贝的目的主要用于拷贝一份新的数据进行修改，而不会影响到原有的数据。如果不修改，拷贝就没有必要。</p>
+<p>在 iOS 中，有一些系统类根据是否可变进行了区分，例如 NSString 与 NSMutableString，NSArray 与 NSMutableArray 等。为了在两者之间进行转换（我理解这是主要目的），NSObject 提供了 <code>copy</code> 与 <code>mutableCopy</code>  方法， <code>copy</code> 复制后对象是不可变对象，<code>mutableCopy</code> 复制后对象是可变对象。对象有不可变对象和可变对象，复制方法有 <code>copy</code> 和 <code>mutableCopy</code>，因此存在四种情况：</p>
+<ol>
+<li>不可变对象 <code>copy</code>：对象是不可变的，再复制出一份不可变对象没有意义，因此<strong>根本没有发生任何拷贝</strong>，对象只有一份。</li>
+<li>不可变对象 <code>mutableCopy</code>：可变对象的能够修改，原来的不可变对象不支持，因此需要复制出一个新对象，是<strong>浅拷贝</strong>。</li>
+<li>可变对象 <code>copy</code>：不可变对象不能修改，原来的可变对象不支持，因此需要复制出新对象，是<strong>浅拷贝</strong>。</li>
+<li>可变对象 <code>mutableCopy</code>：可变对象的修改不应该影响到原来的可变对象，因此需要复制出新对象，是<strong>浅拷贝</strong>。</li>
+</ol>
+<h3 id="如何进行深拷贝呢？"><a href="#如何进行深拷贝呢？" class="headerlink" title="如何进行深拷贝呢？"></a>如何进行深拷贝呢？</h3><p>对于集合类型的对象，将 <code>initWithArray:copyItems:</code> 第二个参数设置成 YES 时，会对集合内每一个元素发送 <code>copyWithZone:</code> 消息，元素进行复制，但是对于元素中指针类型的成员变量，依然是浅拷贝，因此这种拷贝被称为单层深拷贝（one-level-deep copy）。</p>
+<p>如果想进行完全的深拷贝，可以先通过 NSKeyedArchiver 将对象归档，再通过 NSKeyedUnarchiver 将对象解归档。由于在归档时，对象中每个成员变量都会收到 <code>encodeWithCoder:</code> 消息，相当于将对象所有的数据均序列化保存到磁盘上（可以看成换了种数据格式的拷贝），再通过 <code>initWithCoder:</code> 解归档时，就将拷贝过的数据经过转换后读取出来，深拷贝。</p>
+<h3 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h3><p>如果自定义的类也想要支持 <code>copy</code> 和 <code>mutableCopy</code> 方法，就需要实现 <code>NSCopying</code> 和 <code>NSMutableCopying</code> 协议。在实现 <code>copyWithZone:</code> 方法时需要注意：</p>
+<ul>
+<li><code>copyWithZone:</code> 相当于新创建一个对象，并将当前对象的值复制到新创建的对象中。设置时应直接访问成员变量而不是通过属性访问。</li>
+<li>直接从 NSObject 继承的类，应使用 <code>[[[self class] allocWithZone:zone] init]</code>，使得在创建新对象时能够使用正确的类。</li>
+<li>父类中已经实现了 <code>copyWithZone:</code> 时，应先调用父类的方法，让父类创建对应的对象（self class 能保证创建对象是正确的），并拷贝父类中定义的成员变量。</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)copyWithZone:(<span class="built_in">NSZone</span> *)zone &#123;</span><br><span class="line">    YourClass *object = [<span class="keyword">super</span> copyWithZone:zone];</span><br><span class="line">    _property = xxx;</span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/ObjectCopying.html">Object copying</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html">Copying Collections</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/pro648/tips/wiki/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E4%B9%8B%E5%BD%92%E6%A1%A3%E8%A7%A3%E6%A1%A3-NSKeyedArchiver-NSKeyedUnarchiver">数据存储之归档解档 NSKeyedArchiver NSKeyedUnarchiver · pro648&#x2F;tips Wiki · GitHub</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/ios-multiline-text-spacing/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1110,96 +1213,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014-12-19-uiimage-resizeable/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="尚传人">
-      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="传人的技术博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2014-12-19-uiimage-resizeable/" class="post-title-link" itemprop="url">UIImage 图片拉伸</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-12-19 21:09:29" itemprop="dateCreated datePublished" datetime="2014-12-19T21:09:29+08:00">2014-12-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="为什么进行图片拉伸"><a href="#为什么进行图片拉伸" class="headerlink" title="为什么进行图片拉伸"></a>为什么进行图片拉伸</h2><ol>
-<li>灵活：对于一些带边框的背景图而言，如果不进行图片拉伸，每当改变 frame 时就需要一份新 size 的背景图</li>
-<li>节约资源：对于一些比较规则的图片，没必须使用 frame 大小，而是使用一个满足拉伸条件的较小的图片进行拉伸，这样加载图片变快，而且图片大小变小</li>
-</ol>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>使用 <code>- resizeableImageWithCapInsets:(UIEdgeInsets)capInsets</code>，iOS 官方解释如下：</p>
-<blockquote>
-<p>You use this method to add cap insets to an image or to change the existing cap insets of an image. In both cases, you get back a new image and the original image remains untouched.<br>During scaling or resizing of the image, areas covered by a cap are not scaled or resized. Instead, the pixel area not covered by the cap in each direction is tiled, left-to-right and top-to-bottom, to resize the image. This technique is often used to create variable-width buttons, which retain the same rounded corners but whose center region grows or shrinks as needed. For best performance, use a tiled area that is a 1x1 pixel area in size.</p>
-</blockquote>
-<p>原理就是对 UIImage 指定了 Insets 后，在 Insets 中的区域不进行拉伸，只对区域外的部分进行拉伸。需要注意的有两点：</p>
-<ol>
-<li><code>UIEdgeInsetsMake</code> 的四个参数从前到后依次是 top、left、bottom、right，不是成对的，别搞错了</li>
-<li>拉伸的方式<strong>不是全方向一起拉伸！而是先左右拉伸，再上下拉伸，最后的结果是两次拉伸的叠加！</strong>不然会出现<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/18605514/how-to-use-uiimage-resizableimagewithcapinsets">这样的问题</a>。</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/scorpiozj/p/3302270.html">[UIImage resizableImageWithCapInsets:] 使用注意</a></li>
-<li><a target="_blank" rel="noopener" href="http://onevcat.com/2011/12/uiimage/">带边框的 UIImage 缩放</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1271,7 +1284,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
