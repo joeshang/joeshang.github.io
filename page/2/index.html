@@ -166,6 +166,155 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/swiftui-the-shortest-path-to-great-app/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/swiftui-the-shortest-path-to-great-app/" class="post-title-link" itemprop="url">SwiftUI：The Shortest Path to a Great App</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-17 21:26:52" itemprop="dateCreated datePublished" datetime="2019-08-17T21:26:52+08:00">2019-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>SwiftUI 可以说是 WWDC 2019 中最让人激动的技术了，什么是 SwiftUI 呢？官方说法为：SwiftUI is a modern way to declare user interfaces for any Apple platform. Create beautiful, dynamic apps faster than ever before。</p>
+<p>总之，这套新的 UI 框架用 WWDC Session 中的话描述就是：</p>
+<blockquote>
+<p>The Shortest Path to a Great App  </p>
+</blockquote>
+<p>那下面我们就用 SwiftUI 实现一个 iOS 中最常见的列表页，看看到底 Modern、Faster 在哪里？</p>
+<h2 id="First-Glance"><a href="#First-Glance" class="headerlink" title="First Glance"></a>First Glance</h2><p><img src="/images/blog/c72f088f-5be9-46ad-9245-1cf8b4c735a0.png"></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">LandMarkView</span> : <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> landmarks: [<span class="type">LandMark</span>]</span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">        <span class="type">List</span>(landmarks) &#123; landmark <span class="keyword">in</span></span><br><span class="line">           <span class="type">HStack</span> &#123;</span><br><span class="line">              <span class="type">Image</span>(landmark.thumbnail)</span><br><span class="line">              <span class="type">Text</span>(landmark.name)</span><br><span class="line">              <span class="type">Spacer</span>()</span><br><span class="line"></span><br><span class="line">              <span class="keyword">if</span> landmark.isFavorite &#123;</span><br><span class="line">                 <span class="type">Image</span>(systemName: <span class="string">&quot;star.fill&quot;</span>)</span><br><span class="line">                    .foregroundColor(.yellow)</span><br><span class="line">              &#125;</span><br><span class="line">           &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同使用 UIKit 写一个列表页进行对比：</p>
+<ul>
+<li>不需要实现 UITableViewDelegate 和 UITableViewDataSource，写一堆冗长的代码，在 <code>List(items)</code> 中描述列表的数据，在 List 的 Closure 中描述每个 Cell</li>
+<li>不需要使用 AutoLayout 或 Frame 对元素进行排版，HStack（View Container）将元素包起来，简单清晰</li>
+<li>当数据 landmarks 有变化时，不需要再调用 reloadData，包括 landmarks 个数有变化或 landmark.isFavorite 值变化，SwiftUI 都会自动更新界面</li>
+</ul>
+<p>可以看到，SwiftUI 极大地简化了构建 UI 的过程（Faster），这种耳目一新的构建方式是 Declarative 声明式编程（Modern），而之前 UIKit 的方式是 Imperative 命令式编程，两者有什么区别呢？</p>
+<h2 id="Imperative-vs-Declarative"><a href="#Imperative-vs-Declarative" class="headerlink" title="Imperative vs Declarative"></a>Imperative vs Declarative</h2><p><img src="/images/blog/v2-8567c3cd5dc30d90b7e3bd9268d01444_1200x500.jpg"></p>
+<ul>
+<li>Imperative：命令式，明确而详细的告诉机器做一些事情，从而达到你想要的结果，专注于 How。这种方式更贴近机器思维，CPU 就是一条条执行 PC 指向的机器码。</li>
+<li>Declarative：声明式，描述你想要什么，交由机器来来完成你想要的，专注于 What。这种方式更贴近人类思维，最开始都是先确定自己想要什么，才会一步步实现。</li>
+</ul>
+<p>举个例子，如果我们要去旅游：</p>
+<ul>
+<li>对于 Imperative，就是自由行，自己要安排详细的行程，包括购买机票，查询各种交通，预定酒店，预定游玩场所的门票，确定吃饭的餐厅等等。</li>
+<li>对于 Declarative，就是跟团游，自己只需要表达想去哪里玩，旅行社或者代理商会帮你安排整个行程。</li>
+</ul>
+<p>Declarative 的核心在于描述 What，将 How 委托给一个 Expert 来完成。如何描述 What，这里就涉及到了 DSL 领域描述语言。</p>
+<p>在 SwiftUI 之前，我们其实或多或少接触过 Declarative，最典型的就是 SQL，SQL 语句就是一种 DSL，例如对于 <code>SELECT * from product WHERE id = 996</code> 这条语句，只是描述了我们想从 product 表中找到 id 为 996 的商品（What），至于怎么找（How），交给数据库来处理，数据库会高效、健壮的取到数据并返回给我们。</p>
+<p>另外，AutoLayout 也可以看成一种简单的 Declarative。</p>
+<p>Imperative 和 Declarative 两者各有优缺点，从目前的趋势来看，React&#x2F;Flutter&#x2F;SwiftUI 通过 Declarative 来构建 UI，看起来 Declarative 是未来 UI 编程的趋势。为什么大家都不约而同的选择 Declarative 呢？今年 WWDC 中 Apple 工程师给出了答案：</p>
+<p><img src="/images/blog/68AD25E9-0498-4248-98C8-06AC10638CD6.png"><br><img src="/images/blog/7A8637F8-6B5A-44ED-A904-B2F793DF9096.png"></p>
+<p>对于一个 App 而言，其代码分为两部分 Basic Features 和 Exciting&#x2F;Custom Features，让 App 出彩、给用户带来很棒体验的是 Exciting&#x2F;Custom Features，SwiftUI 的目的就是为了减少开发者在 Basic Features 部分的负担，让开发者更专注于 Exciting&#x2F;Custom Features。</p>
+<h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><blockquote>
+<p>A view defines a piece of UI  </p>
+</blockquote>
+<p>上面也提到了，声明式相当于将具体的操作委托给一个 Engine，由 Engine 来做具体的脏活累活，向上提供一个抽象层。在 SwiftUI 中这个抽象层就是 View，SwiftUI 中的 View 不再是 UIKit 中的 UIView，没有 Backing Store，不涉及到真正的渲染，View 只是一个抽象概念，描述 UI 应该如何展示。我们看下 View 的定义：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">protocol</span> <span class="title">View</span> : <span class="title">_View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">associatedtype</span> <span class="type">Body</span> : <span class="type">View</span></span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">Self</span>.<span class="type">Body</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，在 SwiftUI 中 View 只是一个 protocol，里面有一个 body 的属性，body 又是 View。这样就可以通过 body 将 View 串起来，形成 View Hierarchy。</p>
+<h2 id="Swift-5-1-Magic-for-SwiftUI-DSL"><a href="#Swift-5-1-Magic-for-SwiftUI-DSL" class="headerlink" title="Swift 5.1 Magic for SwiftUI DSL"></a>Swift 5.1 Magic for SwiftUI DSL</h2><p>为了实现 SwiftUI 的声明式编程，提供 DSL，Swift 语言在 5.1 中引入了一些新特性：（注：这一节的内容参考  <a target="_blank" rel="noopener" href="https://xiaozhuanlan.com/topic/7652341890">SwiftUI 的一些初步探索 (一) － 小专栏</a> 和 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68294674">SwiftUI 的 DSL 语法分析 - 知乎</a> 较多）</p>
+<h3 id="Opaque-Return-Types"><a href="#Opaque-Return-Types" class="headerlink" title="Opaque Return Types"></a>Opaque Return Types</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ContentView</span>: <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">        <span class="type">Text</span>(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面一段自定义 View 的代码中 <code>var body: some View</code> 这行中多了一个 <code>some</code>，这个 some 是干吗用的？由于 View 只是 protocol，在 Swift 5.1 之前，带有 associatedtype 的协议是不能做为类型来用，只能作为类型约束：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Error</span></span><br><span class="line"><span class="comment">// Protocol &#x27;View&#x27; can only be used as a generic constraint</span></span><br><span class="line"><span class="comment">// because it has Self or associated type requirements</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">createView</span>()</span> -&gt; <span class="type">View</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// OK</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">createView</span>&lt;<span class="type">T</span>: <span class="type">View</span>&gt;()</span> -&gt; <span class="type">T</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相当于在声明 body 时，不能用 View，需要指定具体的类型，例如 VStack、Text 等，但如果 body 的类型变化，每次都需要修改，比较麻烦。因此 Swift 5.1 引入了 Opaque Return Types，使用方式是 <code>some protocol</code>，当 body 的类型变成 <code>some View</code> 后，相当于它向编译器作出保证，每次 body 得到的一定是某一个确定的、遵守View协议的类型，但是请编译器“网开一面”，不要再细究具体的类型。返回类型<strong>确定单一</strong>这个条件十分重要，写成下面的样子编译器会报错：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Error</span></span><br><span class="line"><span class="comment">// Function declares an opaque return type, but the return </span></span><br><span class="line"><span class="comment">// statements in its body do not have matching underlying types</span></span><br><span class="line"><span class="keyword">let</span> someCondition: <span class="type">Bool</span> <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> someCondition &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="type">Text</span>(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="type">Button</span>(action: &#123;&#125;) &#123;</span><br><span class="line">            <span class="type">Text</span>(<span class="string">&quot;Tap me&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Property-Delegates"><a href="#Property-Delegates" class="headerlink" title="Property Delegates"></a>Property Delegates</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RoomDetail</span> : <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> room: <span class="type">Room</span></span><br><span class="line">    <span class="meta">@State</span> <span class="keyword">private</span> <span class="keyword">var</span> zoomed <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> &#123;</span><br><span class="line">        <span class="type">Image</span>(room.imageName)</span><br><span class="line">            .resizable()</span><br><span class="line">            .aspectRatio(contentMode: zoomed <span class="operator">?</span> .fill : .fit)</span><br><span class="line">			  .tapAction &#123; <span class="keyword">self</span>.zoomed.toggle() &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的代码中，一旦 zoomed 的值发生变化，SwiftUI 会自动更新 UI，这一切都源于 <code>@State</code>。State 本质上只是一个自定义类，用 @propertyDelegate 修饰，<code>@State var zoomed</code> 会将 zoomed 的读写转到 State 类中实现了。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@propertyDelegate</span> <span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">State</span>&lt;<span class="title">Value</span>&gt;</span></span><br><span class="line"><span class="class">@<span class="title">propertyDelegate</span> <span class="title">public</span> <span class="title">struct</span> <span class="title">Binding</span>&lt;<span class="title">Value</span>&gt;</span></span><br><span class="line"><span class="class">@<span class="title">propertyDelegate</span> <span class="title">public</span> <span class="title">struct</span> <span class="title">Environment</span>&lt;<span class="title">Value</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>里面 <code>@propertyDelegate</code> 是 Swift 5.1 引入的新特性 Property Delegate，这个特性有什么用呢？假设我们有一个设置页面，需要在 UserDefault 中存储一些属性，</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Preferences</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> shouldAlert: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">UserDefaults</span>.standard.object(forKey: <span class="string">&quot;shouldAlert&quot;</span>) <span class="keyword">as?</span> <span class="type">Bool</span> <span class="operator">??</span> <span class="literal">false</span></span><br><span class="line">        &#125; <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="type">UserDefaults</span>.standard.set(newValue, forKey: <span class="string">&quot;shouldAlert&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">     <span class="keyword">static</span> <span class="keyword">var</span> refreshRequency: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">UserDefaults</span>.standard.object(forKey: <span class="string">&quot;refreshRequency&quot;</span>) <span class="keyword">as?</span> <span class="type">TimeInterval</span> <span class="operator">??</span> <span class="number">6000</span></span><br><span class="line">        &#125; <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="type">UserDefaults</span>.standard.set(newValue, forKey: <span class="string">&quot;refreshRequency&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现 shouldAlert 和 refreshRequency 代码重复较多，如果再多一些设置值，Preferences 这个类会写的烦死。针对这种情况，Swift 5.1 引入 Property Delegate，可以将 Property 的相同行为 Delegate 给一个代理对象去做：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@propertyDelegate</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">UserDefault</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> key: <span class="type">String</span></span><br><span class="line">    <span class="keyword">let</span> defaultValue: <span class="type">T</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> value: <span class="type">T</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">UserDefaults</span>.standard.object(forKey: key) <span class="keyword">as?</span> <span class="type">T</span> <span class="operator">??</span> defaultValue</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="type">UserDefaults</span>.standard.set(newValue, forKey: key)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Preferences</span> </span>&#123;</span><br><span class="line">    <span class="meta">@UserDefault</span>(key: <span class="string">&quot;shouldAlert&quot;</span>, defaultValue: <span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> shouldAlert: <span class="type">Bool</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@UserDefault</span>(key: <span class="string">&quot;refreshRequency&quot;</span>, defaultValue: <span class="number">6000</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> refreshRequency: <span class="type">TimeInterval</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当使用 <code> @UserDefault(key: &quot;shouldAlert&quot;, defaultValue: false)</code> 修饰过 shouldAlert 之后，shouldAlert 会被编译器处理成下面的样子：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Preferences</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> <span class="variable">$shouldAlert</span> <span class="operator">=</span> <span class="type">UserDefault</span>&lt;<span class="type">Bool</span>&gt;(key: <span class="string">&quot;shouldAlert&quot;</span>, defaultValue: <span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> shouldAlert: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$shouldAlert</span>.value</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">set</span> &#123;</span><br><span class="line">            <span class="variable">$shouldAlert</span>.value <span class="operator">=</span> newValue</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到 <code>@State</code>，当 zoomed 被 <code>@State</code> 修饰后，zoomed 的读写被 Delegate 到 State 类中，SwiftUI 框架在 State 类中根据 zoomed 值的变化去触发界面的更新，达到 Value 变化 UI 自动更新的效果。</p>
+<h3 id="Trailing-Closure-Function-Builder"><a href="#Trailing-Closure-Function-Builder" class="headerlink" title="Trailing Closure &amp; Function Builder"></a>Trailing Closure &amp; Function Builder</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">HStack</span>(alignment: .center) &#123;</span><br><span class="line">   <span class="type">Image</span>(landmark.thumbnail)</span><br><span class="line">   <span class="type">Text</span>(landmark.name)</span><br><span class="line">   <span class="type">Spacer</span>()</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> landmark.isFavorite &#123;</span><br><span class="line">      <span class="type">Image</span>(systemName: <span class="string">&quot;star.fill&quot;</span>)</span><br><span class="line">         .foregroundColor(.yellow)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HStack 中 View 与 View 之间没有 , 区分，也没有 return，这种 DSL 的写法主要基于 Swift 的 Trailing Closure 和 Function Builder。下面是 HStack 的定义：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">HStack</span>&lt;<span class="title">Content</span>&gt; <span class="title">where</span> <span class="title">Content</span> : <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="keyword">@inlinable</span> <span class="keyword">public</span> <span class="function"><span class="keyword">init</span>(<span class="params">alignment</span>: <span class="type">VerticalAlignment</span> <span class="operator">=</span> .center, </span></span><br><span class="line"><span class="function">                           <span class="params">spacing</span>: <span class="type">Length</span>? <span class="operator">=</span> <span class="literal">nil</span>, </span></span><br><span class="line"><span class="function">                           <span class="meta">@ViewBuilder</span> <span class="params">content</span>: () -&gt; <span class="type">Content</span>)</span></span><br></pre></td></tr></table></figure>
+
+<p>首先对于  Trailing Closure，如果一个 Swift 方法中最后一个参数是 Closure，则可以将 Closure 提到括号外面。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@_functionBuilder</span> <span class="keyword">public</span> <span class="class"><span class="keyword">struct</span> <span class="title">ViewBuilder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">buildBlock</span>()</span> -&gt; <span class="type">EmptyView</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">buildBlock</span>(<span class="keyword">_</span> <span class="params">content</span>: <span class="type">Content</span>)</span> -&gt; <span class="type">Content</span> <span class="keyword">where</span> <span class="type">Content</span> : <span class="type">View</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其次对于 Function Builder，可以看到 content 前面有一个 <code>@ViewBuilder</code> ，而 ViewBuilder 使用了 <code>@_functionBuilder</code> 修饰，被 <code>@ViewBuilder</code> 修饰过的 Closure 就会被修改语法树，转调 ViewBuilder 的 buildBlock 函数。最终</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">HStack</span>(alignment: .center) &#123;</span><br><span class="line">   <span class="type">Image</span>(landmark.thumbnail)</span><br><span class="line">   <span class="type">Text</span>(landmark.name)</span><br><span class="line">   <span class="type">Spacer</span>()</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> landmark.isFavorite &#123;</span><br><span class="line">      <span class="type">Image</span>(systemName: <span class="string">&quot;star.fill&quot;</span>)</span><br><span class="line">         .foregroundColor(.yellow)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>被转换成了</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">HStack</span>(alignment: .center) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="type">ViewBuilder</span>.buildBlock(</span><br><span class="line">        <span class="type">Image</span>(landmark.thumbnail),</span><br><span class="line">        <span class="type">Text</span>(landmark.name),</span><br><span class="line">        <span class="type">Spacer</span>()</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>最后，Apple 为 SwiftUI 提供了一个无论是内容还是交互都非常棒的<a target="_blank" rel="noopener" href="https://developer.apple.com/tutorials/swiftui">官方教程</a>，值得学习 SwiftUI 时跟着教程动手练习，正如同今年 WWDC 的主题一样，一起 Write Code，Blow Minds 吧。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://xiaozhuanlan.com/topic/7652341890">SwiftUI 的一些初步探索 (一) － 小专栏</a></li>
+<li><a target="_blank" rel="noopener" href="https://swiftrocks.com/inside-swiftui-compiler-magic.html">Inside SwiftUI’s Declarative Syntax’s Compiler Magic - SwiftRocks</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68294674">SwiftUI 的 DSL 语法分析 - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/56434549/what-enables-swiftuis-dsl">swift - What enables SwiftUI’s DSL? - Stack Overflow</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/ios-copying/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1106,113 +1255,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014-12-19-transparency-property-diffence-in-uiview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="尚传人">
-      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="传人的技术博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2014-12-19-transparency-property-diffence-in-uiview/" class="post-title-link" itemprop="url">UIView 中 hidden、alpha、clear color 与 opaque 的区别</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2014-12-19 21:14:36" itemprop="dateCreated datePublished" datetime="2014-12-19T21:14:36+08:00">2014-12-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>关于 UIView 的透视度，有四个属性（下图中红框中的项）都与之相关，作为一个喜欢刨根问底的程（处）序（女）员（座），一定要搞清楚它们各自的用处跟区别是什么呢？</p>
-<p><img src="/../images/blog/2014-12-19-transparency-in-xib.png"></p>
-<h3 id="hidden"><a href="#hidden" class="headerlink" title="hidden"></a>hidden</h3><p>此属性为 BOOL 值，用来表示 UIView 是否隐藏。关于隐藏大家都知道就是让 UIView 不显示而已，但是需要注意的是：</p>
-<ul>
-<li>当前 UIView 的所有 subview 也会被隐藏，忽略 subview 的 hidden属性。UIView 中的 subview 就相当于 UIView 的死忠小弟，老大干什么我们就跟着老大，同进同退，生死与共！</li>
-<li><strong>当前 UIView 也会从响应链中移除。</strong>你想你都不显示了，就不用在响应链中接受事件了。</li>
-</ul>
-<h3 id="alpha"><a href="#alpha" class="headerlink" title="alpha"></a>alpha</h3><p>此属性为浮点类型的值，取值范围从 0.0 到 1.0，表示从完全透明到完全不透明，其特性有：</p>
-<ul>
-<li><strong>当前 UIView 的 alpha 值会被其所有 subview 继承。</strong>因此，alpha 值会影响到 UIView 跟其所有 subview。</li>
-<li><strong>alpha 具有动画效果。</strong>当 alpha 为 0 时，跟 hidden 为 YES 时效果一样，但是 alpha 主要用于实现隐藏的动画效果，在动画块中将 hidden 设置为 YES 没有动画效果。</li>
-</ul>
-<h3 id="backgroundColor-的-alpha（Clear-Color）"><a href="#backgroundColor-的-alpha（Clear-Color）" class="headerlink" title="backgroundColor 的 alpha（Clear Color）"></a>backgroundColor 的 alpha（Clear Color）</h3><p>此属性为 UIColor 值，而 UIColor 可以设置 alpha 的值，其特性有：</p>
-<ul>
-<li><strong>设置 backgroundColor 的 alpha 值只影响当前 UIView 的背景，并不会影响其所有 subview。</strong>这点是同 alpha 的区别，Clear Color 就是 backgroundColor 的 alpha 为 1.0。</li>
-<li><strong>alpha 值会影响 backgroundColor 最终的 alpha。</strong>假设 UIView 的 alpha 为 0.5，backgroundColor 的 alpha 为 0.5，那么 backgroundColor 最终的 alpha 为 0.25(0.5 乘以 0.5)。</li>
-</ul>
-<h3 id="opaque"><a href="#opaque" class="headerlink" title="opaque"></a>opaque</h3><p>此属性为 BOOL 值。要搞清楚这个属性的作用，就要先了解绘图系统的一些原理：屏幕上的每个像素点都是通过 RGBA 值（Red、Green、Blue 三原色再配上 Alpha 透明度）表示的，当纹理（UIView 在绘图系统中对应的表示项）出现重叠时，GPU 会按照下面的公式计算重叠部分的像素（这就是所谓的“合成”）：</p>
-<blockquote>
-<p>Result &#x3D; Source + Destination * (1 - SourceAlpha)</p>
-</blockquote>
-<p>Result 是结果 RGB 值，Source 为处在重叠顶部纹理的 RGB 值，Destination 为处在重叠底部纹理的 RGB 值。通过公式发现：当 SourceAlpha 为 1 时，绘图系统认为下面的纹理全部被遮盖住了，Result 等于 Source，直接省去了计算！尤其在重叠的层数比较多的时候，完全不同考虑底下有多少层，直接用当前层的数据显示即可，这样大大节省了 GPU 的工作量，提高了效率。（多像现在一些“美化墙”，不管后面的环境多破烂，“美化墙”直接遮盖住了，什么都看不到，不用整治改进，省心省力）。更详细的可以读下 objc.io 中<a target="_blank" rel="noopener" href="http://objccn.io/issue-3-1/">&lt;绘制像素到屏幕上&gt;</a>这篇文章。</p>
-<p>那什么时候 SourceAlpha 为 1 呢？这时候就是 opaque 上场的时候啦！当 opaque 为 YES 时，SourceAlpha 为 1。opaque 就是绘图系统向 UIView 开放的一个性能开关，开发者根据当前 UIView 的情况（这些是绘图系统不知道的，所以绘图系统也无法优化），将 opaque 设置为 YES，绘图系统会根据此值进行优化。所以，如果在开发时某 UIView 是不透明的，就将 opaque 设置为 YES，能优化显示效率。</p>
-<p>需要注意的是：</p>
-<ol>
-<li>当 UIView 的 opaque 为 YES 时，其 alpha 必须为 1.0，这样才符合 opaque 为 YES 的场景。如果 alpha 不为 1.0，最终的结果将是不可预料的（unpredictable）。</li>
-<li>opaque 只对 UIView 及其 subclass 生效，对系统提供的类（像UIButton，UILabel）是没有效果的。</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/8520434/uiview-opaque-vs-alpha-vs-opacity">UIView: opaque vs. alpha vs. opacity</a></li>
-<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/20423390/uiview-alpha-vs-uicolor-alpha">UIView alpha vs. UIColor alpha</a></li>
-<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/wzzvictory/article/details/10076323">UIView的alpha、hidden和opaque属性之间的关系和区别</a></li>
-<li><a target="_blank" rel="noopener" href="http://objccn.io/issue-3-1/">绘制像素到屏幕上</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1284,14 +1326,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
