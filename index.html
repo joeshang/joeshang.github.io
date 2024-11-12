@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-13 01:31:20" itemprop="dateModified" datetime="2024-11-13T01:31:20+08:00">2024-11-13</time>
+                <time title="修改时间：2024-11-13 01:49:22" itemprop="dateModified" datetime="2024-11-13T01:49:22+08:00">2024-11-13</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,7 +220,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Modern Web Browser 的架构趋势是<a target="_blank" rel="noopener" href="https://helgeklein.com/blog/modern-multi-process-browser-architecture/">多进程 Process Per Tab</a>，例如 Chromium（Chrome 或 Edge） 中，每一个 Tab 都对应一个子进程，Safari 虽然不是 Chromium，也是类似的表现。随着 Web Browser 和 Web 技术的发展，越来越多的服务通过 SaaS 或 WebApp 的形式提供，例如 Confluence、Figma 等，Web Browser 逐渐成为日常工作中重度使用的平台和资源占用大户。现在的 DEEM 虽然能监控各个进程的 CPU&#x2F;Memory Usage，但是无法监测到到底是哪个 Tab 或 WebApp 耗费的资源比较多，无法更细化的分析 Web Browser 性能。因此，更细化的监控 Web Browser 的性能是个痛点与需求。</p>
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Modern Web Browser 的架构趋势是<a target="_blank" rel="noopener" href="https://helgeklein.com/blog/modern-multi-process-browser-architecture/">多进程 Process Per Tab</a>，例如 Chromium（Chrome 或 Edge） 中，每一个 Tab 都对应一个子进程，Safari 虽然不是 Chromium，也是类似的表现。随着 Web Browser 和 Web 技术的发展，越来越多的服务通过 SaaS 或 WebApp 的形式提供，例如 Confluence、Figma 等，Web Browser 逐渐成为日常工作中重度使用的平台和资源占用大户。现在的 一些监控服务虽然能获取各个进程的 CPU&#x2F;Memory Usage，但是无法监测到到底是哪个 Tab 或 WebApp 耗费的资源比较多，无法更细化的分析 Web Browser 性能。因此，更细化的监控 Web Browser 的性能是个痛点与需求。</p>
 <p>Chrome 和 Edge 虽然提供了 Task Manager，可以显示其各个子进程的类型，Tab 当前的 URL，以及其 CPU、Memory 等性能数据，但是很多系统后台性能监控服务无法像用户一样直接打开 OS 内置的 Activity Monitor 等软件查看数据，需要自己通过 API 来获取，因此，我们也需要一种能够在浏览器外部获取每个 Tab 的性能数据，并且要知道对应的 URL 是什么，这样才能方便的定位出到底是哪些 Web App 导致 Browser 消耗了大量性能。</p>
 <h2 id="Chrome-技术调研"><a href="#Chrome-技术调研" class="headerlink" title="Chrome 技术调研"></a>Chrome 技术调研</h2><h3 id="Chrome-Extension-API-chrome-processes"><a href="#Chrome-Extension-API-chrome-processes" class="headerlink" title="Chrome Extension API: chrome.processes"></a>Chrome Extension API: chrome.processes</h3><p>首先想到了是 Chrome Extension 是否提供了相关 API 可以获取 Tab 的性能数据：<br><a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/api/tabs">chrome.tabs</a> 能够访问 Chrome 的 Tab 信息，但其 tabId 是 Chrome 内部使用的，与 pid 没有关系<br><img src="/investigation-of-getting-browser-tab-performance/D7C029BB-55D4-4560-9B87-97BE234F0412.png"></p>
 <p>后来看到了 <a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/api/processes">chrome.processes</a>，能够通过 tabId 获取对应 Process 的信息，包括 CPU、Memory、pid 等，但遗憾的是，该 API 只能在 Dev Channel 的 Chrome 下执行，正常用户使用的 Stable Channel 的 Chrome 是无法调用此 API 的。<br><img src="/investigation-of-getting-browser-tab-performance/8B78E00B-83A5-49A4-A3F6-C71808B6BBA4.png"></p>
