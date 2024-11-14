@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-14 20:49:45" itemprop="dateModified" datetime="2024-11-14T20:49:45+08:00">2024-11-14</time>
+                <time title="修改时间：2024-11-14 21:01:26" itemprop="dateModified" datetime="2024-11-14T21:01:26+08:00">2024-11-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -287,7 +287,7 @@
 </ol>
 <p>数据流比较稳定：renderer-client-id 从 16 年就有了，一直没变过，frame 的 processId 从 14 年就基于 RenderProcessHostImpl 的 GenerateChildProcessUniqueId 了</p>
 <h3 id="Edge"><a href="#Edge" class="headerlink" title="Edge"></a>Edge</h3><p><img src="/investigation-of-getting-browser-tab-performance/4D9545FD-FFD9-4630-BD24-16D24611DD3F.png"></p>
-<p>解决了 Chrome，由于 Edge 同样基于 Chromium，因此 Edge 可以直接加载 Chrome 的 Extension，另外，Edge 每个 Tab 的子进程的启动参数中也有 renderer-cliend-id，所以，Edge 的方案与 Chrome 基本一致：</p>
+<p>解决了 Chrome，由于 Edge 同样基于 Chromium，因此 Edge 可以直接加载 Chrome 的 Extension，另外，Edge 每个 Tab 的子进程的启动参数中也有 renderer-client-id，所以，Edge 的方案与 Chrome 基本一致：</p>
 <ul>
 <li>Edge 的子进程前缀是 Microsoft Edge</li>
 <li>Edge 会有 PrerenderTab，在启动参数中含有  <code>--instant-process</code></li>
@@ -315,9 +315,9 @@
 <ol>
 <li>Host 端不能使用任何 cout 输出，否则调试不通。如果要调试，只能输出到 cerr</li>
 <li>Host 端是由 Chrome 启动的，自己启动没有用，Chrome 只与自己启动的那一份进程通信</li>
-<li>mainfest 中 name 必须为 小写字母 . 和 _，其他均为非法</li>
-<li>mainfest 应该放到 <code>~/Library/Application Support/Google/Chrome/NativeMessagingHosts</code> 目录</li>
-<li>mainfest 的名字应该与 name 一致，为 name.json</li>
+<li>manifest 中 name 必须为 小写字母 . 和 _，其他均为非法</li>
+<li>manifest 应该放到 <code>~/Library/Application Support/Google/Chrome/NativeMessagingHosts</code> 目录</li>
+<li>manifest 的名字应该与 name 一致，为 name.json</li>
 </ol>
 <p>因此，Native Service 不适合作为 Extension 的 NativeMessagingHost，需要想办法，有两种方式：</p>
 <ol>
