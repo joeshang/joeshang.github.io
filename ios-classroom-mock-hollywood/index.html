@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -270,7 +270,7 @@
 </ul>
 <p>最终我们选用方案三作为最终方案，虽然每个客户端平台 iOS、Android、Electron 都要实现一遍 Client 端，但 Client 端的定位是尽量薄，只进行直播命令的分发和 HTTP 的拦截转发，将通用和复杂的逻辑与交互放到 Server 端，可以多端复用，不需要实现多遍。</p>
 <h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p> 在确定了 C&#x2F;S 架构方案后，基于 WebSocket 的通信通道，需要定义 Client 与 Server 之间的通信协议：协议类型使用 JSON，可读，方便扩展</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  “type”: “”</span><br><span class="line">  “payload”: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  “type”<span class="punctuation">:</span> “”</span><br><span class="line">  “payload”<span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>协议中，主要有两个字段：</p>
 <ul>
@@ -469,14 +469,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>

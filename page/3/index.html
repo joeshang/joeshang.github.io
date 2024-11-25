@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -162,6 +162,105 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014-12-19-understand-anchorpoint-position-frame/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2014-12-19-understand-anchorpoint-position-frame/" class="post-title-link" itemprop="url">理解 anchorPoint，position，frame 的关系</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-12-19 21:20:06" itemprop="dateCreated datePublished" datetime="2014-12-19T21:20:06+08:00">2014-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对于 UIView 的 <code>frame</code>，<code>bounds</code>，<code>center</code> 都比较熟悉：</p>
+<ul>
+<li><code>bounds</code>指定 UIView 自身坐标系。</li>
+<li><code>center</code>指定 UIView 在 superview 中的位置坐标。</li>
+<li><code>frame</code>由互不影响（正交）的 <code>bounds</code> 跟 <code>center</code> 生成。</li>
+</ul>
+<p>但是我一直有这样的疑问：为什么要使用 UIView 中心位置的 <code>center</code> 来指定坐标，为什么不用其他位置？</p>
+<p>后来学习了 CALayer，发现 UIView 的主要任务其实是响应事件（这就是为什么从 UIResponser 继承的原因），而将显示委托给 CALayer 处理。一个成功的 UIView 背后总有一个默默贡献的 CALayer，CALayer 作为 GPU&#x2F;OpenGL 纹理的一种高层封装，处理显示的方方面面，UIView 则将 CALayer 一些功能再次封装，提供简洁好用的接口。像 UIView 中的 <code>frame</code>，<code>bounds</code> 就是直接使用 CALayer 中的 <code>frame</code>，<code>bounds</code>。</p>
+<p>但是对于 <code>center</code>，CALayer 对应项是 <code>position</code>，为什么不同名了呢？因为 <code>position</code> 更灵活，谁规定“指定 UIView 在 superview 中的位置坐标”一定要在 UIView 的中心位置呢？！而 <code>position</code> 默认在中心位置的目的我觉得是为了方便 Rotation，因为一般 Rotation 都是绕着中心旋转，UIView 为了简化使用，满足大部分情况即可，所以就将默认在中心的 <code>position</code> 封装成了 <code>center</code>。</p>
+<p>由于 CALayer 的 <code>position</code> 并没有限制一定要在 <code>bounds</code> 的中心位置，所以就需要一个属性来描述 <code>position</code> 在 <code>bounds</code> 中的位置，这样才能推算出 <code>frame</code> 的 origin 点位置。于是 <code>anchorPoint</code> 出现了，<strong>CALayer 用 <code>anchorPoint</code> 指定 <code>position</code> 在 <code>bounds</code> 中的位置</strong>，有如下特点：</p>
+<ul>
+<li>为了可以任意指定位置，因此 <code>anchorPoint</code> 就不使用绝对值，而是比例值。</li>
+<li>由于 Rotation 总是围绕 <code>position</code> 旋转，因此指定 <code>position</code> 在 Layer 中位置的 <code>anchorPoint</code> 就被命名为<strong>锚点</strong>（像船的锚一样固定位置）。</li>
+</ul>
+<p>总之，<code>frame</code> 是由 <code>position</code>，<code>bounds</code>，<code>anchorPoint</code> 共同生成（其实还有 <code>transform</code>，这就需要了解 Current Transform Matrix 的概念，为了减少复杂性，这里就不涉及了），公式如下：</p>
+<ul>
+<li>frame.origin.x &#x3D; position.x - bounds.size.width * anchorPoint.x</li>
+<li>frame.origin.y &#x3D; position.y - bounds.size.height * anchorPoint.y</li>
+</ul>
+<p>这就解释了：</p>
+<ol>
+<li>为什么 anchorPoint 改变会导致 frame 改变，而 position 却没变？</li>
+<li>为什么 anchorPoint 要使用比例而不是具体值？</li>
+</ol>
+<p>豁然开朗。</p>
+<p>PS. 多思考，保持好奇心，多从设计者角度想想为什么这样设计，即使是简单的概念，也会有收获。Stay Hungry，Stay Foolish。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -852,14 +951,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>

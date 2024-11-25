@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -277,7 +277,7 @@
 <li>每个 Module 供外部 Module 使用的接口，通过 Protocol 抽象成 Service，并通过 register 机制将 Service 注册。</li>
 <li>Module 使用其他 Module 的接口时，用 @Inject 的 Property Wrapper 定义一个 Service 类型的属性，通过 Service 调用接口。</li>
 </ul>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块 A 定义</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleA</span>: <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;</span><br><span class="line">    <span class="comment">// doing</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块 B 使用模块 A</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleB</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Inject</span> <span class="keyword">var</span> service1: <span class="type">Service1</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">handleSomething</span>()</span> &#123;</span><br><span class="line">    service1.doSomething()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">// 注册服务</span></span><br><span class="line"><span class="type">Resolver</span>.register &#123; <span class="type">ModuleA</span>() <span class="keyword">as</span> <span class="type">Service1</span> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块 A 定义</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">Service1</span> &#123;</span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">doSomething</span>() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ModuleA</span>: <span class="title class_ inherited__">Service1</span> &#123;</span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">doSomething</span>() &#123;</span><br><span class="line">    <span class="comment">// doing</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块 B 使用模块 A</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ModuleB</span> &#123;</span><br><span class="line">  <span class="meta">@Inject</span> <span class="keyword">var</span> service1: <span class="type">Service1</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">handleSomething</span>() &#123;</span><br><span class="line">    service1.doSomething()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">// 注册服务</span></span><br><span class="line"><span class="type">Resolver</span>.register &#123; <span class="type">ModuleA</span>() <span class="keyword">as</span> <span class="type">Service1</span> &#125;</span><br></pre></td></tr></table></figure>
 
 <p>依赖注入是一套很成熟的思想，在前后端项目上有广泛应用，积木化使用依赖注入之后：</p>
 <ul>
@@ -459,14 +459,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>

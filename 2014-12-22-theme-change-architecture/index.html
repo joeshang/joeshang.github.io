@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -232,7 +232,7 @@
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+ (ThemeManager *)sharedInstance &#123;</span><br><span class="line">    <span class="keyword">static</span> ThemeManager *sharedInstance = <span class="literal">nil</span>;</span><br><span class="line">    <span class="keyword">if</span> (sharedInstance == <span class="literal">nil</span>) &#123;</span><br><span class="line">        sharedInstance = [[ThemeManager alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sharedInstance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>主题中的资源使用 plist 进行存储，颜色的 RGBA 值跟字体的信息可以直接存入 plist，而图片则可以存入图片的位置。按主题命名 plist 文件，ThemeManager 的初始化跟主题更换就从 Main Bundle 中按主题名字读取对应的 plist 文件。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)init &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</span><br><span class="line">        <span class="built_in">NSUserDefaults</span> *defaults = [<span class="built_in">NSUserDefaults</span> standardUserDefaults];</span><br><span class="line">        <span class="built_in">NSString</span> *themeName = [defaults objectForKey:<span class="string">@&quot;theme&quot;</span>] ?: <span class="string">@&quot;default&quot;</span>;</span><br><span class="line">                                            </span><br><span class="line">        <span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:themeName ofType:<span class="string">@&quot;plist&quot;</span>];</span><br><span class="line">        <span class="keyword">self</span>.theme = [<span class="built_in">NSDictionary</span> dictionaryWithContentsOfFile:path];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">id</span>)init &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="variable language_">super</span> init]) &#123;</span><br><span class="line">        <span class="built_in">NSUserDefaults</span> *defaults = [<span class="built_in">NSUserDefaults</span> standardUserDefaults];</span><br><span class="line">        <span class="built_in">NSString</span> *themeName = [defaults objectForKey:<span class="string">@&quot;theme&quot;</span>] ?: <span class="string">@&quot;default&quot;</span>;</span><br><span class="line">                                            </span><br><span class="line">        <span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:themeName ofType:<span class="string">@&quot;plist&quot;</span>];</span><br><span class="line">        <span class="keyword">self</span>.theme = [<span class="built_in">NSDictionary</span> dictionaryWithContentsOfFile:path];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>代码中不再是直接使用主题相关的资源，而是通过 ThemeManager 得到对应主题下的资源。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 直接使用资源：</span></span><br><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:<span class="string">@&quot;xxx_btn_background&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过主题管理器使用资源：</span></span><br><span class="line"><span class="built_in">NSDictionary</span> *theme = [ThemeManager sharedInstance].theme;</span><br><span class="line"><span class="built_in">NSString</span> *imageName = [theme objectForKey:<span class="string">@&quot;xxx_btn_background&quot;</span>];</span><br><span class="line"><span class="built_in">UIImage</span> *image = [<span class="built_in">UIImage</span> imageNamed:imageName];</span><br></pre></td></tr></table></figure>
@@ -356,14 +356,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>

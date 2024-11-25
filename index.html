@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -166,6 +166,153 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="尚传人">
+      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="传人的技术博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/" class="post-title-link" itemprop="url">基于 OpenAI Assistant API 与现有 Metrics 工具自动定位和修复 IT 问题的尝试</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-13 22:28:29" itemprop="dateCreated datePublished" datetime="2023-12-13T22:28:29+08:00">2023-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-11-25 15:50:13" itemprop="dateModified" datetime="2024-11-25T15:50:13+08:00">2024-11-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenAI-LLM/" itemprop="url" rel="index"><span itemprop="name">OpenAI, LLM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>对于现代公司而言，其使用的 IT 系统稳定性和性能极大的影响公司的效率。因此很多大型公司，尤其是跨国公司会维持一个比较大的 Support Team，有的需要保持 7 * 24 小时在线，有的要支持全球化，这对公司而言是一笔不小的开销。另外 Support Team 还要进行各种培训，同步处理各种情况的 FAQ 手册和 Troubleshooting 文档。</p>
+<p>但对于员工而言，目前常见的 Ticket 系统体验并不算理想：开 Ticket -&gt; 描述现象和当前环境 -&gt; 论坛回帖式的对话 -&gt; 不断询问更多环境细节 -&gt; 终于有可疑点但已经没有故障现场的数据了，导致处理流程很长，效率不高，时间大量浪费在 Round-Trip 式获取细节和 Metrics 中。</p>
+<p>公司出于成本考虑总想削减 Support Team，而削减 Support Team 会导致员工遇到问题时需要更长时间才能恢复，降低员工满意度和效率。公司和员工都很疼，那该如何解决呢？能否将过程自动化呢？可将处理 IT 问题的流程自动化不太好做，因为问题来源端是人，是自然语言，而自动化需要标准接口。</p>
+<p>这个问题困扰我很久，直到 LLM 和 Function Calling 的出现。</p>
+<h2 id="自动化的挑战"><a href="#自动化的挑战" class="headerlink" title="自动化的挑战"></a>自动化的挑战</h2><p>将流程自动化，我认为有三点需要处理：</p>
+<ol>
+<li>如何理解自然语言？<br> a. 如何将灵活的自然语言转化成结构化的调用？<br> b. 如何对问题进行分类？<br> c. 如何根据问题的分类触发不同动作来收集 Metrics?</li>
+<li>如何排查问题并自动修复?<br> a. 书写自然语言的 Troubleshooting 文档要比写复杂的规则或代码容易多，门槛也低。<br> b. 怎么处理多步骤和条件？Troubleshooting 文档中某些步骤要不要做依赖上一步的结果。</li>
+<li>如何改进自动化？<br> a. 并不是所有的 Case 都能够被自动化处理的，如何在无法全自动化时仍能提高效率？<br> b. 如何可以通过经验不断提升和改进？</li>
+</ol>
+<h2 id="现有方案的局限性"><a href="#现有方案的局限性" class="headerlink" title="现有方案的局限性"></a>现有方案的局限性</h2><h3 id="ChatGPT：需要的是解决方案，不是一堆选项"><a href="#ChatGPT：需要的是解决方案，不是一堆选项" class="headerlink" title="ChatGPT：需要的是解决方案，不是一堆选项"></a>ChatGPT：需要的是解决方案，不是一堆选项</h3><p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17316037118914.jpg"></p>
+<p>当通过 ChatGPT 询问类似“为什么我无法打开某个网页？”时，可以看到 ChatGPT 提供了很多个可能原因的选项，这反而对用户造成困扰，应该从哪里解决呢？另外当问一些和内部系统紧密相关的问题时，ChatGPT 的表现也不好，因为它没有训练过这种数据。</p>
+<p>总之，ChatGPT 虽然解决了理解自然语言的问题，但是体验一般，主要原因是：</p>
+<ol>
+<li>缺少实时的 Metrics 数据：提供给 ChatGPT 做判断的“现场”数据太少，导致 LLM 无法在较少 Context 下给出精确答案，只能列出一堆选项。</li>
+<li>缺少领域知识：没有训练过。</li>
+</ol>
+<h3 id="文档-QA-系统"><a href="#文档-QA-系统" class="headerlink" title="文档 QA 系统"></a>文档 QA 系统</h3><p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17316041387314.jpg"></p>
+<p>为了解决领域知识的问题，一种方案是将领域知识进行 Embedding 后放入向量数据库，当用户询问相关问题时，将问题和向量数据库中查询到的相关知识一起传入 LLM 模型，从而得到更符合的答案。这种文档 QA 系统在很多场景下工作的很好，但是由于缺少实时 Metrics 数据，还是无法准确定位到问题。</p>
+<h2 id="OpenAI-Assistant-API-实时-Metrics-数据"><a href="#OpenAI-Assistant-API-实时-Metrics-数据" class="headerlink" title="OpenAI Assistant API + 实时 Metrics 数据"></a>OpenAI Assistant API + 实时 Metrics 数据</h2><p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17316596091297.jpg"></p>
+<p>最近 OpenAI 在其 Dev Day 上推出了 <a target="_blank" rel="noopener" href="https://openai.com/index/new-models-and-developer-products-announced-at-devday/">Assistant API</a>，可以将 Prompt、Function Call、File Retrieval 和模型结合起来，提供一种智能 Assistant 的体验。在仔细阅读了 Assistant API 相关文档后，发现将现有的 Metrics Agent 系统与 Assistant API 结合起来，能够为 IT 问题的自动定位和解决提供一套方案出来：</p>
+<ul>
+<li>利用 Function Call 和 Prompt 将自然语言转成结构化的请求。</li>
+<li>利用 Retrieval 实现领域知识的学习，包括知识库和故障排查手册等。</li>
+<li>利用 Metrics Agent 根据用户提出的问题类型，收集相关的 Metrics 数据。</li>
+<li>利用 LLM 模型，结合领域知识，分析 Metrics 数据，提供给用户准确的解决方案，Provide Solution Not Options。</li>
+</ul>
+<h3 id="理解自然语言"><a href="#理解自然语言" class="headerlink" title="理解自然语言"></a>理解自然语言</h3><p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17316599095964.jpg"></p>
+<p>当用户以自然语言询问自己遇到的问题时，在非人类介入的情况下，如何理解问题，如何对问题进行分类是个难题。而借助 Function Call 的能力，在定义如下的 Function Call 配置时，LLM 会将用户输入的自然语言转换成例如 <code>troubleshoot_network_issue(url, type)</code> 的结构化函数调用，我们就可以在函数中，根据参数传入的 url 与 type，用代码触发 Metrics Agent 进行相关的 Probe，收集 Troubleshooting 所需要的 Metrics 数据和 Context。</p>
+<p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17325102234973.jpg"></p>
+<h3 id="结合实时-Metrics-数据和领域知识定位问题"><a href="#结合实时-Metrics-数据和领域知识定位问题" class="headerlink" title="结合实时 Metrics 数据和领域知识定位问题"></a>结合实时 Metrics 数据和领域知识定位问题</h3><p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17319197448600.jpg"></p>
+<p>通过 Retrieval 能力把 IT Admin 日常使用的知识库和 Troubleshooting 文档上传到 Assistant 中进行向量化和学习，当 Metrics Agent 收集到相关的 Metrics 数据之后，将 Metrics 通过 Function Call 进行返回，LLM 将结合实时收集的 Metrics 数据和向量化后的领域知识，以自然语言的形式返回给用户解决方案。</p>
+<p>同时可以通过 Function Call 提供给用户更方便的问题修复能力。例如如果 LLM 根据实时数据和领域知识判断出来是因为 VPN 没有打开，解决方法是尝试打开 VPN。可以在 Assistant 中定义 <code>toggle_vpn</code> 的 Function Call，用户可以用“帮我打开 VPN”这类自然语言触发该 Function Call，然后 Function Call 中的代码自动帮用户打开 VPN。甚至在配置好多个 Function Call 时，LLM 给出解决方案可以直接配上“需要我帮你打开 VPN 吗？”之类的回答。用户只需要回答“是”，LLM 配合上下文记忆也能够自动触发打开 VPN。</p>
+<p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17325130200356.jpg"></p>
+<h3 id="和现有系统集成"><a href="#和现有系统集成" class="headerlink" title="和现有系统集成"></a>和现有系统集成</h3><p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17319197960624.jpg"></p>
+<p>平时在值班和排查故障过程中，一个很大的痛点是无法及时获取故障现场的各类数据，包括通过和用户沟通获取到的信息。通过 LLM，即使无法自动解决用户故障，也可以在故障现场及时收集数据，同用户沟通，然后接入现有的 Support 系统自动开 Ticket，将对应的 Metrics、Log、Context 作为附件添加到 Ticket 中，提高 IT Admin 在排查故障时的效率，也省去用户繁琐的开 Ticket 的过程。</p>
+<p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17319198104785.jpg"></p>
+<p>当 IT Admin 有新的领域知识需要更新时（包括新的产品，新的 Metrics 数据，新的故障排查案例和步骤等），可以将其更新到现有的且人类可读的知识库与 Troubleshooting 文档中。这些领域知识一方面可以作为 IT Admin 团队的内部培训资料，对新入职员工进行培训或者团队内部知识同步，同时可以更新给 LLM 学习，提高能够自动化处理故障的覆盖率。这样一份资料可以让人和机器都进步，维护起来也容易，因为是人类可读的文本，不是代码或正则表达式。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17316606509767.jpg"></p>
+<p>在实现这个想法的过程中，给项目起名为 DEX Jarvis，希望能像钢铁侠中的人工智能助理 Jarvis 一样在 DEX 领域提供自动解决问题的服务。</p>
+<p>整个项目的架构为：</p>
+<ul>
+<li>用户侧：<ul>
+<li>Jarvis Chat：对话时交互界面，用户可以输入问题，以自然语言对话的形式得到解决方案。</li>
+<li>Jarvis Voice：可以进行语音交互，用户语音进行 Voice Recognition 后将文本输入，而回答文本用 TTS 进行输出。</li>
+</ul>
+</li>
+<li>LLM：基于 OpenAI Assistant API 实现的 Jarvis Agent。<ul>
+<li>Instruction：对 Assistant 进行 Prompt 配置。</li>
+<li>Function Call：配置触发 Metrics Agent 收集数据和本地 IT 操作的结构化调用。</li>
+<li>File Retrieval：从 Jarvis Knowledge Base 中获取和向量化领域知识。</li>
+<li>Fine-Tune：从 Data Server 中构造各种 Case 标注后进行 Fine-Tune。</li>
+</ul>
+</li>
+<li>Jarvis Scheduler：负责从 LLM 收到 Function Call 触发的 Task 并调度到用户设备上的 Metrics Agent，并在收集到 Metrics 数据后将结果返回给 LLM。与现有的 Support 系统对接，可以将 Metrics 数据和 Context 自动开 Ticket 后配上。</li>
+<li>Jarvis Knowledge Base：人类可读的知识库，里面包括相关领域知识和排查步骤，用于人类学习和 LLM 向量化。</li>
+<li>Metrics Agent：负责从用户设备上收集各类性能数据，并将数据上传到 Data Server。也可以在收到指令后进行主动探测或者自动操作用户设备上某些功能。</li>
+<li>Data Server：负责存储、聚合、监控、分析用户设备上的性能数据。</li>
+</ul>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>下面是使用 Demo 演示的一个案例：</p>
+<p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17319197244658.jpg"><br>在 Dex Jarvis 的对话界面上问为什么打不开某个 URL。此时 Jarvis 会触发 <code>troubleshoot_network_issue</code> 的 Function Call，从用户的自然语言输入中解析出 URL 作为 url 参数，type 参数为 can’t open 类型。</p>
+<p>此时 Metrics Agent 会根据 Function Call 和其参数，调用代码收集性能数据，例如：</p>
+<ul>
+<li>检查本地网络连接是否正常，如果是 WiFi，检查 WiFi 信号强度。</li>
+<li>检查 VPN 是否安装，是否打开。</li>
+<li>检查该 URL 的 DNS 解析是否正常，是否为内网 URL。</li>
+<li>对该 URL 进行 ping 和 traceroute 操作，收集网络时延。</li>
+<li>模拟对该 URL 进行 HTTPS 请求，并收集每个阶段的用时或者错误。</li>
+</ul>
+<p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17319197583964.jpg"><br>Metrics Agent 将上述整个性能数据收集完成后返回给 LLM，结合已经 Retrieval 过的故障排查文档，LLM 分析出来由于 URL 是内网 URL，而 VPN 并没有打开，所以无法打开的原因是 VPN 没有打开，并且检查出 WiFi 信号较弱，也可能导致访问慢的问题。</p>
+<p><img src="/dex-jarvis-play-with-openai-api-for-dex-troubleshooting/17319197726945.jpg"></p>
+<p>同时 LLM 会问你是否需要帮忙打开 VPN，当回答是后，会触发 <code>toggle_vpn</code> 的 Function Call，可以在用户设备上自动帮用户打开 GlobalProtect 之类的 VPN。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个项目并没有什么很深的技术，主要是基于 OpenAI Assistant API 实现的一次探索，当了一次 API Boy，也没有考虑落地时 API 的使用价格等。但是在实现过程中，Assistant API 的 Function Call 与 File Retrieval 让我感到惊艳：将自然语言转换成结构化函数的准确，对人类可读的排查文档的理解，以及甚至向量化文档可以结合多个 Function Call 进行组合处理，达到了超出预期的效果。</p>
+<p>探索这个项目，除了是看了 OpenAI DevDay 之后想把玩一下新出的技术外，也是对以前在猿辅导直播教室遇到的痛点念念不忘。教育领域的直播课，对质量要求较高，一旦直播体验出现问题，将影响整个教学体验。当时每周都会有很多用户报障，报告各式各样的问题，对于开发团队，除了业务功能开发外，会花费大量时间处理这些用户报障问题。很多时候要么问题是重复的，要么是环境问题，要么时间都浪费在获取当时现场或和用户沟通故障表现上，一直在想有没有什么办法能够提高报障处理效率，甚至自动化的处理。Assistant API 让我看到了这种可能性，相信随着技术的进步，后面还会有更多有意思的东西出现，真正能解决问题，提高效率，Stay Hungry Stay Foolish。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/investigation-of-getting-browser-tab-performance/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -197,7 +344,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-14 21:01:26" itemprop="dateModified" datetime="2024-11-14T21:01:26+08:00">2024-11-14</time>
+                <time title="修改时间：2024-11-14 22:55:06" itemprop="dateModified" datetime="2024-11-14T22:55:06+08:00">2024-11-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,19 +369,19 @@
       
           <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>Modern Web Browser 的架构趋势是<a target="_blank" rel="noopener" href="https://helgeklein.com/blog/modern-multi-process-browser-architecture/">多进程 Process Per Tab</a>，例如 Chromium（Chrome 或 Edge） 中，每一个 Tab 都对应一个子进程，Safari 虽然不是 Chromium，也是类似的表现。随着 Web Browser 和 Web 技术的发展，越来越多的服务通过 SaaS 或 WebApp 的形式提供，例如 Confluence、Figma 等，Web Browser 逐渐成为日常工作中重度使用的平台和资源占用大户。现在的一些监控服务虽然能获取各个进程的 CPU&#x2F;Memory Usage，但是无法监测到到底是哪个 Tab 或 WebApp 耗费的资源比较多，无法更细化的分析 Web Browser 性能。因此，更细化的监控 Web Browser 的性能是个痛点与需求。</p>
 <p>Chrome 和 Edge 虽然提供了 Task Manager，可以显示其各个子进程的类型，Tab 当前的 URL，以及其 CPU、Memory 等性能数据，但是很多系统后台性能监控服务无法像用户一样直接打开 OS 内置的 Activity Monitor 等软件查看数据，需要自己通过 API 来获取，因此，我们也需要一种能够在浏览器外部获取每个 Tab 的性能数据，并且要知道对应的 URL 是什么，这样才能方便的定位出到底是哪些 Web App 导致 Browser 消耗了大量性能。</p>
-<h2 id="Chrome-技术调研"><a href="#Chrome-技术调研" class="headerlink" title="Chrome 技术调研"></a>Chrome 技术调研</h2><h3 id="Chrome-Extension-API-chrome-processes"><a href="#Chrome-Extension-API-chrome-processes" class="headerlink" title="Chrome Extension API: chrome.processes"></a>Chrome Extension API: chrome.processes</h3><p>首先想到了是 Chrome Extension 是否提供了相关 API 可以获取 Tab 的性能数据：<br><a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/api/tabs">chrome.tabs</a> 能够访问 Chrome 的 Tab 信息，但其 tabId 是 Chrome 内部使用的，与 pid 没有关系<br><img src="/investigation-of-getting-browser-tab-performance/D7C029BB-55D4-4560-9B87-97BE234F0412.png"></p>
+<h2 id="Chrome-技术调研"><a href="#Chrome-技术调研" class="headerlink" title="Chrome 技术调研"></a>Chrome 技术调研</h2><h3 id="Chrome-Extension-API-chrome-processes"><a href="#Chrome-Extension-API-chrome-processes" class="headerlink" title="Chrome Extension API: chrome.processes"></a>Chrome Extension API: chrome.processes</h3><p>首先想到了是 Chrome Extension 是否提供了相关 API 可以获取 Tab 的性能数据：<br><a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/api/tabs">chrome.tabs</a> 能够访问 Chrome 的 Tab 信息，但其 tabId 是 Chrome 内部使用的，与 pid 没有关系。<br><img src="/investigation-of-getting-browser-tab-performance/D7C029BB-55D4-4560-9B87-97BE234F0412.png"></p>
 <p>后来看到了 <a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/api/processes">chrome.processes</a>，能够通过 tabId 获取对应 Process 的信息，包括 CPU、Memory、pid 等，但遗憾的是，该 API 只能在 Dev Channel 的 Chrome 下执行，正常用户使用的 Stable Channel 的 Chrome 是无法调用此 API 的。<br><img src="/investigation-of-getting-browser-tab-performance/8B78E00B-83A5-49A4-A3F6-C71808B6BBA4.png"></p>
-<p>看到 2017 年 Chrome 论坛也有人问：<a target="_blank" rel="noopener" href="https://groups.google.com/a/chromium.org/g/chromium-extensions/c/pyAzuN4neHc%EF%BC%8C%E4%BA%8E%E6%98%AF%E8%AF%95%E8%AF%95%E6%9C%89%E6%B2%A1%E6%9C%89%E4%BB%80%E4%B9%88">https://groups.google.com/a/chromium.org/g/chromium-extensions/c/pyAzuN4neHc，于是试试有没有什么</a> Hack 的方式可以访问 <a target="_blank" rel="noopener" href="https://chromium.googlesource.com/chromium/src/+/main/chrome/common/extensions/api/_permission_features.json">_permission_features.json</a>，从而修改权限，后来发现该文件是 Chrome 编译时候的选项，相当于 Channel 是编译期决议，因此这条路走不通</p>
-<h3 id="Chrome-DevTools-Protocol"><a href="#Chrome-DevTools-Protocol" class="headerlink" title="Chrome DevTools Protocol"></a>Chrome DevTools Protocol</h3><p>Extension 的路走不通，搜索过程中看到了 <a target="_blank" rel="noopener" href="https://chromedevtools.github.io/devtools-protocol/">Chrome DevTools Protocol</a>，是 Chrome 对外开放的一个“远程”调试接口，那通过此接口，能否读取 Chrome 的内部信息呢？读了读文档之后，找到一个 SystemInfo 接口 <a target="_blank" rel="noopener" href="https://chromedevtools.github.io/devtools-protocol/tot/SystemInfo/">Chrome DevTools Protocol - SystemInfo domain</a></p>
+<p>看到 2017 年 Chrome 论坛也有人问：<a target="_blank" rel="noopener" href="https://groups.google.com/a/chromium.org/g/chromium-extensions/c/pyAzuN4neHc">https://groups.google.com/a/chromium.org/g/chromium-extensions/c/pyAzuN4neHc</a> ，于是试试有没有什么 Hack 的方式可以访问 <a target="_blank" rel="noopener" href="https://chromium.googlesource.com/chromium/src/+/main/chrome/common/extensions/api/_permission_features.json">_permission_features.json</a>，从而修改权限，后来发现该文件是 Chrome 编译时候的选项，相当于 Channel 是编译期决议，因此这条路走不通。</p>
+<h3 id="Chrome-DevTools-Protocol"><a href="#Chrome-DevTools-Protocol" class="headerlink" title="Chrome DevTools Protocol"></a>Chrome DevTools Protocol</h3><p>Extension 的路走不通，搜索过程中看到了 <a target="_blank" rel="noopener" href="https://chromedevtools.github.io/devtools-protocol/">Chrome DevTools Protocol</a>，是 Chrome 对外开放的一个“远程”调试接口，那通过此接口，能否读取 Chrome 的内部信息呢？读了读文档之后，找到一个 SystemInfo 接口 <a target="_blank" rel="noopener" href="https://chromedevtools.github.io/devtools-protocol/tot/SystemInfo/">Chrome DevTools Protocol - SystemInfo domain</a>。</p>
 <p>但是也不行，原因是：</p>
 <ol>
-<li>使用 Chrome DevTools Protocol 需要在启动 Chrome 时，配置 <code>--remote-debug-port=xxx</code> 的参数，用于启动一个 WebSocket 供外部连接，这对于开放调试或者开发者而言还行，对用户来说太不透明</li>
-<li>SystemInfo 中返回的 Process 数据内容太少，虽然有 pid，但是没有 pid 与 Tab 的映射，无法通过 pid 获取 Tab 的信息</li>
+<li>使用 Chrome DevTools Protocol 需要在启动 Chrome 时，配置 <code>--remote-debug-port=xxx</code> 的参数，用于启动一个 WebSocket 供外部连接，这对于开放调试或者开发者而言还行，对用户来说太不透明。</li>
+<li>SystemInfo 中返回的 Process 数据内容太少，虽然有 pid，但是没有 pid 与 Tab 的映射，无法通过 pid 获取 Tab 的信息。</li>
 </ol>
-<h3 id="逆向-Chrome-内部-IPC-接口"><a href="#逆向-Chrome-内部-IPC-接口" class="headerlink" title="逆向 Chrome 内部 IPC 接口"></a>逆向 Chrome 内部 IPC 接口</h3><p>在搜索 “Get Chrome tab pid” 的过程中，看到回答基本都是使用 Chrome 自带的 Task Manager，提供了每个 Tab 对应的 CPU、Memory、Network、pid 等数据<br><img src="/investigation-of-getting-browser-tab-performance/381A47EE-B7EB-471B-B8A5-729B780BB1B4.png"></p>
+<h3 id="逆向-Chrome-内部-IPC-接口"><a href="#逆向-Chrome-内部-IPC-接口" class="headerlink" title="逆向 Chrome 内部 IPC 接口"></a>逆向 Chrome 内部 IPC 接口</h3><p>在搜索 “Get Chrome tab pid” 的过程中，看到回答基本都是使用 Chrome 自带的 Task Manager，提供了每个 Tab 对应的 CPU、Memory、Network、pid 等数据：<br><img src="/investigation-of-getting-browser-tab-performance/381A47EE-B7EB-471B-B8A5-729B780BB1B4.png"></p>
 <p>而 Chrome 是多进程架构，进程之间通过 <a target="_blank" rel="noopener" href="https://chromium.googlesource.com/chromium/src/+/master/mojo/README.md">Mojo</a> 进行通信，而 Mojo 比较像 RPC，上层在使用时就如同调用其他进程的 API 一样。而 Chromium 是开源的，能够搜索到 Task Manager 的<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:chrome/browser/task_manager/task_manager_interface.h">源码</a>，能否通过模拟 Mojo 的调用，读取 Task Manager 中的数据呢？</p>
 <p>首先需要分析一下 Mojo 的数据格式，看到了 <a target="_blank" rel="noopener" href="https://www.mdsec.co.uk/2021/01/breaking-the-browser-a-tale-of-ipc-credentials-and-backdoors/">Breaking The Browser - A tale of IPC, credentials and backdoors - MDSec</a> 和 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=39yPeiY808w">Attacking Chrome IPC</a>，并尝试使用文中使用的 Chrome IPC Sniffer 在 Windows 上进行分析：</p>
-<p>刚开始但发现 mojo 的解析失效了，Wireshark 无法分析出来最顶层 mojo 的数据包，导致无法看到 mojo 的具体数据结构<br><img src="/investigation-of-getting-browser-tab-performance/5C9FBE0C-6AAE-440A-A420-B97FEAF91698.png"><br><img src="/investigation-of-getting-browser-tab-performance/63008FDF-EE37-4DA3-B4B8-A791B3F1182E.png"><br>后来对比了出问题的 lua 文件和 Github 上对应文件，发现在解压时，sniffer 的 lua 插件中文件内容不全，像是解压问题，再次解压后能够读取数据了。</p>
+<p>刚开始但发现 mojo 的解析失效了，Wireshark 无法分析出来最顶层 mojo 的数据包，导致无法看到 mojo 的具体数据结构：<br><img src="/investigation-of-getting-browser-tab-performance/5C9FBE0C-6AAE-440A-A420-B97FEAF91698.png"><br><img src="/investigation-of-getting-browser-tab-performance/63008FDF-EE37-4DA3-B4B8-A791B3F1182E.png"><br>后来对比了出问题的 lua 文件和 Github 上对应文件，发现在解压时，sniffer 的 lua 插件中文件内容不全，像是解压问题，再次解压后能够读取数据了。</p>
 <p>但 mojo 是 Chrome 内部使用的，不稳定，即使这次能够通过逆向 IPC 接口拿到 Task Manager 数据，可一旦 mojo 协议和 Task Manager 相关接口发生变化，就失效了，而且不确定 IPC 调用时未定义的行为会不会导致 Chrome 崩溃。</p>
 <h3 id="慢慢确定思路"><a href="#慢慢确定思路" class="headerlink" title="慢慢确定思路"></a>慢慢确定思路</h3><p>到这里仿佛没有路了，在不断搜索中，看到了这个回答：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/63000671/how-would-one-find-the-pid-of-a-browser-extension-running%EF%BC%8C">https://stackoverflow.com/questions/63000671/how-would-one-find-the-pid-of-a-browser-extension-running，</a> <code>ps -ax | grep &#39;Google Chrome Helper&#39; | grep &quot;extension-process&quot;</code> ，是通过分析每个 Chrome 子进程的名字和启动命令行参数得到哪个是 Extension 的，这给我打开了思路，开始仔细分析 ps 出来的 Chrome 子进程的信息：</p>
 <blockquote>
@@ -242,39 +389,38 @@
 </blockquote>
 <p>分析的规律如下：</p>
 <ul>
-<li>对于不同类型的进程，Chrome 启动的程序不一样，可以分析出来 Chrome 子进程的类型<ul>
-<li>Tab 和 Extension 是 Google Chrome Helper (Renderer)，type 为 renderer，Extension 会多一个 <code>extension-process</code> 的参数</li>
-<li>GPU 是 Google Chrome Helper (GPU)</li>
-<li>Utility 是 Google Chrome Helper，type 为 render，会有一个 <code>utility-sub-type</code> 指定 Utility 的具体功能</li>
-<li><code>chrome_crashpad_handler</code> 用于监控 Chrome 的崩溃</li>
+<li>对于不同类型的进程，Chrome 启动的程序不一样，可以分析出来 Chrome 子进程的类型。<ul>
+<li>Tab 和 Extension 是 Google Chrome Helper (Renderer)，type 为 renderer，Extension 会多一个 <code>--extension-process</code> 的参数。</li>
+<li>GPU 是 Google Chrome Helper (GPU)。</li>
+<li>Utility 是 Google Chrome Helper，type 为 renderer，会有一个 <code>--utility-sub-type</code> 指定 Utility 的具体功能。</li>
+<li><code>chrome_crashpad_handler</code> 用于监控 Chrome 的崩溃。</li>
 </ul>
 </li>
-<li>对于 Tab，其启动参数中大部分是相同的，有一个比较特殊，叫 <code>--renderer-client-id</code>，我发现这个 id 每个 Tab 都是唯一的</li>
+<li>对于 Tab，其启动参数中大部分是相同的，有一个比较特殊，叫 <code>--renderer-client-id</code>，我发现这个 id 每个 Tab 都是唯一的。</li>
 </ul>
 <p>于是想到一种思路：<strong>通过 ps 能获取到 pid 与 renderer-client-id 的关系，那能否从 Chrome 中拿到 renderer-client-id  与 Tab 的映射关系呢？</strong> 这样的话，Browser 的监控思路就是：</p>
 <ul>
-<li>通过一定方式，获取 Tab 与 renderer-client-id 的映射，并将 Tab 对应的 URL 发送给 Native 程序</li>
-<li>Native 程序在做进程的性能监控时，对于 Chrome，分析 renderer-client-id 与 pid 映射，通过两者结合，将 URL 与进程的性能信息进行绑定</li>
+<li>通过一定方式，获取 Tab 与 renderer-client-id 的映射，并将 Tab 对应的 URL 发送给 Native 程序。</li>
+<li>Native 程序在做进程的性能监控时，对于 Chrome，分析 renderer-client-id 与 pid 映射，通过两者结合，将 URL 与进程的性能信息进行绑定。</li>
 </ul>
-<p>那如何获取 Tab 与 renderer-client-id 的映射？是下一步的攻关难点</p>
+<p>那如何获取 Tab 与 renderer-client-id 的映射？是下一步的攻关难点。</p>
 <h3 id="解析-Chrome-Session-File（SNSS）"><a href="#解析-Chrome-Session-File（SNSS）" class="headerlink" title="解析 Chrome Session File（SNSS）"></a>解析 Chrome Session File（SNSS）</h3><p>Chrome 存在一个 Session File SNSS，当 Chrome 被意外关闭时，可以通过访问该文件恢复所有的 Tab。尝试从这里读取 Tab 信息，但问题是：</p>
 <ol>
-<li>SNSS 并不是文本文件，需要一个解析器，目前并没有什么稳定的解析器，解析器都是通过逆向写的</li>
-<li>另外，这里只有 URL，没有 Tab 到 pid 的映射</li>
+<li>SNSS 并不是文本文件，需要一个解析器，目前并没有什么稳定的解析器，解析器都是通过逆向写的。</li>
+<li>另外，这里只有 URL，没有 Tab 到 pid 的映射。</li>
 </ol>
-<h3 id="AppleScript-调用-Chrome-接口"><a href="#AppleScript-调用-Chrome-接口" class="headerlink" title="AppleScript 调用 Chrome 接口"></a>AppleScript 调用 Chrome 接口</h3><p>使用 <a target="_blank" rel="noopener" href="https://github.com/prasmussen/chrome-cli">AppleScript 调用 Chrome 提供的接口</a>，不行，列出的 Tab 中 tabId 是内部 ID，和 pid 无法映射</p>
+<h3 id="AppleScript-调用-Chrome-接口"><a href="#AppleScript-调用-Chrome-接口" class="headerlink" title="AppleScript 调用 Chrome 接口"></a>AppleScript 调用 Chrome 接口</h3><p>使用 <a target="_blank" rel="noopener" href="https://github.com/prasmussen/chrome-cli">AppleScript 调用 Chrome 提供的接口</a>，不行，列出的 Tab 中 tabId 是内部 ID，和 pid 无法映射。</p>
 <h3 id="基于-chrome-process-internals"><a href="#基于-chrome-process-internals" class="headerlink" title="基于 chrome:&#x2F;&#x2F;process-internals"></a>基于 chrome:&#x2F;&#x2F;process-internals</h3><p>Chrome 内置了一些 Scheme 为 chrome 的 URL，通过 chrome:&#x2F;&#x2F;chrome-urls&#x2F; 可以查看，其他浏览器见<a target="_blank" rel="noopener" href="https://www.stefanjudis.com/today-i-learned/how-to-find-all-internal-pages-in-chromiums-and-firefox/">这里</a>，在一个个打开的过程中，发现了 chrome:&#x2F;&#x2F;process-internals，该页面显示所有 Tab 与 Extension 的 FrameTrees：<br><img src="/investigation-of-getting-browser-tab-performance/5B4477F9-90A5-4EDA-9439-B725C08BAB42.png"><br>经过分析，发现 Frame 中第一个数字就是 renderer-client-id，可以通过解析此页面的结果，反查 pid 对应的 URL。但问题是如何在用户无感知的情况下解析获取这个页面的数据呢？</p>
 <p>第一个尝试是使用 Chrome 的 <a target="_blank" rel="noopener" href="https://developer.chrome.com/blog/headless-chrome/">headless 模式</a> ，可以无 UI 的使用 Chrome。但一旦 Chrome 启动，无法再次启动一个 Chrome 进程（注意不是窗口），每次调用 Chrome 的二进制都会触发一个新窗口，而使用 headless 相当于和原来的 Chrome 进程互相隔离，是无法通过访问 headless 的 Chrome 获取用户正在使用的 Chrome 的数据的。</p>
-<p>第二个尝试是将 chrome:&#x2F;&#x2F;process-internals 页面的源码 Load 下来，在本地加载，避免解析 HTML 页面。在将相关 JS 代码下载后，在 binding.js 中找不到 Mojo 的定义，经过搜索 Chrome 源码，Mojo 是一个全局变量，无法在本地下载的情况下使用<br><img src="/investigation-of-getting-browser-tab-performance/24E76685-25A2-4D8B-BD9D-ECD2BFF838B2.png"></p>
-<h3 id="再次回到-Chrome-Extension-API-chrome-webNavigation"><a href="#再次回到-Chrome-Extension-API-chrome-webNavigation" class="headerlink" title="再次回到 Chrome Extension API: chrome.webNavigation"></a>再次回到 Chrome Extension API: chrome.webNavigation</h3><p>再次绝望，直到搜到了 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/36834312/get-chrome-tab-pid-from-chrome-extension">Get Chrome tab pid from Chrome extension - Stack Overflow</a>，里面发现 <a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/webNavigation/">chrome.webNavigation</a> 可以返回当前 Tab 最顶层 Frame（frameId 为 0）的 processId，而经过对比，发现这个 processId 正是 renderer-client-id！<br>折腾了这么久，终于找到了解决方案：实现一个 Chrome Extension，通过 chrome.tabs 接口遍历所有的 Tab，拿到 tabId 和 URL，再通过 chrome.webNavigation + tabId 获取到 renderer-client-id</p>
+<p>第二个尝试是将 chrome:&#x2F;&#x2F;process-internals 页面的源码 Load 下来，在本地加载，避免解析 HTML 页面。在将相关 JS 代码下载后，在 binding.js 中找不到 Mojo 的定义，经过搜索 Chrome 源码，Mojo 是一个全局变量，无法在本地下载的情况下使用：<br><img src="/investigation-of-getting-browser-tab-performance/24E76685-25A2-4D8B-BD9D-ECD2BFF838B2.png"></p>
+<h3 id="再次回到-Chrome-Extension-API-chrome-webNavigation"><a href="#再次回到-Chrome-Extension-API-chrome-webNavigation" class="headerlink" title="再次回到 Chrome Extension API: chrome.webNavigation"></a>再次回到 Chrome Extension API: chrome.webNavigation</h3><p>再次绝望，直到搜到了 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/36834312/get-chrome-tab-pid-from-chrome-extension">Get Chrome tab pid from Chrome extension - Stack Overflow</a>，里面发现 <a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/webNavigation/">chrome.webNavigation</a> 可以返回当前 Tab 最顶层 Frame（frameId 为 0）的 processId，而经过对比，发现这个 processId 正是 renderer-client-id！<br>折腾了这么久，终于找到了解决方案：实现一个 Chrome Extension，通过 chrome.tabs 接口遍历所有的 Tab，拿到 tabId 和 URL，再通过 chrome.webNavigation + tabId 获取到 renderer-client-id。</p>
 <p><img src="/investigation-of-getting-browser-tab-performance/17314299888433.jpg"></p>
-<h3 id="确定方案稳定性"><a href="#确定方案稳定性" class="headerlink" title="确定方案稳定性"></a>确定方案稳定性</h3><p>这个方案虽然可行，且比较 tricky，但是否稳定？让源码为我们证明！</p>
-<h4 id="renderer-client-id"><a href="#renderer-client-id" class="headerlink" title="renderer-client-id"></a>renderer-client-id</h4><p>启动参数中的 <code>render-client-id</code>（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/public/common/content_switches.cc?q=renderer-client-id&ss=chromium">源码</a>），2016 年被加入，赋值给 kRendererClientId</p>
+<h3 id="确定方案稳定性"><a href="#确定方案稳定性" class="headerlink" title="确定方案稳定性"></a>确定方案稳定性</h3><p>这个方案虽然可行，且比较 tricky，但是否稳定？让 Chromium 源码为我们证明。</p>
+<h4 id="renderer-client-id"><a href="#renderer-client-id" class="headerlink" title="renderer-client-id"></a>renderer-client-id</h4><p>启动参数中的 <code>render-client-id</code>（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/public/common/content_switches.cc?q=renderer-client-id&ss=chromium">源码</a>），2016 年被加入，赋值给 kRendererClientId。</p>
 <p>kRendererClientId 在 <code>render-process-host-impl.cc</code> 中使用，AppendRendererCommandLine 将 RenderProcessHostImpl 的 ID 设置为 kRendererClientId（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/browser/renderer_host/render_process_host_impl.cc;l=3271;drc=ceb5f7a570260bf7d588af1c7f049334681f7fdb;bpv=1;bpt=1">源码</a>）：<br><img src="/investigation-of-getting-browser-tab-performance/FD075D36-92E8-43AE-B8F2-27D877EA58F4.png"></p>
 <p>RenderProcessHostImpl 负责创建和管理渲染子进程，其成员变量 ID 是通过 <code>ChildProcessHostImpl::GenerateChildProcessUniqueId()</code> 生成（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/browser/renderer_host/render_process_host_impl.cc?q=GenerateChildProcessUniqueId&ss=chromium">源码</a>）：<br><img src="/investigation-of-getting-browser-tab-performance/6944CFA3-47F5-4EF6-B588-EBC7E1C4015A.png"></p>
-<p>RenderProcessHostImpl 的 Init 会负责启动一个渲染子进程，通过 <code>ChildProcessHost::GetChildPath(flags)</code> 获取 Google Chrome Helper 对应的路径（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/common/child_process_host_impl.cc;drc=ceb5f7a570260bf7d588af1c7f049334681f7fdb;l=67">源码</a>)，例如 Render 类型会加 Render 后缀，GPU 类型会加 GPU 后缀</p>
-<h4 id="frame-processId"><a href="#frame-processId" class="headerlink" title="frame.processId"></a>frame.processId</h4><p>对于 frame 中的 processId，通过<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:out/Debug/gen/content/browser/resources/process/tsc/process_internals.mojom-webui.js?q=processId&ss=chromium&start=41">源码</a>可以看到，JS binding 调用的是 ProcessInternalsHandler 中的 <code>frame_info-&gt;process_id = frame-&gt;GetProcess()-&gt;GetID();</code></p>
-<p>其中 frame 为 RenderFrameHostImpl，其 GetProcess 返回的是 RenderProcessHost，实际上由 <code>agent_scheduling_group_</code>  返回<br><img src="/investigation-of-getting-browser-tab-performance/BA923CE9-F44E-4533-9376-3EA62AB372FC.png"></p>
+<p>RenderProcessHostImpl 的 Init 会负责启动一个渲染子进程，通过 <code>ChildProcessHost::GetChildPath(flags)</code> 获取 Google Chrome Helper 对应的路径（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/common/child_process_host_impl.cc;drc=ceb5f7a570260bf7d588af1c7f049334681f7fdb;l=67">源码</a>)，例如 Render 类型会加 Render 后缀，GPU 类型会加 GPU 后缀。</p>
+<h4 id="frame-processId"><a href="#frame-processId" class="headerlink" title="frame.processId"></a>frame.processId</h4><p>对于 frame 中的 processId，通过<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:out/Debug/gen/content/browser/resources/process/tsc/process_internals.mojom-webui.js?q=processId&ss=chromium&start=41">源码</a>可以看到，JS binding 调用的是 ProcessInternalsHandler 中的 <code>frame_info-&gt;process_id = frame-&gt;GetProcess()-&gt;GetID();</code>。其中 frame 为 RenderFrameHostImpl，其 GetProcess 返回的是 RenderProcessHost，实际上由 <code>agent_scheduling_group_</code> 返回：<br><img src="/investigation-of-getting-browser-tab-performance/BA923CE9-F44E-4533-9376-3EA62AB372FC.png"></p>
 <p>AgentSchedulingGroupHost 在 GetOrCreate 中创建（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/browser/renderer_host/agent_scheduling_group_host.cc;l=104;drc=ceb5f7a570260bf7d588af1c7f049334681f7fdb;bpv=1;bpt=1">源码</a>）：<br><img src="/investigation-of-getting-browser-tab-performance/EDB48167-2979-480B-B4B3-07B41195EDB8.png"></p>
 <p>AgentSchedulingGroupHost 的 GetOrCreate 被 SiteInstanceGroup 调用（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/browser/site_instance_group.cc;l=24;drc=ceb5f7a570260bf7d588af1c7f049334681f7fdb;bpv=1;bpt=1">源码</a>）：<br><img src="/investigation-of-getting-browser-tab-performance/FAE1F4B3-5EBE-4C41-A8B0-62B9D62409A2.png"></p>
 <p>SiteInstanceGroup 在 SiteInstanceGroupManager 的 GetOrCreateGroupForNewSiteInstance 中调用（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/browser/site_instance_group_manager.cc;l=49;drc=ceb5f7a570260bf7d588af1c7f049334681f7fdb;bpv=1;bpt=1">源码</a>）：<br><img src="/investigation-of-getting-browser-tab-performance/609B214F-7144-43E5-89B7-20E0F0482526.png"></p>
@@ -282,21 +428,21 @@
 <p>而 SetProcessInternal 的 process 参数是 RenderProcessHostImpl 的 GetProcessHostForSiteInstance（<a target="_blank" rel="noopener" href="https://source.chromium.org/chromium/chromium/src/+/main:content/browser/site_instance_impl.cc;l=375;drc=ceb5f7a570260bf7d588af1c7f049334681f7fdb;bpv=1;bpt=1">源码</a>）：<br><img src="/investigation-of-getting-browser-tab-performance/6160143D-CA52-4ED8-8EB1-44833E00933C.png"></p>
 <p>兜兜转转，又回到了 RenderProcessHostImpl，因此数据流就通了：</p>
 <ol>
-<li>RenderProcessHostImpl 负责创建一个渲染子进程，通过 GenerateChildProcessUniqueId 生成一个 ID，并配置到其启动程序的 renderer-client-id 上</li>
-<li>同时 FrameInstance 会绑定一个 RenderProcessHostImpl，其 ID 就是 ProcessId</li>
+<li>RenderProcessHostImpl 负责创建一个渲染子进程，通过 GenerateChildProcessUniqueId 生成一个 ID，并配置到其启动程序的 renderer-client-id 上。</li>
+<li>同时 FrameInstance 会绑定一个 RenderProcessHostImpl，其 ID 就是 ProcessId。</li>
 </ol>
-<p>数据流比较稳定：renderer-client-id 从 16 年就有了，一直没变过，frame 的 processId 从 14 年就基于 RenderProcessHostImpl 的 GenerateChildProcessUniqueId 了</p>
+<p>数据流比较稳定：renderer-client-id 从 16 年就有了，一直没变过，frame 的 processId 从 14 年就基于 RenderProcessHostImpl 的 GenerateChildProcessUniqueId 了。</p>
 <h3 id="Edge"><a href="#Edge" class="headerlink" title="Edge"></a>Edge</h3><p><img src="/investigation-of-getting-browser-tab-performance/4D9545FD-FFD9-4630-BD24-16D24611DD3F.png"></p>
 <p>解决了 Chrome，由于 Edge 同样基于 Chromium，因此 Edge 可以直接加载 Chrome 的 Extension，另外，Edge 每个 Tab 的子进程的启动参数中也有 renderer-client-id，所以，Edge 的方案与 Chrome 基本一致：</p>
 <ul>
-<li>Edge 的子进程前缀是 Microsoft Edge</li>
-<li>Edge 会有 PrerenderTab，在启动参数中含有  <code>--instant-process</code></li>
+<li>Edge 的子进程前缀是 Microsoft Edge。</li>
+<li>Edge 会有 PrerenderTab，在启动参数中含有  <code>--instant-process</code>。</li>
 </ul>
 <p><img src="/investigation-of-getting-browser-tab-performance/17314300416677.jpg"></p>
 <p>确定了整体方案，还需要验证：</p>
 <ol>
-<li>能否通过代码方式，获取一个 pid 对应进程的命令行启动参数</li>
-<li>Extension 如何与 Native App 进行通信</li>
+<li>能否通过代码方式，获取一个 pid 对应进程的命令行启动参数。</li>
+<li>Extension 如何与 Native App 进行通信。</li>
 </ol>
 <h3 id="获取-Process-的命令行参数"><a href="#获取-Process-的命令行参数" class="headerlink" title="获取 Process 的命令行参数"></a>获取 Process 的命令行参数</h3><p>对于 Windows，参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/6520428/how-to-query-a-running-process-for-its-parameters-list-windows-c/6522047">How to query a running process for its parameters list? (Windows, C++)</a> 和 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/21945606/how-can-i-get-the-full-command-line-of-all-the-processes-after-doing-a-process-w">c - How can I get the full command line of all the processes after doing a process walk of the snapshot? - Stack Overflow</a>，效果如下：<br><img src="/investigation-of-getting-browser-tab-performance/28B0F088-77B3-453F-931E-EF62305585CB.png"></p>
 <p>对于 Mac，参考 <a target="_blank" rel="noopener" href="https://chromium.googlesource.com/crashpad/crashpad/+/refs/heads/master/util/posix/process_info_mac.cc">Chromium 源码中的 process_info_mac.cc</a>，效果如下：<br><img src="/investigation-of-getting-browser-tab-performance/365C3BB0-BDBB-43C8-A43A-0F31B5047F5B.png"></p>
@@ -308,36 +454,36 @@
 </ul>
 <p>主流就是两种思路：一个是通过 WebSocket，一个是基于 Chrome 提供的 Native Messaging</p>
 <ul>
-<li>WebSocket 的问题在于在 Extension 中是否有权限可以访问一个 WebSocket 服务器，且这个服务器是否要求必须是 wss，本地服务器的 ssl 证书不太好弄，另外安全性上风险也高一些</li>
-<li>Native Messaging 看起来更合适一些，因为需求中数据传输量并不大，而且相对安全性好</li>
+<li>WebSocket 的问题在于在 Extension 中是否有权限可以访问一个 WebSocket 服务器，且这个服务器是否要求必须是 wss，本地服务器的 ssl 证书不太好弄，另外安全性上风险也高一些。</li>
+<li>Native Messaging 看起来更合适一些，因为需求中数据传输量并不大，而且相对安全性好。</li>
 </ul>
 <h2 id="Native-Messaging-技术调研"><a href="#Native-Messaging-技术调研" class="headerlink" title="Native Messaging 技术调研"></a>Native Messaging 技术调研</h2><p>在调试 Native Messaging 过程中发现以下问题：</p>
 <ol>
-<li>Host 端不能使用任何 cout 输出，否则调试不通。如果要调试，只能输出到 cerr</li>
-<li>Host 端是由 Chrome 启动的，自己启动没有用，Chrome 只与自己启动的那一份进程通信</li>
-<li>manifest 中 name 必须为 小写字母 . 和 _，其他均为非法</li>
-<li>manifest 应该放到 <code>~/Library/Application Support/Google/Chrome/NativeMessagingHosts</code> 目录</li>
-<li>manifest 的名字应该与 name 一致，为 name.json</li>
+<li>Host 端不能使用任何 cout 输出，否则调试不通。如果要调试，只能输出到 cerr。</li>
+<li>Host 端是由 Chrome 启动的，自己启动没有用，Chrome 只与自己启动的那一份进程通信。</li>
+<li>manifest 中 name 必须为 小写字母 . 和 _，其他均为非法。</li>
+<li>manifest 应该放到 <code>~/Library/Application Support/Google/Chrome/NativeMessagingHosts</code> 目录。</li>
+<li>manifest 的名字应该与 name 一致，为 name.json。</li>
 </ol>
 <p>因此，Native Service 不适合作为 Extension 的 NativeMessagingHost，需要想办法，有两种方式：</p>
 <ol>
-<li>Extension 通过 WebSocket 连接到 NativeService</li>
-<li>Extension 与 NativeService 实现一个 Proxy，用于 Extension 调用并中转消息</li>
+<li>Extension 通过 WebSocket 连接到 NativeService。</li>
+<li>Extension 与 NativeService 实现一个 Proxy，用于 Extension 调用并中转消息。</li>
 </ol>
 <p>对于 1，问题是：</p>
 <ul>
-<li>没有找到一个案例这样用</li>
-<li>Chrome 本身对 WebSocket 的限制，例如需要使用 wss 而不是 ws</li>
-<li>NativeService 配置 ssl 证书私钥感觉不安全</li>
-<li>WebSocket 服务的端口号可能被占用，因此 1 不太合适</li>
+<li>没有找到一个案例这样用。</li>
+<li>Chrome 本身对 WebSocket 的限制，例如需要使用 wss 而不是 ws。</li>
+<li>NativeService 配置 ssl 证书私钥感觉不安全。</li>
+<li>WebSocket 服务的端口号可能被占用，因此 1 不太合适。</li>
 </ul>
 <p>对于 2，有以下方案：</p>
 <ul>
-<li>使用数据库：Proxy 收到数据后写入数据库，问题是通信是单向的，Ao Zhang 的经验看，在 Windows 上使用数据库不太稳，总有各种各样问题</li>
-<li>使用 JSON 文件：Proxy 写入，NativeService 读取，问题是通信是单向的，且读写频率不好同步</li>
-<li>使用进程间通信（Windows 是 Named Pipe，Mac 是 Unix Domain Socket）：成熟的方案，双向通信，比较稳妥</li>
+<li>使用数据库：Proxy 收到数据后写入数据库，问题是通信是单向的，Ao Zhang 的经验看，在 Windows 上使用数据库不太稳，总有各种各样问题。</li>
+<li>使用 JSON 文件：Proxy 写入，NativeService 读取，问题是通信是单向的，且读写频率不好同步。</li>
+<li>使用进程间通信（Windows 是 Named Pipe，Mac 是 Unix Domain Socket）：成熟的方案，双向通信，比较稳妥。</li>
 </ul>
-<p>基于此，架构改变为：<strong>增加一个 Extension Helper 作为 Proxy，负责接收 Extension 的数据，通过 IPC 接口转发给 Native Service</strong></p>
+<p>基于此，架构改变为：<strong>增加一个 Extension Helper 作为 Proxy，负责接收 Extension 的数据，通过 IPC 接口转发给 Native Service</strong>。</p>
 <p>参考：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/runtime/#method-connectNative">https://developer.chrome.com/docs/extensions/reference/runtime/#method-connectNative</a></li>
@@ -346,13 +492,13 @@
 </ul>
 <h2 id="Safari-技术调研"><a href="#Safari-技术调研" class="headerlink" title="Safari 技术调研"></a>Safari 技术调研</h2><p>Safari 不是基于 Chromium，而是基于 WebKit 内核：</p>
 <ol>
-<li>Safari Web Extension 的 API 与 Chrome 不一样，查看其 API 文档，找到 SFSafariPage 有 <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/safariservices/sfsafaripage/1639510-getpropertieswithcompletionhandl">getPropertiesWithCompletionHandler(_:)</a> 方法，可以获取 Page Property，但是 <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/safariservices/sfsafaripageproperties">SFSafariPageProperties</a> 中只有 title 和 url，没有其他信息</li>
-<li>Safari 虽然每个 Tab 也是对应一个进程，名称为 com.apple.WebKit.WebContent，但是并没有什么启动参数</li>
+<li>Safari Web Extension 的 API 与 Chrome 不一样，查看其 API 文档，找到 SFSafariPage 有 <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/safariservices/sfsafaripage/1639510-getpropertieswithcompletionhandl">getPropertiesWithCompletionHandler(_:)</a> 方法，可以获取 Page Property，但是 <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/safariservices/sfsafaripageproperties">SFSafariPageProperties</a> 中只有 title 和 url，没有其他信息。</li>
+<li>Safari 虽然每个 Tab 也是对应一个进程，名称为 com.apple.WebKit.WebContent，但是并没有什么启动参数。</li>
 </ol>
-<p>尝试搜了 Safari Web Extension 有没有什么私有 API 可以访问，在 Apple Runtime Headers 中搜了下 <a target="_blank" rel="noopener" href="https://github.com/LeoNatan/Apple-Runtime-Headers/blob/5e50ad05dfd7d7b69fc2e0e685765fc054166b3c/macOS/PrivateFrameworks/Safari.framework/BrowserTabPersistentState.h">macOS&#x2F;PrivateFrameworks&#x2F;Safari.framework&#x2F;BrowserTabPersistentState.h</a>，没有什么可以用的数据</p>
+<p>尝试搜了 Safari Web Extension 有没有什么私有 API 可以访问，在 Apple Runtime Headers 中搜了下 <a target="_blank" rel="noopener" href="https://github.com/LeoNatan/Apple-Runtime-Headers/blob/5e50ad05dfd7d7b69fc2e0e685765fc054166b3c/macOS/PrivateFrameworks/Safari.framework/BrowserTabPersistentState.h">macOS&#x2F;PrivateFrameworks&#x2F;Safari.framework&#x2F;BrowserTabPersistentState.h</a>，没有什么可以用的数据。</p>
 <p>Safari 可以通过  <code>defaults write com.apple.Safari IncludeInternalDebugMenu  -bool true</code> 打开 Debug 模式，在选项中将 Tab 对于的 pid 显示在 Tab 标题上。</p>
 <p>后来又仔细观察了 Activity Monitor，发现 Safari 对应 Tab 的子进程，能够显示对应 Tab 的 Host URL，于是就想到了：能不能逆向 Activity Monitor，看他到底是怎么实现的。</p>
-<h3 id="如何显示-Tab-的-URL"><a href="#如何显示-Tab-的-URL" class="headerlink" title="如何显示 Tab 的 URL"></a>如何显示 Tab 的 URL</h3><p>由于 Safari 使用的是 WebKit，每个 Tab 对应是 WebContents，在用 Hopper 加载 Activity Monitor 之后，开始针对 WebContents&#x2F;WebKit 进行搜索，找到了一个可疑方法，对方法进行反汇编后，定位到一个关键函数调用<code>_LSCopyApplicationInformationItem</code> 和 <code>LSActivePageUserVisibleOriginsKey</code></p>
+<h3 id="如何显示-Tab-的-URL"><a href="#如何显示-Tab-的-URL" class="headerlink" title="如何显示 Tab 的 URL"></a>如何显示 Tab 的 URL</h3><p>由于 Safari 使用的是 WebKit，每个 Tab 对应是 WebContents，在用 Hopper 加载 Activity Monitor 之后，开始针对 WebContents&#x2F;WebKit 进行搜索，找到了一个可疑方法，对方法进行反汇编后，定位到一个关键函数调用<code>_LSCopyApplicationInformationItem</code> 和 <code>LSActivePageUserVisibleOriginsKey</code>：</p>
 <p><img src="/investigation-of-getting-browser-tab-performance/44F2F362-E295-40FC-8947-B5EE5E9F2C51.png"></p>
 <p>用其进行 Google 搜索，找到了以下的参考代码：</p>
 <ul>
@@ -360,18 +506,18 @@
 <li><a target="_blank" rel="noopener" href="https://github.com/rodionovd/RDProcess">https://github.com/rodionovd/RDProcess</a></li>
 </ul>
 <p>在配合 <a target="_blank" rel="noopener" href="https://opensource.apple.com/source/WebKit2/WebKit2-7607.2.6.1.1/WebProcess/cocoa/WebProcessCocoa.mm.auto.html">WebKit 源码</a>，可以看到在 WebProcess 设置名称时，会通过 <code>_LSSetApplicationInformationItem</code> 将对应名称设置为 URL。最后，自己写 Demo 验证可行性，也能像 Activity Monitor 一样显示 Tab 对应 pid 的 Host URL 了。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">CFStringRef</span> kLSActivePageUserVisibleOriginsKey = <span class="built_in">CFSTR</span>(<span class="string">&quot;LSActivePageUserVisibleOriginsKey&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">CFStringRef</span> kLSDisplayName = <span class="built_in">CFSTR</span>(<span class="string">&quot;LSDisplayName&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> kLSMagicConstant = <span class="number">-2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="built_in">CFTypeRef</span> _LSCopyApplicationInformationItem(<span class="keyword">int</span> <span class="comment">/* hopefully */</span>, <span class="built_in">CFTypeRef</span>, <span class="built_in">CFStringRef</span>);</span><br><span class="line"><span class="keyword">extern</span> <span class="built_in">CFTypeRef</span> _LSASNCreateWithPid(<span class="built_in">CFAllocatorRef</span>, pid_t);</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *getWebKitActiveURL(pid_t pid) &#123;</span><br><span class="line">    <span class="built_in">NSString</span> *url = <span class="literal">nil</span>;</span><br><span class="line">    <span class="built_in">CFTypeRef</span> asn = _LSASNCreateWithPid(kCFAllocatorDefault, pid);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (asn != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">id</span> information = <span class="built_in">CFBridgingRelease</span>(_LSCopyApplicationInformationItem(kLSMagicConstant, asn, kLSActivePageUserVisibleOriginsKey));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ([information isKindOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]) &#123;</span><br><span class="line">            url = information;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ([information isKindOfClass:[<span class="built_in">NSArray</span> <span class="keyword">class</span>]]) &#123;</span><br><span class="line">            <span class="built_in">NSArray</span> *array = (<span class="built_in">NSArray</span> *)information;</span><br><span class="line">            <span class="keyword">if</span> (array.count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                url = array[<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">CFRelease</span>(asn);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> url;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">CFStringRef</span> kLSActivePageUserVisibleOriginsKey = <span class="built_in">CFSTR</span>(<span class="string">&quot;LSActivePageUserVisibleOriginsKey&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">CFStringRef</span> kLSDisplayName = <span class="built_in">CFSTR</span>(<span class="string">&quot;LSDisplayName&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="type">int</span> kLSMagicConstant = <span class="number">-2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="built_in">CFTypeRef</span> _LSCopyApplicationInformationItem(<span class="type">int</span> <span class="comment">/* hopefully */</span>, <span class="built_in">CFTypeRef</span>, <span class="built_in">CFStringRef</span>);</span><br><span class="line"><span class="keyword">extern</span> <span class="built_in">CFTypeRef</span> _LSASNCreateWithPid(<span class="built_in">CFAllocatorRef</span>, pid_t);</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *getWebKitActiveURL(pid_t pid) &#123;</span><br><span class="line">    <span class="built_in">NSString</span> *url = <span class="literal">nil</span>;</span><br><span class="line">    <span class="built_in">CFTypeRef</span> asn = _LSASNCreateWithPid(kCFAllocatorDefault, pid);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (asn != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="type">id</span> information = <span class="built_in">CFBridgingRelease</span>(_LSCopyApplicationInformationItem(kLSMagicConstant, asn, kLSActivePageUserVisibleOriginsKey));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ([information isKindOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>]]) &#123;</span><br><span class="line">            url = information;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ([information isKindOfClass:[<span class="built_in">NSArray</span> <span class="keyword">class</span>]]) &#123;</span><br><span class="line">            <span class="built_in">NSArray</span> *array = (<span class="built_in">NSArray</span> *)information;</span><br><span class="line">            <span class="keyword">if</span> (array.count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                url = array[<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">CFRelease</span>(asn);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> url;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="如何正确的识别-Safari-的子进程"><a href="#如何正确的识别-Safari-的子进程" class="headerlink" title="如何正确的识别 Safari 的子进程"></a>如何正确的识别 Safari 的子进程</h3><p>Safari 使用的 WebKit，每个 Tab 是 com.apple.WebKit.WebContent 子进程，其  ppid 都是 1（launchd），而且如果有其他 App 使用了 WebKit（WKWebView），其子进程也是 com.apple.WebKit.WebContent，使用 ppid 的话无法和  Safari 的 Tab 区分出来。需要使用私有 API  <code>responsibility_get_pid_responsible_for_pid</code>  才能取到正确的父进程，参考：<a target="_blank" rel="noopener" href="https://apple.stackexchange.com/questions/327290/how-process-hierarchy-works-in-macos">terminal - How process hierarchy works in macOS - Ask Different</a></p>
+<h3 id="如何正确的识别-Safari-的子进程"><a href="#如何正确的识别-Safari-的子进程" class="headerlink" title="如何正确的识别 Safari 的子进程"></a>如何正确的识别 Safari 的子进程</h3><p>Safari 使用的 WebKit，每个 Tab 是 com.apple.WebKit.WebContent 子进程，其  ppid 都是 1（launchd），而且如果有其他 App 使用了 WebKit（WKWebView），其子进程也是 com.apple.WebKit.WebContent，使用 ppid 的话无法和  Safari 的 Tab 区分出来。需要使用私有 API  <code>responsibility_get_pid_responsible_for_pid</code>  才能取到正确的父进程，参考：<a target="_blank" rel="noopener" href="https://apple.stackexchange.com/questions/327290/how-process-hierarchy-works-in-macos">terminal - How process hierarchy works in macOS - Ask Different</a>。</p>
 <h3 id="如何显示-Prewarmed-Tab"><a href="#如何显示-Prewarmed-Tab" class="headerlink" title="如何显示 Prewarmed Tab"></a>如何显示 Prewarmed Tab</h3><p>Safari 有 Prewarmed Tab，此 Tab 对应的进程没有 URL，但是 Activity Monitor 能显示对应进程的名称，通过 <code>_LSCopyApplicationInformationItem(kLSMagicConstant, asn, &quot;LSDisplayName&quot;)</code>  获取进程的显示名称。</p>
 <h3 id="将现有的-Chrome-Extension-转换成-Safari-Extension"><a href="#将现有的-Chrome-Extension-转换成-Safari-Extension" class="headerlink" title="将现有的 Chrome Extension 转换成 Safari Extension"></a>将现有的 Chrome Extension 转换成 Safari Extension</h3><p><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/safariservices/safari_web_extensions/converting_a_web_extension_for_safari?language=objc">Converting a web extension for Safari</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun safari-web-extension-converter --app-name <span class="string">&quot;ArgusSafariHelper&quot;</span> --bundle-identifier <span class="string">&quot;com.argus.safari.helper&quot;</span> --macos-only --copy-resources  ../argus-chromium-extension/extension</span><br></pre></td></tr></table></figure>
 
 <p> Extension 需要处理的有：</p>
 <ol>
-<li>删除不需要的 webNavigation 和处理权限兼容性：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_compatibility_for_manifest.json">Browser compatibility for manifest.json - Mozilla | MDN</a></li>
-<li>处理 <all_urls> 的兼容性：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">Match patterns in extension manifests - Mozilla | MDN</a></li>
-<li>使用 browser 而不是 chrome 访问 Extension API</li>
+<li>删除不需要的 webNavigation 和处理权限兼容性：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_compatibility_for_manifest.json">Browser compatibility for manifest.json - Mozilla | MDN</a>。</li>
+<li>处理 <all_urls> 的兼容性：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns">Match patterns in extension manifests - Mozilla | MDN</a>。</li>
+<li>使用 browser 而不是 chrome 访问 Extension API。</li>
 </ol>
 <h2 id="其他-Browser-技术调研"><a href="#其他-Browser-技术调研" class="headerlink" title="其他 Browser 技术调研"></a>其他 Browser 技术调研</h2><h3 id="Internet-Explorer"><a href="#Internet-Explorer" class="headerlink" title="Internet Explorer"></a>Internet Explorer</h3><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8445742/how-to-get-the-url-of-the-internet-explorer-tabs-with-pid-of-each-tab?rq=1">c# - How to get the URL of the Internet explorer tabs with PID of each tab? - Stack Overflow</a></p>
 <h3 id="Firefox"><a href="#Firefox" class="headerlink" title="Firefox"></a>Firefox</h3><p>Firefox 每个 Tab 对应的子进程有启动参数，也提供了 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webNavigation">webNavigation - Mozilla | MDN</a> 的 API，但是返回的数据中并没有 processId（文档上有），不知道为啥，<a target="_blank" rel="noopener" href="https://github.com/mdn/webextensions-examples#installing-an-example">GitHub - mdn&#x2F;webextensions-examples: Example Firefox add-ons created using the WebExtensions API</a></p>
@@ -381,26 +527,26 @@
 <p>实现需要 Web Extension + Native Service 配合才能实现，同时需要一个 “Proxy” 作为二者通信的中转站，因此架构主要由三块组成：</p>
 <ul>
 <li>Web Extension：安装在浏览器中，负责获取 Tab 的 Frame 数据和页面加载性能数据<ul>
-<li>基于 Chrome Extension API，聚合多个 Event 回调，配合 content.js 中的 PerformanceObserver，生成页面加载性能数据</li>
-<li>遍历 Tab 并通过 webNavigation 获取其 Frame 相关数据</li>
-<li>通过 Native Messaging 与 Extension Helper 建立其连接，并接收和发送消息</li>
+<li>基于 Chrome Extension API，聚合多个 Event 回调，配合 content.js 中的 PerformanceObserver，生成页面加载性能数据。</li>
+<li>遍历 Tab 并通过 webNavigation 获取其 Frame 相关数据。</li>
+<li>通过 Native Messaging 与 Extension Helper 建立其连接，并接收和发送消息。</li>
 </ul>
 </li>
 <li>Extension Helper：负责消息转发<ul>
 <li>通过 IPC（Windows 是 Named Pipe，Mac 是 Unix Domain Socket）与 Native Service 建立通信，Native Service 是 Server 端。</li>
-<li>通过 stdin 从 Web Extension 接收消息，解码后通过 IPC 转发给 Native Service</li>
-<li>通过 IPC 从 Native Service 接收消息，编码后通过 stdout 转发给 Web Extension</li>
+<li>通过 stdin 从 Web Extension 接收消息，解码后通过 IPC 转发给 Native Service。</li>
+<li>通过 IPC 从 Native Service 接收消息，编码后通过 stdout 转发给 Web Extension。</li>
 </ul>
 </li>
 <li>Native Service：负责分析监控 Browser 各个子进程及其性能数据，聚合 Web Extension 数据后上传<ul>
-<li>分析各个子进程的启动参数，并通过参数来区分进程类型</li>
-<li>监控各个子进程的 CPU 和 Memory 性能</li>
-<li>从 Web Extension 接收消息，与进程的性能数据聚合</li>
-<li>将页面的 CPU 和 Memory 性能以及页面加载性能上传</li>
+<li>分析各个子进程的启动参数，并通过参数来区分进程类型。</li>
+<li>监控各个子进程的 CPU 和 Memory 性能。</li>
+<li>从 Web Extension 接收消息，与进程的性能数据聚合。</li>
+<li>将页面的 CPU 和 Memory 性能以及页面加载性能上传。</li>
 </ul>
 </li>
 </ul>
-<p>最终效果如下，用界面代替“上传”：<br><img src="/investigation-of-getting-browser-tab-performance/17314313062353.jpg"></p>
+<p>最终显示效果如下：<br><img src="/investigation-of-getting-browser-tab-performance/17314313062353.jpg"></p>
 <h3 id="实现过程中遇到的坑"><a href="#实现过程中遇到的坑" class="headerlink" title="实现过程中遇到的坑"></a>实现过程中遇到的坑</h3><h4 id="Chromium-Extension"><a href="#Chromium-Extension" class="headerlink" title="Chromium Extension"></a>Chromium Extension</h4><ul>
 <li>postMessage 发送 JSON 数据时，要使用 <code>&#123; &quot;key&quot;: value &#125;</code> 的形式，不能 <code>var object = &#123;&#125;; object.key = value</code>，这样会导致 NativeService 端解析 JSON 数据时失败。</li>
 <li>使用 Developer Mode 加载 Extension 时，每次重新加载或者换设备都会导致 Extension 的 UUID 变化，可以利用 <code>manifest.json</code> 中的 key 来锁定 Extension 的 UUID，需要申请一个 Chrome WebStore 账号，将 Extension 的 zip 包上传一次，从而获取 PublicKey。</li>
@@ -412,7 +558,7 @@
 </ul>
 <h4 id="Native-Services"><a href="#Native-Services" class="headerlink" title="Native Services"></a>Native Services</h4><ul>
 <li>Unix Domain Socket 会新建一个文件，每次在 bind 前需要用 unlink 删除，不然会导致 bind 失败。</li>
-<li>允许非 root 权限程序能够读写 Unix Domain Socket，需要在 bind 前使用 umask，然后在 bind 后恢复。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> mask = umask(<span class="number">777</span>);</span><br><span class="line">umask(mask);</span><br></pre></td></tr></table></figure></li>
+<li>允许非 root 权限程序能够读写 Unix Domain Socket，需要在 bind 前使用 umask，然后在 bind 后恢复。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> mask = umask(<span class="number">777</span>);</span><br><span class="line">umask(mask);</span><br></pre></td></tr></table></figure></li>
 </ul>
 
       
@@ -531,7 +677,7 @@
 <li>每个 Module 供外部 Module 使用的接口，通过 Protocol 抽象成 Service，并通过 register 机制将 Service 注册。</li>
 <li>Module 使用其他 Module 的接口时，用 @Inject 的 Property Wrapper 定义一个 Service 类型的属性，通过 Service 调用接口。</li>
 </ul>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块 A 定义</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleA</span>: <span class="title">Service1</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">doSomething</span>()</span> &#123;</span><br><span class="line">    <span class="comment">// doing</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块 B 使用模块 A</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ModuleB</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Inject</span> <span class="keyword">var</span> service1: <span class="type">Service1</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">handleSomething</span>()</span> &#123;</span><br><span class="line">    service1.doSomething()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">// 注册服务</span></span><br><span class="line"><span class="type">Resolver</span>.register &#123; <span class="type">ModuleA</span>() <span class="keyword">as</span> <span class="type">Service1</span> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模块 A 定义</span></span><br><span class="line"><span class="keyword">protocol</span> <span class="title class_">Service1</span> &#123;</span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">doSomething</span>() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ModuleA</span>: <span class="title class_ inherited__">Service1</span> &#123;</span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">doSomething</span>() &#123;</span><br><span class="line">    <span class="comment">// doing</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块 B 使用模块 A</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ModuleB</span> &#123;</span><br><span class="line">  <span class="meta">@Inject</span> <span class="keyword">var</span> service1: <span class="type">Service1</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">handleSomething</span>() &#123;</span><br><span class="line">    service1.doSomething()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment">// 注册服务</span></span><br><span class="line"><span class="type">Resolver</span>.register &#123; <span class="type">ModuleA</span>() <span class="keyword">as</span> <span class="type">Service1</span> &#125;</span><br></pre></td></tr></table></figure>
 
 <p>依赖注入是一套很成熟的思想，在前后端项目上有广泛应用，积木化使用依赖注入之后：</p>
 <ul>
@@ -730,7 +876,7 @@
 </ul>
 <p>最终我们选用方案三作为最终方案，虽然每个客户端平台 iOS、Android、Electron 都要实现一遍 Client 端，但 Client 端的定位是尽量薄，只进行直播命令的分发和 HTTP 的拦截转发，将通用和复杂的逻辑与交互放到 Server 端，可以多端复用，不需要实现多遍。</p>
 <h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p> 在确定了 C&#x2F;S 架构方案后，基于 WebSocket 的通信通道，需要定义 Client 与 Server 之间的通信协议：协议类型使用 JSON，可读，方便扩展</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  “type”: “”</span><br><span class="line">  “payload”: &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  “type”<span class="punctuation">:</span> “”</span><br><span class="line">  “payload”<span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>协议中，主要有两个字段：</p>
 <ul>
@@ -1135,18 +1281,18 @@
 <p><img src="/images/blog/command-comic-1.png"></p>
 <p>这个技巧的核心在于，将每一条分支逻辑隔离到一个类中，用多态来承载各个类型特有的行为，“上层”或者“业务层”不再关心每一条分支的具体细节，不再事事躬亲，只作分发（Dispatch）的工作。</p>
 <h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><h3 id="JS-回调重构"><a href="#JS-回调重构" class="headerlink" title="JS 回调重构"></a>JS 回调重构</h3><p>最早的 WebViewController 在处理 JS 回调的方法是用一堆 if&#x2F;else 语句：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	<span class="keyword">if</span> ([name isEqualToString:@“command1”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand1:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command2”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand2:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command3”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand3:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command4”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand4:name arguments:arguments];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	<span class="keyword">if</span> ([name isEqualToString:@“command1”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand1:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command2”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand2:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command3”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand3:name arguments:arguments];</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([name isEqualToString:@“command4”]) &#123;</span><br><span class="line">		[<span class="keyword">self</span> handleCommand4:name arguments:arguments];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这样写的问题是导致 WebViewController 越来越庞大，一堆业务逻辑耦合到 WebViewController 中（例如登录通知，语音跟读的回调等），维护性变差。另外，如果想配置 WebViewController 只支持某些或者不支持某些 JS 特定的回调的话，甚至根据页面 URL 进行动态调整，也不是很干净。于是趁着 UIWebView 升级 WKWebView，做了一次重构：基于命令模式，将 JS 回调的处理抽离到一个个 Handler 中，JS 回调的名称和参数也在 Handler 中维护，WebViewController 中不再含有任何与 WebView 无关的业务逻辑，当 WebView 触发了 JS 回调后，调用 Command Manager 这个 Invoker 去调用 Command。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)registerCommands &#123;</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command1Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command2Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command3Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command4Handler new]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	JSCommand *command = [JSCommand commandWithName:name arguments:arguments];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager handleCommand:command];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)registerCommands &#123;</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command1Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command2Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command3Handler new]];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager registerCommand:[Command4Handler new]];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)jsCallback:(<span class="built_in">NSString</span> *)name arguments:(<span class="built_in">NSDictionary</span> *)arguments &#123;</span><br><span class="line">	JSCommand *command = [JSCommand commandWithName:name arguments:arguments];</span><br><span class="line">	[<span class="keyword">self</span>.commandManager handleCommand:command];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="图片标注操作栈"><a href="#图片标注操作栈" class="headerlink" title="图片标注操作栈"></a>图片标注操作栈</h3><p>对于图片标注功能，支持笔迹、图片、文本、橡皮擦、套索等，同时有 Undo、Redo、ClearAll 等操作。</p>
 <p>由于涉及到 Undo、Redo 操作，因此需要维护一个操作栈。基于此，需要将每种操作抽象成 Action，Action 中有 type 属性，用于描述 Action 的具体类型。同时定义 ActionManager 的类，负责维护操作栈，并基于操作栈实现 Undo、Redo 操作。</p>
 <p>一开始的代码可能是这样的：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    <span class="keyword">if</span> (action.type == ActionTypeStroke) &#123;</span><br><span class="line">        <span class="comment">// handle stroke</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (action.type == ActionTypeLasso) &#123;</span><br><span class="line">        <span class="comment">// handle lasso</span></span><br><span class="line">    &#125; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    <span class="keyword">if</span> (action.type == ActionTypeStroke) &#123;</span><br><span class="line">        <span class="comment">// handle stroke</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (action.type == ActionTypeLasso) &#123;</span><br><span class="line">        <span class="comment">// handle lasso</span></span><br><span class="line">    &#125; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在 undo&#x2F;redo 方法中，除了处理操作栈外，需要根据 Action 的不同，处理该类型 Action 在 undo 时应该做的事情。但回过头来看看 ActionManager 的职责，其没有必要了解 Action 的具体细节，因此，Action 应作为基类或者接口，定义 do&#x2F;undo 两个方法，各个子类 Action 实现 do&#x2F;undo 方法，分别在 ActionManager 在 redo&#x2F;undo 中调用。这样修改之后，ActionManager 的逻辑变得清晰：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    [action undo];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)undo &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.currentIndex &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">self</span>.currentIndex--;</span><br><span class="line">    Action *action = <span class="keyword">self</span>.actions[<span class="keyword">self</span>.currentIndex];</span><br><span class="line">    [action undo];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="SVG-解析库"><a href="#SVG-解析库" class="headerlink" title="SVG 解析库"></a>SVG 解析库</h3><p>最近看了下 <a target="_blank" rel="noopener" href="https://chromium.googlesource.com/skia/+/chrome/m44/src/svg/parser">Skia 中 SVG Parser 的源码</a>，虽然 Parser 中 switch 语句依然存在，但是 switch 中只是针对不同的标签（Path、Line、Rect、Circle 等）生成不同的 Element，至于如何解析 Element，由各个 Element 子类实现 Element 基类中定义的 translate 方法，负责解析出各自类型 Element 中的属性。</p>
 
@@ -1459,10 +1605,10 @@
 <p>决定从递归思想 + 树开始练习，周末家里有突发情况，所以选了一道简单+“有名”的翻转二叉树。树的结构由于自带子节点，所以很适合递归思想，对于这道题，翻转二叉树就是递归交换子树，递归起来可以有两种思路：</p>
 <ol>
 <li><p>每次交换的是左右子树，至于左右子树的结果，调用 invertTree 获取</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">TreeNode* <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = <span class="built_in">invertTree</span>(root-&gt;left);</span><br><span class="line">        root-&gt;left = <span class="built_in">invertTree</span>(root-&gt;right); </span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        <span class="keyword">return</span> root; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">TreeNode* <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = <span class="built_in">invertTree</span>(root-&gt;left);</span><br><span class="line">        root-&gt;left = <span class="built_in">invertTree</span>(root-&gt;right); </span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        <span class="keyword">return</span> root; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>每次交换左右子节点，然后再递归调用左右子节点</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = root-&gt;left;</span><br><span class="line">        root-&gt;left = root-&gt;right;</span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        <span class="built_in">invertTree</span>(root-&gt;left);</span><br><span class="line">        <span class="built_in">invertTree</span>(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">invertTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TreeNode *tmp = root-&gt;left;</span><br><span class="line">        root-&gt;left = root-&gt;right;</span><br><span class="line">        root-&gt;right = tmp;</span><br><span class="line">        <span class="built_in">invertTree</span>(root-&gt;left);</span><br><span class="line">        <span class="built_in">invertTree</span>(root-&gt;right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p><a target="_blank" rel="noopener" href="https://www.essentialdeveloper.com/articles/why-ios-developers-feel-stuck-in-their-careers-and-what-to-do">Why iOS Developers Feel Stuck In Their Careers &amp; What To Do — Essential Developer</a></p>
 <p>对于目前阶段的我而言，一直处于焦虑之中，一方面随着工作年限变多，无论是自己还是“业界”，对于自己的要求变得更高，另一方面，iOS 或者客户端相对服务器端而言，离业务有点远，核心竞争力并不突出。看到这篇文章，没想到”浓眉大眼“ Work Life Balance 的国外 iOS 同行也会 Feel Stuck。。。</p>
@@ -1478,88 +1624,6 @@
 <li>Swift 会对其符号进行修饰（Name Mangling），具体原理见：<a target="_blank" rel="noopener" href="https://mikeash.com/pyblog/friday-qa-2014-08-15-swift-name-mangling.html">mikeash.com: Friday Q&amp;A 2014-08-15: Swift Name Mangling</a>。在 Bugly 上，如果崩溃在 Swift 方法中，被修饰过的命名就很难读了。Xcode 提供了对 Swift 符号进行 demangling 的工具，在命令行输入 <code>xcrun swift-demangle</code>之后，将对应的 Swift 符号拷入，点回车，就能看到解析后的结果了</li>
 </ol>
 <h2 id="Share"><a href="#Share" class="headerlink" title="Share"></a>Share</h2><p><a target="_blank" rel="noopener" href="https://joeshang.github.io/2020/06/14/cname-explain/">CNAME 有什么用？</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/cname-explain/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="尚传人">
-      <meta itemprop="description" content="Stay Hungry, Stay Foolish">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="传人的技术博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/cname-explain/" class="post-title-link" itemprop="url">CNAME 有什么用？</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-30 17:01:44" itemprop="dateCreated datePublished" datetime="2020-05-30T17:01:44+08:00">2020-05-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-11-10 21:41:57" itemprop="dateModified" datetime="2024-11-10T21:41:57+08:00">2024-11-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前一直好奇，公司用的 CDN 是公司域名，是如何转到阿里云或者腾讯云的？后来翻看了 DNS 的一些知识，发现和 CNAME 有关：</p>
-<p>CNAME 是 Canonical Name  的缩写，也成为别名指向。</p>
-<p>DNS 中 CNAME 记录和 A 记录的区别在于，A 记录是把一个域名解析到一个 IP 地址（Address，这也是 A 记录名字的原因），CNAME 记录是把一个域名解析到另一个域名，相当于加了一个中间层。</p>
-<p>通过 dig 能看到 DNS 域名解析的过程，具体见：<a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2016/06/dns.html">https://www.ruanyifeng.com/blog/2016/06/dns.html</a></p>
-<p>CNAME 有什么用？有句话是”在软件开发中，没有什么是加一个中间层搞不定的，如果不行，就再加一层“，哈哈，开个玩笑。CNAME 加中间层的好处是：</p>
-<ul>
-<li>多个域名都指向同一个别名，当 IP 变化时，只需要更新该别名的 IP 地址（A 记录），其他域名不需要改变</li>
-<li>有的域名不属于自己，例如 CDN 服务，服务商提供的就是一个 CNAME，将自己的 CDN 域名绑定到 CNAME 上，CDN 服务提供商就可以根据地区、负载均衡、错误转移等情况，动态改别名的 A 记录，不影响自己 CDN 到 CNAME 的映射。</li>
-</ul>
 
       
     </div>
@@ -1646,14 +1710,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
